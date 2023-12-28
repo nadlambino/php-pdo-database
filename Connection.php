@@ -10,6 +10,12 @@ use Exception;
 use Inspira\Container\Container;
 use Inspira\Config\Config;
 use Inspira\Database\Connectors\ConnectorInterface;
+use Inspira\Database\Builder\Query;
+use Inspira\Database\Connectors\MySql;
+use Inspira\Database\Connectors\PgSql;
+use Inspira\Database\Connectors\Sqlite;
+use Symfony\Component\String\Inflector\EnglishInflector;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
 class Connection
 {
@@ -20,7 +26,22 @@ class Connection
 
 	private string $name = 'default';
 
-	public function __construct(protected Container $container, protected Config $config) { }
+	public function __construct(protected Container $container, protected Config $config)
+	{
+		$this->registerDatabaseServices();
+	}
+
+	protected function registerDatabaseServices(): void
+	{
+		$this->container->singleton(PDO::class, fn() => $this->create());
+		$this->container->singleton(InflectorInterface::class, EnglishInflector::class);
+		$this->container->bind(Query::class);
+
+		// PDO Connectors
+		$this->container->bind('mysql', MySql::class);
+		$this->container->bind('pgsql', PgSql::class);
+		$this->container->bind('sqlite', Sqlite::class);
+	}
 
 	public function name(string $name): self
 	{
