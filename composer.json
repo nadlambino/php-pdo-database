@@ -5,8 +5,9 @@
     "require": {
         "inspira/container": "dev-master",
         "inspira/config": "dev-master",
-        "symfony/string": "7.1.x-dev",
-        "inspira/contracts": "dev-master"
+        "inspira/contracts": "dev-master",
+        "inspira/utils": "dev-master",
+        "symfony/string": "7.1.x-dev"
     },
     "license": "MIT",
     "autoload": {
