@@ -1,0 +1,92 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Inspira\Database;
+
+use PDO;
+use Closure;
+use Exception;
+use Inspira\Container\Container;
+use Inspira\Config\Config;
+use Inspira\Database\Connectors\ConnectorInterface;
+
+class Connection
+{
+	/**
+	 * @var array<string, PDO> $pool
+	 */
+	private static array $pool = [];
+
+	private string $name = 'default';
+
+	public function __construct(protected Container $container, protected Config $config) { }
+
+	public function name(string $name): self
+	{
+		$this->name = $name;
+
+		return $this;
+	}
+
+	/**
+	 * @return PDO
+	 * @throws Exception
+	 */
+	public function create(): PDO
+	{
+		if (Connection::has($this->name)) {
+			return Connection::get($this->name);
+		}
+
+		$name = $this->config->get("database.$this->name");
+
+		if (empty($name)) {
+			throw new Exception("Unknown connection name `$this->name`.");
+		}
+
+		$configs = $this->config->get("database.connections.$name");
+
+		if (empty($configs)) {
+			throw new Exception("Unknown connection configuration `$name`.");
+		}
+
+		if (!is_array($configs)) {
+			throw new Exception("Connection structure must be an array containing its configurations.");
+		}
+
+		$connector = $this->container->getConcreteBinding($driver = $configs['driver']);
+
+		if (empty($connector)) {
+			throw new Exception("Connector class for `$driver` driver is not found.");
+		}
+
+		$configs['timezone'] = $this->config->get('app.timezone', 'UTC');
+		$connection = match (true) {
+			is_string($connector)         => new $connector($configs),
+			$connector instanceof Closure => $this->container->resolve($connector),
+			default                       => $connector
+		};
+
+		if (!($connection instanceof ConnectorInterface)) {
+			throw new Exception("Connector class for `$driver` driver must be an instance of " . ConnectorInterface::class);
+		}
+
+		return static::$pool[$this->name] = $connection->connect();
+	}
+
+	public static function has(string $name): bool
+	{
+		return isset(self::$pool[$name]);
+	}
+
+	public static function get(string $name): ?PDO
+	{
+		return self::$pool[$name] ?? null;
+	}
+
+	public static function all(): array
+	{
+		return self::$pool;
+	}
+}
