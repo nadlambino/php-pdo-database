@@ -11,6 +11,7 @@ use Throwable;
 use ArrayObject;
 use ReturnTypeWillChange;
 use BadMethodCallException;
+use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Raw;
 use Inspira\Database\Builder\Query;
@@ -64,6 +65,8 @@ abstract class Model extends ArrayObject implements Arrayable
 {
 	use Relations, Helpers;
 
+	protected Container $container;
+
 	protected string $table = '';
 
 	protected string $pk = 'id';
@@ -93,7 +96,7 @@ abstract class Model extends ArrayObject implements Arrayable
 		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union',
 	];
 
-	public function __construct()
+	public function __construct(Container $container = null)
 	{
 		$this->setConnection();
 		$this->setInflector();
@@ -102,6 +105,7 @@ abstract class Model extends ArrayObject implements Arrayable
 		$this->setQuery();
 		$this->setSofDelete();
 		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
+		$this->container = $container ?? new Container();
 
 		parent::__construct();
 	}
@@ -148,7 +152,7 @@ abstract class Model extends ArrayObject implements Arrayable
 		}
 
 		if (!method_exists($this->query, $name)) {
-			throw new BadMethodCallException("Call to undefined method: `{$name}`");
+			throw new BadMethodCallException("Call to undefined method: `$name`");
 		}
 
 		return $this->query->$name(...$arguments);
@@ -379,12 +383,12 @@ abstract class Model extends ArrayObject implements Arrayable
 
 	protected function setConnection()
 	{
-		$this->connection ??= app()->make(PDO::class);
+		$this->connection ??= $this->container->make(PDO::class);
 	}
 
 	protected function setInflector()
 	{
-		$this->inflector ??= app()->make(InflectorInterface::class);
+		$this->inflector ??= $this->container->make(InflectorInterface::class);
 	}
 
 	private function setModel()
