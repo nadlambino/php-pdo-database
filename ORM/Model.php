@@ -98,14 +98,14 @@ abstract class Model extends ArrayObject implements Arrayable
 
 	public function __construct(Container $container = null)
 	{
+		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
+		$this->container = $container ?? new Container();
 		$this->setConnection();
 		$this->setInflector();
 		$this->setModel();
 		$this->setTable();
 		$this->setQuery();
 		$this->setSofDelete();
-		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
-		$this->container = $container ?? new Container();
 
 		parent::__construct();
 	}
