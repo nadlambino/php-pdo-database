@@ -1,5 +1,5 @@
 {
-    "name": "inspira/database",
+    "name": "inspira/pdo-database",
     "description": "PHP PDO database component.",
     "type": "library",
     "require": {
