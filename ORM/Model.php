@@ -60,6 +60,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  * @method self limit(int $limit)
  * @method self offset(int $offset)
  * @method self union(Closure $closure)
+ * @method softDelete()
  */
 abstract class Model extends ArrayObject implements Arrayable
 {
@@ -96,10 +97,10 @@ abstract class Model extends ArrayObject implements Arrayable
 		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union',
 	];
 
-	public function __construct(Container $container = null)
+	public function __construct()
 	{
+		$this->container = Container::getInstance();
 		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
-		$this->container = $container ?? new Container();
 		$this->setConnection();
 		$this->setInflector();
 		$this->setModel();
@@ -381,11 +382,18 @@ abstract class Model extends ArrayObject implements Arrayable
 		return $softDeletableNoAddedQuery || $nonSoftDeletableNoAddedQuery;
 	}
 
-	protected function setConnection()
+	/**
+	 * @return void
+	 * @throws
+	 */
+	protected function setConnection(): void
 	{
 		$this->connection ??= $this->container->make(PDO::class);
 	}
 
+	/**
+	 * @throws
+	 */
 	protected function setInflector()
 	{
 		$this->inflector ??= $this->container->make(InflectorInterface::class);
@@ -421,7 +429,7 @@ abstract class Model extends ArrayObject implements Arrayable
 	 * @param mixed $query
 	 * @return void
 	 */
-	private function attachClauses(mixed &$query): void
+	private function attachClauses(mixed $query): void
 	{
 		foreach ($this->clauses as $clause) {
 			$method    = $clause['name'];
