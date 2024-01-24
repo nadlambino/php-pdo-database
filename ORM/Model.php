@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Inspira\Database\ORM;
 
-use PDO;
+use ArrayObject;
+use BadMethodCallException;
 use Closure;
 use Exception;
-use Throwable;
-use ArrayObject;
-use ReturnTypeWillChange;
-use BadMethodCallException;
 use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
-use Inspira\Database\Builder\Raw;
 use Inspira\Database\Builder\Query;
+use Inspira\Database\Builder\Raw;
 use Inspira\Database\ORM\Traits\Helpers;
 use Inspira\Database\ORM\Traits\Relations;
+use PDO;
+use ReturnTypeWillChange;
 use Symfony\Component\String\Inflector\InflectorInterface;
+use Throwable;
 
 /**
  * @method self distinct()

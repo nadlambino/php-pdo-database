@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Inspira\Database;
 
-use PDO;
 use Closure;
 use Exception;
-use Inspira\Container\Container;
 use Inspira\Config\Config;
-use Inspira\Database\Connectors\ConnectorInterface;
+use Inspira\Container\Container;
 use Inspira\Database\Builder\Query;
+use Inspira\Database\Connectors\ConnectorInterface;
 use Inspira\Database\Connectors\MySql;
 use Inspira\Database\Connectors\PgSql;
 use Inspira\Database\Connectors\Sqlite;
+use PDO;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
