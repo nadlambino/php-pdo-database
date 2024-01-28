@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0f3ed3c83f93e56cecef11a10eef800",
+    "content-hash": "07407e505a1f439361875a785bb63e3a",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -109,6 +109,52 @@
                 "source": "https://github.com/nadlambino/php-augmentable/tree/master"
             },
             "time": "2024-01-12T11:39:31+00:00"
+        },
+        {
+            "name": "inspira/collection",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nadlambino/php-collection.git",
+                "reference": "a981062f90c9d5b2cfb96c2b5dffa3cb2053e9ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nadlambino/php-collection/zipball/a981062f90c9d5b2cfb96c2b5dffa3cb2053e9ff",
+                "reference": "a981062f90c9d5b2cfb96c2b5dffa3cb2053e9ff",
+                "shasum": ""
+            },
+            "require": {
+                "inspira/contracts": "dev-master",
+                "inspira/utils": "dev-master"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "2.0.x-dev",
+                "symfony/var-dumper": "7.1.x-dev"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Inspira\\Collection\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ronald Lambino",
+                    "email": "50892397+nadlambino@users.noreply.github.com"
+                }
+            ],
+            "description": "PHP collection component.",
+            "support": {
+                "issues": "https://github.com/nadlambino/php-collection/issues",
+                "source": "https://github.com/nadlambino/php-collection/tree/master"
+            },
+            "time": "2024-01-28T09:49:24+00:00"
         },
         {
             "name": "inspira/config",
@@ -1090,7 +1136,9 @@
         "inspira/contracts": 20,
         "inspira/utils": 20,
         "symfony/string": 20,
-        "inspira/augmentable": 20
+        "inspira/augmentable": 20,
+        "inspira/collection": 20,
+        "symfony/var-dumper": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

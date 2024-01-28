@@ -166,7 +166,7 @@ abstract class Model extends ArrayObject implements Arrayable
 		return $this->query->$method(...$arguments);
 	}
 
-	public function get(...$columns): array
+	public function get(...$columns): ModelCollection
 	{
 		$query = $this->query->select(...$columns);
 		$this->attachClauses($query);
@@ -174,7 +174,7 @@ abstract class Model extends ArrayObject implements Arrayable
 		$models = $query->get();
 		$this->attachRelations($models);
 
-		return $models;
+		return new ModelCollection($models, $this->model);
 	}
 
 	/**
