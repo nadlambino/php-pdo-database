@@ -90,7 +90,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected array $clauses = [];
 
-	protected array $oldValues = [];
+	protected array $oldAttributes = [];
 
 	protected array $attributes = [];
 
@@ -234,7 +234,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	/**
 	 * Update or create a new model
-	 * Note: When updating a user using this approach, it won't store the old values to the oldValues property
+	 * Note: When updating a user using this approach, it won't store the old values to the oldAttributes property
 	 * If you need to have a reference to the old values, consider using the `update` method.
 	 *
 	 * @return bool
@@ -263,7 +263,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		if ($created) {
 			$this->{$this->pk} = $this->connection->lastInsertId();
-			$this->oldValues   = $data;
+			$this->oldAttributes   = $data;
 		}
 
 		return $created;
@@ -279,7 +279,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function update(array $data): bool
 	{
-		$oldValues = $this->toArray();
+		$oldAttributes = $this->toArray();
 		$query     = $this->query->update($this->table)->set($data);
 		$query     = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
 		$this->attachClauses($query);
@@ -287,7 +287,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$updated = $query->execute();
 
 		if ($updated) {
-			$this->oldValues = $oldValues;
+			$this->oldAttributes = $oldAttributes;
 		}
 
 		return $updated;
