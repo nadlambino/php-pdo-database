@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\ORM;
 
-use ArrayObject;
+use ArrayAccess;
 use BadMethodCallException;
 use Closure;
 use Exception;
@@ -13,8 +13,11 @@ use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Raw;
+use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\Helpers;
+use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Relations;
+use IteratorAggregate;
 use PDO;
 use ReturnTypeWillChange;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -63,9 +66,9 @@ use Throwable;
  * @method self union(Closure $closure)
  * @method softDelete()
  */
-abstract class Model extends ArrayObject implements Arrayable
+abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use Relations, Helpers, Augmentable {
+	use IteratorAggregatable, ArrayAccessible, Relations, Helpers, Augmentable {
 		Augmentable::__call as augmentCall;
 	}
 
@@ -89,7 +92,9 @@ abstract class Model extends ArrayObject implements Arrayable
 
 	protected array $oldValues = [];
 
-	const QUERY_METHODS = [
+	protected array $attributes = [];
+
+	protected const QUERY_METHODS = [
 		'distinct', 'count', 'sum', 'avg', 'min',
 		'max', 'where', 'orWhere', 'whereLike', 'whereNotLike',
 		'orWhereLike', 'orWhereNotLike', 'whereNull', 'whereNotNull', 'orWhereNull',
@@ -110,8 +115,6 @@ abstract class Model extends ArrayObject implements Arrayable
 		$this->setTable();
 		$this->setQuery();
 		$this->setSofDelete();
-
-		parent::__construct();
 	}
 
 	/**
