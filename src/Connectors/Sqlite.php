@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Inspira\Database\Connectors;
 
-use PDO;
 use InvalidArgumentException;
+use PDO;
 
 class Sqlite extends Connector
 {

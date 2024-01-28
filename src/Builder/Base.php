@@ -2,10 +2,10 @@
 
 namespace Inspira\Database\Builder;
 
+use Inspira\Database\Builder\Contracts\QueryInterface;
 use Inspira\Database\Builder\Traits\Helpers;
 use PDO;
 use PDOStatement;
-use Inspira\Database\Builder\Contracts\QueryInterface;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
 abstract class Base implements QueryInterface

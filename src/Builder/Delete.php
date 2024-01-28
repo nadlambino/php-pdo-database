@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Inspira\Database\Builder;
 
 use Inspira\Database\Builder\Enums\Reserved;
-use Inspira\Database\Builder\Traits\Where;
 use Inspira\Database\Builder\Traits\Join;
+use Inspira\Database\Builder\Traits\Where;
 
 class Delete extends Base
 {

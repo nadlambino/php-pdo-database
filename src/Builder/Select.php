@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Inspira\Database\Builder;
 
-use PDO;
 use Closure;
 use Inspira\Database\Builder\Clauses\Select as SelectBuilder;
 use Inspira\Database\Builder\Enums\Aggregates as Agg;
@@ -15,6 +14,7 @@ use Inspira\Database\Builder\Traits\Having;
 use Inspira\Database\Builder\Traits\Join;
 use Inspira\Database\Builder\Traits\OrderBy;
 use Inspira\Database\Builder\Traits\Where;
+use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
 class Select extends Base
