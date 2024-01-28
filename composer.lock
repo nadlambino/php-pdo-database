@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "07407e505a1f439361875a785bb63e3a",
+    "content-hash": "a1d1a324902e53d35c6d71fc1be2532f",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -1045,6 +1045,105 @@
     ],
     "packages-dev": [
         {
+            "name": "demyanovs/php-highlight",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/demyanovs/php-highlight.git",
+                "reference": "98b5f20acbbd5ff914d2c6ad833a339a7089ac1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/demyanovs/php-highlight/zipball/98b5f20acbbd5ff914d2c6ad833a339a7089ac1e",
+                "reference": "98b5f20acbbd5ff914d2c6ad833a339a7089ac1e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^12.0",
+                "phpunit/phpunit": "^10.2",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Demyanovs\\PHPHighlight\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Demyanov Vyacheslav",
+                    "email": "demyanovs@gmail.com"
+                }
+            ],
+            "description": "A PHP library for highlighting code syntax.",
+            "keywords": [
+                "codehighlighter",
+                "codehighlighting",
+                "php-highlight",
+                "php_highlight",
+                "syntax-highlighting"
+            ],
+            "support": {
+                "issues": "https://github.com/demyanovs/php-highlight/issues",
+                "source": "https://github.com/demyanovs/php-highlight/tree/2.1.0"
+            },
+            "time": "2023-06-13T20:53:06+00:00"
+        },
+        {
+            "name": "inspira/error-page",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nadlambino/php-error-page.git",
+                "reference": "5a49f8fe2fe1c60c6e086551cb22279be3daaccf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nadlambino/php-error-page/zipball/5a49f8fe2fe1c60c6e086551cb22279be3daaccf",
+                "reference": "5a49f8fe2fe1c60c6e086551cb22279be3daaccf",
+                "shasum": ""
+            },
+            "require": {
+                "demyanovs/php-highlight": "dev-master",
+                "inspira/contracts": "dev-master"
+            },
+            "require-dev": {
+                "inspira/utils": "dev-master",
+                "symfony/var-dumper": "7.1.x-dev"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Inspira\\ErrorPage\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ronald Lambino",
+                    "email": "50892397+nadlambino@users.noreply.github.com"
+                }
+            ],
+            "description": "PHP error page component.",
+            "support": {
+                "issues": "https://github.com/nadlambino/php-error-page/issues",
+                "source": "https://github.com/nadlambino/php-error-page/tree/master"
+            },
+            "time": "2024-01-27T08:55:10+00:00"
+        },
+        {
             "name": "symfony/var-dumper",
             "version": "7.1.x-dev",
             "source": {
@@ -1138,7 +1237,8 @@
         "symfony/string": 20,
         "inspira/augmentable": 20,
         "inspira/collection": 20,
-        "symfony/var-dumper": 20
+        "symfony/var-dumper": 20,
+        "inspira/error-page": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
