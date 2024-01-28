@@ -15,7 +15,9 @@ class Query
 
 	private ?string $model = null;
 
-	public function __construct(protected PDO $connection, protected InflectorInterface $inflector) { }
+	public function __construct(protected PDO $connection, protected InflectorInterface $inflector)
+	{
+	}
 
 	public function table(string $table): static
 	{

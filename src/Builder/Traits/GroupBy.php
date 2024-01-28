@@ -20,7 +20,7 @@ trait GroupBy
 
 	protected function getGroupByClause(): string
 	{
-		$glue   = ', ';
+		$glue = ', ';
 
 		return empty($this->groups)
 			? ''

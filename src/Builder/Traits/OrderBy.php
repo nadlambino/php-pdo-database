@@ -29,9 +29,9 @@ trait OrderBy
 
 	protected function getOrderClause(): string
 	{
-		$clause     = '';
-		$columns    = array_keys($this->orders);
-		$last       = end($columns);
+		$clause = '';
+		$columns = array_keys($this->orders);
+		$last = end($columns);
 		foreach ($this->orders as $column => $order) {
 			$clause .= $this->concat($column, $order);
 			$clause .= $column === $last ? '' : ', ';

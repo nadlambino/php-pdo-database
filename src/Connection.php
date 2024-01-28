@@ -84,9 +84,9 @@ class Connection
 
 		$configs['timezone'] = $this->config->get('app.timezone', 'UTC');
 		$connection = match (true) {
-			is_string($connector)         => new $connector($configs),
+			is_string($connector) => new $connector($configs),
 			$connector instanceof Closure => $this->container->resolve($connector),
-			default                       => $connector
+			default => $connector
 		};
 
 		if (!($connection instanceof ConnectorInterface)) {

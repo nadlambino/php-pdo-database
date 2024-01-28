@@ -10,10 +10,10 @@ use PDO;
 abstract class Connector implements ConnectorInterface
 {
 	protected array $attributes = [
-		PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-		PDO::ATTR_EMULATE_PREPARES   => true,
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_EMULATE_PREPARES => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-		PDO::ATTR_AUTOCOMMIT         => true
+		PDO::ATTR_AUTOCOMMIT => true
 	];
 
 	protected array $commands;

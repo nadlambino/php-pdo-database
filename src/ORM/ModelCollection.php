@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Inspira\Database\ORM;
 
 use Inspira\Collection\Collection;

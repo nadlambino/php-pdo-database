@@ -53,11 +53,11 @@ trait Join
 	 */
 	public function on(string $local, string $comparison, ?string $foreign = null): static
 	{
-		$lastJoinIndex               = count($this->joins) - 1;
-		$lastJoin                    = $this->joins[$lastJoinIndex];
-		$lastJoin['local']           = $this->getFormattedColumn($local);
-		$lastJoin['foreign']         = $this->getFormattedColumn($foreign ?? $comparison);
-		$lastJoin['comparison']      = isset($foreign) ? $comparison : '=';
+		$lastJoinIndex = count($this->joins) - 1;
+		$lastJoin = $this->joins[$lastJoinIndex];
+		$lastJoin['local'] = $this->getFormattedColumn($local);
+		$lastJoin['foreign'] = $this->getFormattedColumn($foreign ?? $comparison);
+		$lastJoin['comparison'] = isset($foreign) ? $comparison : '=';
 		$this->joins[$lastJoinIndex] = $lastJoin;
 
 		return $this;
@@ -65,16 +65,16 @@ trait Join
 
 	protected function addJoin(string $type, string $table, ?string $alias = null, string $comparison = '='): static
 	{
-		$column        = $this->inflector?->singularize($table)[0] ?? $table;
-		$rawTable      = $alias ?? $table;
-		$local         = $this->getFormattedColumn("$this->table.{$column}_id");
-		$foreign       = $this->getFormattedColumn("$rawTable.id");
-		$table         = $this->quote($table);
-		$alias         = isset($alias) ? $this->quote($alias) : null;
+		$column = $this->inflector?->singularize($table)[0] ?? $table;
+		$rawTable = $alias ?? $table;
+		$local = $this->getFormattedColumn("$this->table.{$column}_id");
+		$foreign = $this->getFormattedColumn("$rawTable.id");
+		$table = $this->quote($table);
+		$alias = isset($alias) ? $this->quote($alias) : null;
 
 		if ($table === Reserved::CROSS_JOIN->value) {
-			$local      = null;
-			$foreign    = null;
+			$local = null;
+			$foreign = null;
 			$comparison = null;
 		}
 		$this->joins[] = compact('table', 'alias', 'local', 'foreign', 'comparison', 'type');

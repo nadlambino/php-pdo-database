@@ -57,16 +57,16 @@ class Insert extends Base
 	private function getValuesClause(): string
 	{
 		$isMultiDimension = is_multi_array($this->data);
-		$clause           = '';
-		$glue             = ', ';
+		$clause = '';
+		$glue = ', ';
 
 		foreach ($this->data as $column => $value) {
 			if ($isMultiDimension) {
 				$subClause = $this->buildSubClause($value);
-				$clause   .= "($subClause)" . $glue;
+				$clause .= "($subClause)" . $glue;
 			} else {
 				$placeholder = ":$column" . '_' . count($this->getParameters());
-				$clause     .= $placeholder . $glue;
+				$clause .= $placeholder . $glue;
 				$this->addParameter($placeholder, $value);
 			}
 		}
@@ -79,11 +79,11 @@ class Insert extends Base
 	private function buildSubClause(array $values): string
 	{
 		$clause = '';
-		$glue   = ', ';
+		$glue = ', ';
 
 		foreach ($values as $column => $value) {
 			$placeholder = ":$column" . '_' . count($this->getParameters());
-			$clause     .= $placeholder . $glue;
+			$clause .= $placeholder . $glue;
 			$this->addParameter($placeholder, $value);
 		}
 

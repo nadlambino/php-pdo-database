@@ -19,9 +19,9 @@ abstract class Base implements QueryInterface
 	protected ?PDOStatement $statement = null;
 
 	public function __construct(
-		protected PDO $connection,
+		protected PDO                $connection,
 		protected InflectorInterface $inflector,
-		?string $table = null
+		?string                      $table = null
 	)
 	{
 		$this->setTable($table);
@@ -51,8 +51,8 @@ abstract class Base implements QueryInterface
 
 	protected function cleanUp()
 	{
-		$this->statement  = null;
-		$this->table      = null;
+		$this->statement = null;
+		$this->table = null;
 		$this->tableAlias = null;
 		$this->setParameters([]);
 	}

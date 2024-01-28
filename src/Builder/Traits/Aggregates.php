@@ -53,7 +53,7 @@ trait Aggregates
 		if (empty($column) && $aggregate === Agg::COUNT) {
 			$this->$property[Reserved::ALL->value] = Reserved::ALL->value;
 		} else {
-			$alias = $alias ?? (string) $column;
+			$alias = $alias ?? (string)$column;
 			$this->$property[$this->quote($alias)] = $column instanceof Raw ? $column : $this->getFormattedColumn($column);
 		}
 
@@ -62,13 +62,13 @@ trait Aggregates
 
 	protected function getAggregate(Agg $aggregate): string
 	{
-		$clause     = '';
-		$glue       = ', ';
-		$property   = strtolower($aggregate->value . 's');
-		$values     = $this->$property ?? [];
+		$clause = '';
+		$glue = ', ';
+		$property = strtolower($aggregate->value . 's');
+		$values = $this->$property ?? [];
 
 		foreach ($values as $alias => $column) {
-			$alias   = $alias === (string) $column ? '' : ' ' . Reserved::AS->value . ' ' . $alias;
+			$alias = $alias === (string)$column ? '' : ' ' . Reserved::AS->value . ' ' . $alias;
 			$clause .= $aggregate->value . '(' . $column . ')' . $alias . $glue;
 		}
 

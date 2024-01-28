@@ -14,7 +14,6 @@ use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Raw;
 use Inspira\Database\ORM\Traits\ArrayAccessible;
-use Inspira\Database\ORM\Traits\Helpers;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Relations;
 use IteratorAggregate;
@@ -68,7 +67,7 @@ use Throwable;
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use IteratorAggregatable, ArrayAccessible, Relations, Helpers, Augmentable {
+	use IteratorAggregatable, ArrayAccessible, Relations, Augmentable {
 		Augmentable::__call as augmentCall;
 	}
 
@@ -263,7 +262,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		if ($created) {
 			$this->{$this->pk} = $this->connection->lastInsertId();
-			$this->oldAttributes   = $data;
+			$this->oldAttributes = $data;
 		}
 
 		return $created;
@@ -280,8 +279,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function update(array $data): bool
 	{
 		$oldAttributes = $this->toArray();
-		$query     = $this->query->update($this->table)->set($data);
-		$query     = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
+		$query = $this->query->update($this->table)->set($data);
+		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
 		$this->attachClauses($query);
 
 		$updated = $query->execute();
@@ -417,8 +416,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function setTable()
 	{
-		$class       = $this->getShortClassName($this->model);
-		$class       = $this->inflector->pluralize($class)[0] ?? $class;
+		$class = get_short_class_name($this->model);
+		$class = $this->inflector->pluralize($class)[0] ?? $class;
 		$this->table = empty($this->table) ? strtolower($class) : $this->table;
 	}
 
@@ -443,7 +442,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	private function attachClauses(mixed $query): void
 	{
 		foreach ($this->clauses as $clause) {
-			$method    = $clause['name'];
+			$method = $clause['name'];
 			$arguments = $clause['arguments'];
 
 			$query->$method(...$arguments);

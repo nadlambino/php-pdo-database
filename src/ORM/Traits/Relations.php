@@ -17,7 +17,7 @@ trait Relations
 		// If the current model already has an ID, we will just call the relationship method
 		// Then assign the return value to the property with the same name as the method
 		if ($this->hasId()) {
-			$model           = $this->$relation();
+			$model = $this->$relation();
 			$this->$relation = $this->resolveMethod($model);
 
 			return $this;
@@ -74,7 +74,7 @@ trait Relations
 	private function resolveRelation(Model $model, string $method): Model
 	{
 		$relation = $model->$method();
-		$model->$method   = $this->resolveMethod($relation);
+		$model->$method = $this->resolveMethod($relation);
 		$model->relations = array_unique($this->relations);
 
 		return $model;
@@ -83,9 +83,9 @@ trait Relations
 	private function resolveMethod(mixed $model): mixed
 	{
 		return match (true) {
-			$model instanceof HasOne  => $model?->toArray(),
+			$model instanceof HasOne => $model?->toArray(),
 			$model instanceof HasMany => $model->get(),
-			default                   => $model
+			default => $model
 		};
 	}
 }

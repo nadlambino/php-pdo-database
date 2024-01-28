@@ -43,7 +43,7 @@ class Update extends Base
 	private function getColumnClause(): string
 	{
 		$clause = '';
-		$glue   = ', ';
+		$glue = ', ';
 
 		foreach ($this->data as $column => $value) {
 			if (is_int($column)) {
@@ -51,7 +51,7 @@ class Update extends Base
 			}
 
 			$placeholder = ":$column" . '_' . count($this->getParameters());
-			$clause     .= $this->concat($this->quote($column), '=', $placeholder, $glue);
+			$clause .= $this->concat($this->quote($column), '=', $placeholder, $glue);
 			$this->addParameter($placeholder, $value);
 		}
 
@@ -61,9 +61,9 @@ class Update extends Base
 	public function clean(): static
 	{
 		$this->cleanUp();
-		$this->data   = [];
+		$this->data = [];
 		$this->wheres = [];
-		$this->joins  = [];
+		$this->joins = [];
 
 		return $this;
 	}

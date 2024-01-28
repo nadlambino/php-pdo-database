@@ -18,9 +18,9 @@ class Delete extends Base
 			return '';
 		}
 
-		$join  = $this->getJoinClause();
+		$join = $this->getJoinClause();
 		$table = $this->quote($this->table);
-		$sql   = $this->concat(
+		$sql = $this->concat(
 			Reserved::DELETE->value,
 			empty($join) ? '' : $table,
 			Reserved::FROM->value,
@@ -36,7 +36,7 @@ class Delete extends Base
 	{
 		$this->cleanUp();
 		$this->wheres = [];
-		$this->joins  = [];
+		$this->joins = [];
 
 		return $this;
 	}

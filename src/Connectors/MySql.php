@@ -25,7 +25,7 @@ class MySql extends Connector
 		parent::__construct($this->configs);
 		$this->databaseUrl = $this->configs['database_url'] ?? null;
 		$this->host = $this->configs['host'] ?? 'localhost';
-		$this->port = (int) $this->configs['port'] ?? 3306;
+		$this->port = (int)$this->configs['port'] ?? 3306;
 		$this->database = $this->configs['database'] ?? '';
 		$this->setCredentials('root');
 	}

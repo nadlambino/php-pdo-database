@@ -30,10 +30,10 @@ class Select extends Base
 	protected array $unions = [];
 
 	public function __construct(
-		protected array $columns,
-		protected PDO $connection,
+		protected array              $columns,
+		protected PDO                $connection,
 		protected InflectorInterface $inflector,
-		protected string|null $model = null
+		protected string|null        $model = null
 	)
 	{
 		parent::__construct($this->connection, $this->inflector);
@@ -64,7 +64,7 @@ class Select extends Base
 
 	public function first(): mixed
 	{
-	    $this->execute();
+		$this->execute();
 		$this->setFetchMode();
 		$data = $this->statement?->fetch();
 
@@ -218,20 +218,20 @@ class Select extends Base
 	{
 		$this->cleanUp();
 		$this->distinct = false;
-		$this->limit    = null;
-		$this->offset   = null;
-		$this->columns  = [];
-		$this->unions   = [];
-		$this->wheres   = [];
-		$this->orders   = [];
-		$this->groups   = [];
-		$this->havings  = [];
-		$this->counts   = [];
-		$this->sums     = [];
-		$this->avgs     = [];
-		$this->mins     = [];
-		$this->maxs     = [];
-		$this->joins    = [];
+		$this->limit = null;
+		$this->offset = null;
+		$this->columns = [];
+		$this->unions = [];
+		$this->wheres = [];
+		$this->orders = [];
+		$this->groups = [];
+		$this->havings = [];
+		$this->counts = [];
+		$this->sums = [];
+		$this->avgs = [];
+		$this->mins = [];
+		$this->maxs = [];
+		$this->joins = [];
 
 		return $this;
 	}

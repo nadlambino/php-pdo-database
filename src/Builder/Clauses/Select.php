@@ -15,7 +15,9 @@ class Select
 {
 	private ?SelectBuilder $select = null;
 
-	public function __construct(protected PDO $connection, protected InflectorInterface $inflector) { }
+	public function __construct(protected PDO $connection, protected InflectorInterface $inflector)
+	{
+	}
 
 	public function select(...$columns): SelectBuilder
 	{

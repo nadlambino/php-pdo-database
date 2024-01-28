@@ -15,7 +15,9 @@ class Having
 {
 	use Traits\Having, Traits\Helpers;
 
-	public function __construct(protected PDO $connection) { }
+	public function __construct(protected PDO $connection)
+	{
+	}
 
 	public function getHavings(): array
 	{

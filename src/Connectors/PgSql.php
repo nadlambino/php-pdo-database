@@ -25,7 +25,7 @@ class PgSql extends Connector
 		parent::__construct($this->configs);
 		$this->databaseUrl = $this->configs['database_url'] ?? null;
 		$this->host = $this->configs['host'] ?? 'localhost';
-		$this->port = (int) $this->configs['port'] ?? 5432;
+		$this->port = (int)$this->configs['port'] ?? 5432;
 		$this->database = $this->configs['database'] ?? '';
 		$this->setCredentials();
 	}

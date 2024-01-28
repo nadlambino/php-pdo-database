@@ -15,7 +15,9 @@ class Where
 {
 	use Traits\Where, Traits\Helpers;
 
-	public function __construct(protected PDO $connection) { }
+	public function __construct(protected PDO $connection)
+	{
+	}
 
 	public function getWheres(): array
 	{
