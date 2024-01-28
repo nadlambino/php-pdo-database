@@ -7,7 +7,8 @@
         "inspira/config": "dev-master",
         "inspira/contracts": "dev-master",
         "inspira/utils": "dev-master",
-        "symfony/string": "7.1.x-dev"
+        "symfony/string": "7.1.x-dev",
+        "inspira/augmentable": "dev-master"
     },
     "license": "MIT",
     "autoload": {
@@ -21,5 +22,8 @@
             "email": "50892397+nadlambino@users.noreply.github.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "require-dev": {
+        "symfony/var-dumper": "7.1.x-dev"
+    }
 }

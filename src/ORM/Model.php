@@ -8,6 +8,7 @@ use ArrayObject;
 use BadMethodCallException;
 use Closure;
 use Exception;
+use Inspira\Augmentable\Augmentable;
 use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Query;
@@ -64,7 +65,9 @@ use Throwable;
  */
 abstract class Model extends ArrayObject implements Arrayable
 {
-	use Relations, Helpers;
+	use Relations, Helpers, Augmentable {
+		Augmentable::__call as augmentCall;
+	}
 
 	protected Container $container;
 
@@ -139,24 +142,28 @@ abstract class Model extends ArrayObject implements Arrayable
 		}
 	}
 
-	public function __call(string $name, array $arguments)
+	public function __call(string $method, array $arguments)
 	{
+		if ($this->augmented($method)) {
+			return $this->augmentCall($method, $arguments);
+		}
+
 		// If method doesn't exist in query object, and it is one of the available methods,
 		// We will compile them into the `$clauses` array for later use in the query builder
 		// Then on our query methods (get, first, last, update, and delete),
 		// We will loop through these `$clauses` and append them in the query builder
-		if (in_array($name, self::QUERY_METHODS)) {
+		if (in_array($method, self::QUERY_METHODS)) {
 			$self = clone $this;
-			$self->addQueryClause($name, $arguments);
+			$self->addQueryClause($method, $arguments);
 
 			return $self;
 		}
 
-		if (!method_exists($this->query, $name)) {
-			throw new BadMethodCallException("Call to undefined method: `$name`");
+		if (!method_exists($this->query, $method)) {
+			throw new BadMethodCallException("Call to undefined method: `$method`");
 		}
 
-		return $this->query->$name(...$arguments);
+		return $this->query->$method(...$arguments);
 	}
 
 	public function get(...$columns): array
