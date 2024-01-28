@@ -105,7 +105,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union',
 	];
 
-	public function __construct()
+	public function __construct(array $attributes = [])
 	{
 		$this->container = Container::getInstance();
 		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
@@ -115,6 +115,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$this->setTable();
 		$this->setQuery();
 		$this->setSofDelete();
+		$this->attributes = empty($attributes) ? $this->attributes : $attributes;
 	}
 
 	/**
