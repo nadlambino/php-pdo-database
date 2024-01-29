@@ -6,6 +6,7 @@ namespace Inspira\Database\ORM\Relation;
 
 use Closure;
 use Inspira\Database\Builder\Raw;
+use Inspira\Database\ORM\Model;
 
 /**
  * @method self distinct()
@@ -63,6 +64,12 @@ use Inspira\Database\Builder\Raw;
  */
 abstract class HasRelation
 {
+	protected ?Model $model;
+
+	public function __construct(protected Model $foreignModel, protected string|Model $relation, protected ?string $foreignKey = null, protected ?string $localKey = null)
+	{
+	}
+
 	public function __call(string $name, array $arguments)
 	{
 		return $this->model?->$name(...$arguments);
@@ -86,5 +93,15 @@ abstract class HasRelation
 	public function getLocalKey(): string
 	{
 		return $this->localKey;
+	}
+
+	public function attach(array $data): bool
+	{
+		$foreignKeyValue = $this->foreignModel->{$this->localKey};
+		if (!is_null($foreignKeyValue)) {
+			$data[$this->getForeignKey()] = $foreignKeyValue;
+		}
+
+		return $this->create($data);
 	}
 }

@@ -8,18 +8,18 @@ use Inspira\Database\ORM\Model;
 
 class HasMany extends HasRelation
 {
-	protected ?Model $model;
-
-	public function __construct(Model $model, string|Model $relation, protected ?string $foreignKey = null, protected ?string $localKey = null)
+	public function __construct(protected Model $foreignModel, protected string|Model $relation, protected ?string $foreignKey = null, protected ?string $localKey = null)
 	{
-		$relationModel = $relation instanceof Model ? $relation : new $relation();
-		$this->foreignKey ??= get_short_class_name(get_class($model)) . '_id';
-		$this->localKey ??= $model->getPk();
+		$this->relation = $relation instanceof Model ? $relation : new $relation();
+		$this->foreignKey ??= get_short_class_name(get_class($this->foreignModel)) . '_id';
+		$this->localKey ??= $this->foreignModel->getPk();
 
-		if (!is_null($model->{$this->localKey})) {
-			$relationModel = $relationModel->where($this->foreignKey, $model->{$this->localKey});
+		if (!is_null($this->foreignModel->{$this->localKey})) {
+			$this->relation = $this->relation->where($this->foreignKey, $this->foreignModel->{$this->localKey});
 		}
 
-		$this->model = $relationModel;
+		$this->model = $this->relation;
+
+		parent::__construct($this->foreignModel, $this->relation, $this->foreignKey, $this->localKey);
 	}
 }
