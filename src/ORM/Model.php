@@ -368,6 +368,14 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function toArray(): array
 	{
+		foreach ($this as $attribute => $value) {
+			if ($value instanceof Arrayable) {
+				$this->$attribute = $value->toArray();
+			} else if (is_iterable($value)) {
+				$this->$attribute = iterator_to_array($value);
+			}
+		}
+
 		return iterator_to_array($this);
 	}
 
