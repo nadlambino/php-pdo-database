@@ -83,7 +83,7 @@ trait Relations
 	private function resolveMethod(mixed $model): mixed
 	{
 		return match (true) {
-			$model instanceof HasOne => $model?->toArray(),
+			$model instanceof HasOne => $model->first(),
 			$model instanceof HasMany => $model->get(),
 			default => $model
 		};

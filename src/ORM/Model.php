@@ -117,6 +117,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$this->attributes = empty($attributes) ? $this->attributes : $attributes;
 	}
 
+	public function getPk(): string
+	{
+		return $this->pk;
+	}
+
 	/**
 	 * Set properties of table columns
 	 *

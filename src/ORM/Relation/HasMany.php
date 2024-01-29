@@ -12,10 +12,10 @@ class HasMany extends HasRelation
 
 	public function __construct(Model $model, string|Model $relation, ?string $foreignKey = null, ?string $localKey = null)
 	{
+		$relationModel = $relation instanceof Model ? $relation : new $relation();
 		$foreignKey ??= get_short_class_name(get_class($model)) . '_id';
-		$foreignKeyValue = is_null($localKey) ? $model->getId() : $model->$localKey;
-		$instance = $relation instanceof Model ? $relation : new $relation();
-		$this->model = $instance->where($foreignKey, $foreignKeyValue);
-		$this->model->$foreignKey = $foreignKeyValue;
+		$localKey ??= $model->getPk();
+
+		$this->model = $relationModel->where($foreignKey, $model->$localKey);
 	}
 }
