@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Inspira\Database\ORM\Traits;
 
 use Inspira\Database\ORM\Model;
+use Inspira\Database\ORM\ModelCollection;
 use Inspira\Database\ORM\Relation\HasMany;
 use Inspira\Database\ORM\Relation\HasOne;
 
@@ -53,15 +54,14 @@ trait Relations
 			return;
 		}
 
-		$isArray = is_array($models);
+		$ids = is_array($models)
+			? array_map(fn ($model) =>$model->{$model->getPk()}, $models)
+			: [$models->{$models->getPk()}];
 
 		foreach ($this->relations as $relation) {
-			if ($isArray) {
-				$models = array_map(fn($model) => $this->resolveRelation($model, $relation), $models);
-			} else {
-				$models = $this->resolveRelation($models, $relation);
-			}
+			$this->resolveRelation($this, $relation, $models, $ids);
 		}
+
 	}
 
 	/**
@@ -69,23 +69,57 @@ trait Relations
 	 *
 	 * @param Model $model
 	 * @param string $method
+	 * @param Model|array $models
+	 * @param array $ids
 	 * @return Model
 	 */
-	private function resolveRelation(Model $model, string $method): Model
+	private function resolveRelation(Model $model, string $method, Model|array $models, array $ids = []): Model
 	{
+		/** @var HasOne|HasMany $relation */
 		$relation = $model->$method();
-		$model->$method = $this->resolveMethod($relation);
-		$model->relations = array_unique($this->relations);
+
+		if (is_array($models)) {
+			$response = $this->resolveMethod($relation, $ids);
+			foreach ($models as $model) {
+				if ($response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()}) {
+					$model->$method = $response;
+					dd($response);
+				}
+
+				if ($response instanceof ModelCollection) {
+					if ($relation instanceof HasOne) {
+						$model->$method = $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()})->first();
+					}
+
+					if ($relation instanceof HasMany) {
+						$model->$method = $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()});
+					}
+				}
+			}
+		} else {
+			$models->$method = $this->resolveMethod($relation, $ids);
+			$models->relations = array_unique($this->relations);
+		}
 
 		return $model;
 	}
 
-	private function resolveMethod(mixed $model): mixed
+	private function resolveMethod(HasOne|HasMany $model, array $ids = []): mixed
 	{
-		return match (true) {
-			$model instanceof HasOne => $model->first(),
-			$model instanceof HasMany => $model->get(),
-			default => $model
-		};
+		if ($model instanceof HasOne) {
+			if (!empty($ids)) {
+				$response = $model->orWhereIn($model->getForeignKey(), $ids)->get();
+			} else {
+				$response = $model->first();
+			}
+		} else {
+			if (!empty($ids)) {
+				$response = $model->orWhereIn($model->getForeignKey(), $ids)->get();
+			} else {
+				$response = $model->get();
+			}
+		}
+
+		return $response;
 	}
 }

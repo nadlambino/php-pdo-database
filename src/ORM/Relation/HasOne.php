@@ -10,12 +10,12 @@ class HasOne extends HasRelation
 {
 	protected ?Model $model;
 
-	public function __construct(Model $model, string|Model $relation, ?string $foreignKey = null, ?string $localKey = null)
+	public function __construct(Model $model, string|Model $relation, protected ?string $foreignKey = null, protected ?string $localKey = null)
 	{
 		$relationModel = $relation instanceof Model ? $relation : new $relation();
-		$foreignKey ??= get_short_class_name(get_class($model)) . '_id';
-		$localKey ??= $model->getPk();
+		$this->foreignKey ??= get_short_class_name(get_class($model)) . '_id';
+		$this->localKey ??= $model->getPk();
 
-		$this->model = $relationModel->where($foreignKey, $model->$localKey)->first();
+		$this->model = $relationModel->where($this->foreignKey, $model->{$this->localKey});
 	}
 }
