@@ -82,7 +82,9 @@ class Connection
 			throw new Exception("Connector class for `$driver` driver is not found.");
 		}
 
-		$configs['timezone'] = $this->config->get('app.timezone', 'UTC');
+		$timezone = $this->config->get('database.timezone') ?? $this->config->get('app.timezone', '+00:00');
+		$configs['timezone'] = strtolower($timezone) === 'utc' ? '+00:00' : $timezone;
+
 		$connection = match (true) {
 			is_string($connector) => new $connector($configs),
 			$connector instanceof Closure => $this->container->resolve($connector),
