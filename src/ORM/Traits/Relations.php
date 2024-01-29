@@ -83,7 +83,6 @@ trait Relations
 			foreach ($models as $model) {
 				if ($response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()}) {
 					$model->$method = $response;
-					dd($response);
 				}
 
 				if ($response instanceof ModelCollection) {
@@ -95,12 +94,13 @@ trait Relations
 						$model->$method = $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()});
 					}
 				}
+
+				$model->relations = array_unique($this->relations);
 			}
 		} else {
 			$models->$method = $relation instanceof HasOne ? $response->first() : $response;
+			$models->relations = array_unique($this->relations);
 		}
-
-		$models->relations = array_unique($this->relations);
 
 		return $model;
 	}
