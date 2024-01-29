@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\Connectors;
 
+use Inspira\Collection\Collection;
 use PDO;
 
 class MySql extends Connector
@@ -52,6 +53,11 @@ class MySql extends Connector
 
 	protected function setTimezone(PDO $pdo)
 	{
+		$commands = new Collection($this->commands);
+		if (!is_null($commands->whereLike(null, 'time_zone')->first())) {
+			return;
+		}
+
 		$pdo->exec("SET time_zone = '$this->timezone'");
 	}
 }

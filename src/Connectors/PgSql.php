@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\Connectors;
 
+use Inspira\Collection\Collection;
 use PDO;
 
 class PgSql extends Connector
@@ -52,6 +53,11 @@ class PgSql extends Connector
 
 	protected function setTimezone(PDO $pdo)
 	{
+		$commands = new Collection($this->commands);
+		if (!is_null($commands->whereLike(null, 'TIME ZONE'))) {
+			return;
+		}
+
 		$pdo->exec("SET TIME ZONE '$this->timezone'");
 	}
 }
