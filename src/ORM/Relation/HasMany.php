@@ -16,6 +16,10 @@ class HasMany extends HasRelation
 		$this->foreignKey ??= get_short_class_name(get_class($model)) . '_id';
 		$this->localKey ??= $model->getPk();
 
-		$this->model = $relationModel->where($this->foreignKey, $model->{$this->localKey});
+		if (!is_null($model->{$this->localKey})) {
+			$relationModel = $relationModel->where($this->foreignKey, $model->{$this->localKey});
+		}
+
+		$this->model = $relationModel;
 	}
 }

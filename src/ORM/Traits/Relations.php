@@ -77,9 +77,9 @@ trait Relations
 	{
 		/** @var HasOne|HasMany $relation */
 		$relation = $model->$method();
+		$response = $this->resolveMethod($relation, $ids);
 
 		if (is_array($models)) {
-			$response = $this->resolveMethod($relation, $ids);
 			foreach ($models as $model) {
 				if ($response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()}) {
 					$model->$method = $response;
@@ -97,9 +97,10 @@ trait Relations
 				}
 			}
 		} else {
-			$models->$method = $this->resolveMethod($relation, $ids);
-			$models->relations = array_unique($this->relations);
+			$models->$method = $relation instanceof HasOne ? $response->first() : $response;
 		}
+
+		$models->relations = array_unique($this->relations);
 
 		return $model;
 	}
@@ -108,13 +109,13 @@ trait Relations
 	{
 		if ($model instanceof HasOne) {
 			if (!empty($ids)) {
-				$response = $model->orWhereIn($model->getForeignKey(), $ids)->get();
+				$response = $model->whereIn($model->getForeignKey(), $ids)->get();
 			} else {
 				$response = $model->first();
 			}
 		} else {
 			if (!empty($ids)) {
-				$response = $model->orWhereIn($model->getForeignKey(), $ids)->get();
+				$response = $model->whereIn($model->getForeignKey(), $ids)->get();
 			} else {
 				$response = $model->get();
 			}
