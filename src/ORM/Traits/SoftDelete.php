@@ -36,4 +36,17 @@ trait SoftDelete
 
 		return $this;
 	}
+
+	public function onlyTrashed()
+	{
+		foreach($this->clauses as $index => $clause) {
+			if ($clause['name'] === 'whereNull' && in_array('deleted_at', $clause['arguments'])) {
+				unset($this->clauses[$index]);
+				array_unshift($this->clauses, ['name' => 'whereNotNull', 'arguments' => ['deleted_at']]);
+				break;
+			}
+		}
+
+		return $this;
+	}
 }
