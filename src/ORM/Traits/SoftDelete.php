@@ -2,7 +2,6 @@
 
 namespace Inspira\Database\ORM\Traits;
 
-use Inspira\Collection\Collection;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Update;
 
