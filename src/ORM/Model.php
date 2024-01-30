@@ -448,6 +448,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$this->clauses[] = compact('name', 'arguments');
 	}
 
+	protected function removeQueryClause(string $name): void
+	{
+		
+	}
+
 	/**
 	 * Append the clauses to the query object
 	 *

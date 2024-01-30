@@ -2,6 +2,7 @@
 
 namespace Inspira\Database\ORM\Traits;
 
+use Inspira\Collection\Collection;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Update;
 
@@ -22,5 +23,17 @@ trait SoftDelete
 			->set([
 				$this->deletedAt => date('Y-m-d H:i:s')
 			]);
+	}
+
+	public function withTrashed()
+	{
+		foreach($this->clauses as $index => $clause) {
+			if ($clause['name'] === 'whereNull' && in_array('deleted_at', $clause['arguments'])) {
+				unset($this->clauses[$index]);
+				break;
+			}
+		}
+
+		return $this;
 	}
 }
