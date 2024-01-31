@@ -70,7 +70,7 @@ trait Helpers
 
 			// If it's a raw query, accept it and continue to the next condition
 			if (isset($condition['parameters']['raw'])) {
-				$clause .= $condition['parameters']['raw'];
+				$clause .= $this->concat(' ', $operator, ' ', $condition['parameters']['raw']);
 				continue;
 			}
 

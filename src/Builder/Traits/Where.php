@@ -8,6 +8,7 @@ use Closure;
 use Inspira\Database\Builder\Clauses\Where as WhereBuilder;
 use Inspira\Database\Builder\Enums\Reserved;
 use Inspira\Database\Builder\Raw;
+use Inspira\Database\Builder\Select;
 use PDO;
 
 trait Where
@@ -152,8 +153,16 @@ trait Where
 		return $this->addConditions(Reserved::WHERE, Reserved::OR, false, $parameters);
 	}
 
-	public function whereHas(string $table, string $tableColumn, string $parentTableColumn): static
+	public function whereHas(Select|string $table, string $tableColumn = '', string $parentTableColumn = ''): static
 	{
+		if ($table instanceof Select) {
+			$sql = $table->toSql();
+			$this->parameters = [...$this->parameters, ...$table->getParameters()];
+			$exists = Reserved::EXISTS->value;
+
+			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => " $exists ($sql) "]);
+		}
+
 		$parameters = $this->getConditionalParams($tableColumn, '=', $parentTableColumn);
 		$parameters['table'] = $table;
 

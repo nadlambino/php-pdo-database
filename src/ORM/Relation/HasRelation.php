@@ -85,6 +85,11 @@ abstract class HasRelation
 		return $this->model?->$name;
 	}
 
+	public function getModel(): ?Model
+	{
+		return $this->model;
+	}
+
 	public function getForeignKey(): string
 	{
 		return $this->foreignKey;

@@ -13,6 +13,7 @@ use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Raw;
+use Inspira\Database\ORM\Relation\HasRelation;
 use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Relations;
@@ -354,12 +355,31 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function whereHas(Model|string $model, ?string $foreignColumn = null, ?string $localColumn = null): static
 	{
-		if (is_string($model) && !class_exists($model)) {
-			$table = $model;
-		} else {
-			$table = $model instanceof Model ? $model->table : (new $model())->table;
+		// Handles model
+		if ($model instanceof Model) {
+			$query = $model->query->select();
+			$model->attachClauses($query);
+			$this->addQueryClause(__FUNCTION__, [$query]);
+
+			return $this;
 		}
 
+		// Handles model from relation
+		if (method_exists($this, $model)) {
+			/** @var HasRelation $relation */
+			$relation = $this->$model();
+			$table = $relation->getModel()->table;
+			$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
+			$localColumn ??= $this->pk;
+			$model = $relation->getModel()->where((new Raw("`$table`.`$foreignColumn` = `$this->table`.`$localColumn`")));
+			$query = $model->query->select();
+			$model->attachClauses($query);
+			$this->addQueryClause(__FUNCTION__, [$query]);
+
+			return $this;
+		}
+
+		$table = !class_exists($model) ? $model : (new $model())->table;
 		$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
 		$localColumn ??= $this->pk;
 
