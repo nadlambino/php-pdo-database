@@ -12,6 +12,7 @@ enum Reserved: string
 	case WHERE = 'WHERE';
 	case AND = 'AND';
 	case OR = 'OR';
+	case EXISTS = 'EXISTS';
 	case INSERT_INTO = 'INSERT INTO';
 	case VALUES = 'VALUES';
 	case UPDATE = 'UPDATE';

@@ -7,14 +7,19 @@ namespace Inspira\Database\Builder\Traits;
 use Closure;
 use Inspira\Database\Builder\Clauses\Where as WhereBuilder;
 use Inspira\Database\Builder\Enums\Reserved;
+use Inspira\Database\Builder\Raw;
 use PDO;
 
 trait Where
 {
 	protected array $wheres = [];
 
-	public function where(string|Closure $column, mixed $comparison = null, mixed $value = null): static
+	public function where(string|Closure|Raw $column, mixed $comparison = null, mixed $value = null): static
 	{
+		if ($column instanceof Raw) {
+			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) $column]);
+		}
+
 		if ($column instanceof Closure) {
 			return $this->addWhereGroup(Reserved::AND, $column);
 		}
@@ -145,6 +150,13 @@ trait Where
 		$parameters = $this->getConditionalParams($column, Reserved::NOT_IN, $values);
 
 		return $this->addConditions(Reserved::WHERE, Reserved::OR, false, $parameters);
+	}
+
+	public function whereHas(string $table, string $tableColumn, string $parentTableColumn)
+	{
+		$parameters = $this->getConditionalParams($tableColumn, '=', $parentTableColumn);
+
+		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, $parameters, $table);
 	}
 
 	protected function addWhereGroup(?Reserved $operator, Closure $closure): static

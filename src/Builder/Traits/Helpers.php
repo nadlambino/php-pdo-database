@@ -6,6 +6,7 @@ namespace Inspira\Database\Builder\Traits;
 
 use Inspira\Database\Builder\Enums\Reserved;
 use Inspira\Database\Builder\Raw;
+use Inspira\Database\Builder\Select;
 use PDO;
 
 trait Helpers
@@ -39,11 +40,11 @@ trait Helpers
 		$this->parameters = [...$this->getParameters(), ...$parameters];
 	}
 
-	protected function addConditions(Reserved $clause, ?Reserved $operator, bool $grouped, array $parameters): static
+	protected function addConditions(Reserved $clause, ?Reserved $operator, bool $grouped, array $parameters, ?string $table = null): static
 	{
 		$clause = strtolower($clause->value . 's');
 		$operator = empty($this->$clause) ? null : $operator->value;
-		$this->$clause[] = compact('operator', 'grouped', 'parameters');
+		$this->$clause[] = compact('operator', 'grouped', 'parameters', 'table');
 
 		return $this;
 	}
@@ -67,13 +68,33 @@ trait Helpers
 				continue;
 			}
 
+			// If it's a raw query, accept it and continue to the next condition
+			if (isset($condition['parameters']['raw'])) {
+				$clause .= $condition['parameters']['raw'];
+				continue;
+			}
+
 			// Regular condition with named placeholder
 			$rawColumn = $condition['parameters']['column'];
 			$column = $for === Reserved::WHERE->value ? $this->getFormattedColumn($rawColumn) : $this->quote($rawColumn);
 			$value = $condition['parameters']['value'];
 			$comparison = $condition['parameters']['comparison'];
+			$table = $condition['table'];
 
-			if (str_contains($comparison, Reserved::BETWEEN->value) && is_array($value)) {
+			if (isset($table)) {
+				$quotedTable = $this->quote($table);
+				$quotedParentTable = $this->quote($this->table);
+				$quotedTableColumn = $this->quote($rawColumn);
+				$quotedParentTableColumn = $this->quote($value);
+				$exists = Reserved::EXISTS->value;
+
+				$sql = (new Select([$rawColumn], $this->connection, $this->inflector))
+					->from($table)
+					->where((new Raw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")))
+					->toSql();
+
+				$clause .= "$operator $exists ($sql)";
+			} else if (str_contains($comparison, Reserved::BETWEEN->value) && is_array($value)) {
 				$count = count($this->getParameters());
 				[$lowerBound, $upperBound] = $value;
 				$lowerBoundPlaceholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . $count);
