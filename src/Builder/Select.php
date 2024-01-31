@@ -74,7 +74,7 @@ class Select extends Base
 	public function limit(int $limit): static
 	{
 		$this->limit = $limit;
-		$this->addParameter(':limit', $limit);
+		$this->addParameter($this->generatePlaceholder('limit'), $limit);
 
 		return $this;
 	}
@@ -82,7 +82,7 @@ class Select extends Base
 	public function offset(int $offset): static
 	{
 		$this->offset = $offset;
-		$this->addParameter(':offset', $offset);
+		$this->addParameter($this->generatePlaceholder('offset'), $offset);
 
 		return $this;
 	}

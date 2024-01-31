@@ -50,7 +50,7 @@ class Update extends Base
 				throw new InvalidArgumentException('Values should be an associative array where key is the column name');
 			}
 
-			$placeholder = ":$column" . '_' . count($this->getParameters());
+			$placeholder = $this->generatePlaceholder($column);
 			$clause .= $this->concat($this->quote($column), '=', $placeholder, $glue);
 			$this->addParameter($placeholder, $value);
 		}

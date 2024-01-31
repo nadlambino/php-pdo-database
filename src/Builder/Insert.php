@@ -65,7 +65,7 @@ class Insert extends Base
 				$subClause = $this->buildSubClause($value);
 				$clause .= "($subClause)" . $glue;
 			} else {
-				$placeholder = ":$column" . '_' . count($this->getParameters());
+				$placeholder = $this->generatePlaceholder($column);
 				$clause .= $placeholder . $glue;
 				$this->addParameter($placeholder, $value);
 			}
@@ -82,7 +82,7 @@ class Insert extends Base
 		$glue = ', ';
 
 		foreach ($values as $column => $value) {
-			$placeholder = ":$column" . '_' . count($this->getParameters());
+			$placeholder = $this->generatePlaceholder($column);
 			$clause .= $placeholder . $glue;
 			$this->addParameter($placeholder, $value);
 		}

@@ -354,39 +354,47 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return $this->find($this->getId());
 	}
 
-	public function whereHas(Model|string $model, ?string $foreignColumn = null, ?string $localColumn = null): static
+	public function whereHas(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null): static
 	{
 		// Handles model
-		if ($model instanceof Model) {
-			$query = $model->query->select();
-			$model->attachClauses($query);
+		if ($modelOrRelation instanceof Model) {
+			$query = $modelOrRelation->query->select();
+			$modelOrRelation->attachClauses($query);
 			$this->addQueryClause(__FUNCTION__, [$query]);
 
 			return $this;
 		}
 
 		// Handles model from relation
-		if (method_exists($this, $model)) {
+		if (method_exists($this, $modelOrRelation)) {
 			/** @var HasRelation $relation */
-			$relation = $this->$model();
+			$relation = $this->$modelOrRelation();
 			$table = $relation->getModel()->table;
 			$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
 			$localColumn ??= $this->pk;
-			$model = $relation->getModel()->whereRaw("`$table`.`$foreignColumn` = `$this->table`.`$localColumn`");
-			$query = $model->query->select();
-			$model->attachClauses($query);
+			$modelOrRelation = $relation->getModel()->whereRaw("`$table`.`$foreignColumn` = `$this->table`.`$localColumn`");
+			$query = $modelOrRelation->query->select();
+			$modelOrRelation->attachClauses($query);
 			$this->addQueryClause(__FUNCTION__, [$query]);
 
 			return $this;
 		}
 
-		$table = !class_exists($model) ? $model : (new $model())->table;
+		$table = !class_exists($modelOrRelation) ? $modelOrRelation : (new $modelOrRelation())->table;
 		$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
 		$localColumn ??= $this->pk;
 
 		$this->addQueryClause(__FUNCTION__, [$table, $foreignColumn, $localColumn]);
 
 		return $this;
+	}
+
+	public function toSql(): string
+	{
+		$query = $this->query->select('*');
+		$this->attachClauses($query);
+
+		return $query->toSql();
 	}
 
 	/**

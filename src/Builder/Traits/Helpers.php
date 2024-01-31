@@ -40,6 +40,15 @@ trait Helpers
 		$this->parameters = [...$this->getParameters(), ...$parameters];
 	}
 
+	protected function generatePlaceholder(string $column, ?string $prefix = null, ?string $suffix = null): string
+	{
+		$prefix ??= $this->table;
+		$suffix ??= count($this->getParameters());
+		$placeholder = implode('_', [':' . $prefix, $column, $suffix]);
+
+		return str_replace(['.', ' '], '_', $placeholder);
+	}
+
 	protected function addConditions(Reserved $clause, ?Reserved $operator, bool $grouped, array $parameters): static
 	{
 		$clause = strtolower($clause->value . 's');
@@ -101,8 +110,8 @@ trait Helpers
 			else if (str_contains($comparison, Reserved::BETWEEN->value) && is_array($value)) {
 				$count = count($this->getParameters());
 				[$lowerBound, $upperBound] = $value;
-				$lowerBoundPlaceholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . $count);
-				$upperBoundPlaceholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . $count + 1);
+				$lowerBoundPlaceholder = $this->generatePlaceholder($rawColumn, suffix: (string)$count);
+				$upperBoundPlaceholder = $this->generatePlaceholder($rawColumn, suffix: (string)($count + 1));
 				$clause .= $this->concat(' ', $operator, $column, $comparison, $lowerBoundPlaceholder, Reserved::AND->value, $upperBoundPlaceholder);
 				$this->addParameter($lowerBoundPlaceholder, $lowerBound);
 				$this->addParameter($upperBoundPlaceholder, $upperBound);
@@ -112,7 +121,7 @@ trait Helpers
 			else if (str_contains($comparison, Reserved::IN->value) && is_array($value)) {
 				$placeholders = '';
 				foreach ($value as $v) {
-					$placeholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . count($this->getParameters()));
+					$placeholder = $this->generatePlaceholder($rawColumn);
 					$placeholders .= ', ' . $placeholder;
 					$this->addParameter($placeholder, $v);
 				}
@@ -122,7 +131,7 @@ trait Helpers
 
 			// Handles WHERE query
 			else {
-				$placeholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . count($this->getParameters()));
+				$placeholder = $this->generatePlaceholder($rawColumn);
 				$clause .= $this->concat(' ', $operator, $column, $comparison, $placeholder);
 				$this->addParameter($placeholder, $value);
 			}
