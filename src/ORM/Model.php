@@ -364,33 +364,27 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Override ArrayObject count method to redirect the call to query object
-	 *
-	 * @param Raw|string|null $column
-	 * @param string|null $alias
-	 * @return static
+	 * @return int
 	 */
 	#[ReturnTypeWillChange]
-	public function count(Raw|string|null $column = null, ?string $alias = null): static
+	public function count(): int
 	{
-		$this->addQueryClause(__FUNCTION__, func_get_args());
+		$columnToCount = $this->pk;
+		$columnAlias = 'count';
+		$this->addQueryClause(__FUNCTION__, [$columnToCount, $columnAlias]);
 
-		return $this;
+		return $this->first()->$columnAlias ?? 0;
 	}
 
 	public function toArray(): array
 	{
-		$modelArray = iterator_to_array($this);
-
-		foreach ($modelArray as $attribute => $value) {
-			if ($value instanceof Arrayable) {
-				$modelArray[$attribute] = $value->toArray();
-			} else if (is_iterable($value)) {
-				$modelArray[$attribute] = iterator_to_array($value);
-			}
-		}
-
-		return $modelArray;
+		return array_map(function($attribute) {
+			return match (true) {
+				$attribute instanceof Arrayable => array_values($attribute->toArray()),
+				is_iterable($attribute) => array_values(iterator_to_array($attribute)),
+				default => $attribute
+			};
+		}, iterator_to_array($this));
 	}
 
 	protected function hasId(): bool
