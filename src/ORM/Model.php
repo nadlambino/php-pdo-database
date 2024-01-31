@@ -354,7 +354,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function whereHas(Model|string $model, ?string $foreignColumn = null, ?string $localColumn = null): static
 	{
-		$table = $model instanceof Model ? $model->table : (new $model())->table;
+		if (is_string($model) && !class_exists($model)) {
+			$table = $model;
+		} else {
+			$table = $model instanceof Model ? $model->table : (new $model())->table;
+		}
+
 		$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
 		$localColumn ??= $this->pk;
 

@@ -155,8 +155,9 @@ trait Where
 	public function whereHas(string $table, string $tableColumn, string $parentTableColumn): static
 	{
 		$parameters = $this->getConditionalParams($tableColumn, '=', $parentTableColumn);
+		$parameters['table'] = $table;
 
-		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, $parameters, $table);
+		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, $parameters);
 	}
 
 	protected function addWhereGroup(?Reserved $operator, Closure $closure): static

@@ -40,11 +40,11 @@ trait Helpers
 		$this->parameters = [...$this->getParameters(), ...$parameters];
 	}
 
-	protected function addConditions(Reserved $clause, ?Reserved $operator, bool $grouped, array $parameters, ?string $table = null): static
+	protected function addConditions(Reserved $clause, ?Reserved $operator, bool $grouped, array $parameters): static
 	{
 		$clause = strtolower($clause->value . 's');
 		$operator = empty($this->$clause) ? null : $operator->value;
-		$this->$clause[] = compact('operator', 'grouped', 'parameters', 'table');
+		$this->$clause[] = compact('operator', 'grouped', 'parameters');
 
 		return $this;
 	}
@@ -79,8 +79,9 @@ trait Helpers
 			$column = $for === Reserved::WHERE->value ? $this->getFormattedColumn($rawColumn) : $this->quote($rawColumn);
 			$value = $condition['parameters']['value'];
 			$comparison = $condition['parameters']['comparison'];
-			$table = $condition['table'];
+			$table = $condition['parameters']['table'] ?? null;
 
+			// Handles WHERE EXISTS query
 			if (isset($table)) {
 				$quotedTable = $this->quote($table);
 				$quotedParentTable = $this->quote($this->table);
@@ -94,7 +95,10 @@ trait Helpers
 					->toSql();
 
 				$clause .= " $operator $exists ($sql) ";
-			} else if (str_contains($comparison, Reserved::BETWEEN->value) && is_array($value)) {
+			}
+
+			// Handles WHERE BETWEEN query
+			else if (str_contains($comparison, Reserved::BETWEEN->value) && is_array($value)) {
 				$count = count($this->getParameters());
 				[$lowerBound, $upperBound] = $value;
 				$lowerBoundPlaceholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . $count);
@@ -102,7 +106,10 @@ trait Helpers
 				$clause .= $this->concat(' ', $operator, $column, $comparison, $lowerBoundPlaceholder, Reserved::AND->value, $upperBoundPlaceholder);
 				$this->addParameter($lowerBoundPlaceholder, $lowerBound);
 				$this->addParameter($upperBoundPlaceholder, $upperBound);
-			} else if (str_contains($comparison, Reserved::IN->value) && is_array($value)) {
+			}
+
+			// Handles WHERE IN query
+			else if (str_contains($comparison, Reserved::IN->value) && is_array($value)) {
 				$placeholders = '';
 				foreach ($value as $v) {
 					$placeholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . count($this->getParameters()));
@@ -111,7 +118,10 @@ trait Helpers
 				}
 				$placeholders = trim($placeholders, ', ');
 				$clause .= $this->concat(' ', $operator, $column, $comparison, "($placeholders)");
-			} else {
+			}
+
+			// Handles WHERE query
+			else {
 				$placeholder = str_replace(['.', ' '], '_', ":$rawColumn" . "_" . count($this->getParameters()));
 				$clause .= $this->concat(' ', $operator, $column, $comparison, $placeholder);
 				$this->addParameter($placeholder, $value);
