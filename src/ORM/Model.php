@@ -29,6 +29,7 @@ use Throwable;
  * @method self avg(Raw|string $column, ?string $alias = null)
  * @method self min(Raw|string $column, ?string $alias = null)
  * @method self max(Raw|string $column, ?string $alias = null)
+ * @method self whereRaw(string $query)
  * @method self where(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method self orWhere(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method self whereLike(string $column, string $value)
@@ -103,7 +104,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		'orHaving', 'havingNull', 'orHavingNull', 'havingNotNull', 'orHavingNotNull',
 		'orderAsc', 'orderDesc', 'groupBy', 'innerJoin', 'leftJoin',
 		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union',
-		'whereHas'
+		'whereHas', 'whereRaw'
 	];
 
 	public function __construct(array $attributes = [])
@@ -371,7 +372,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 			$table = $relation->getModel()->table;
 			$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
 			$localColumn ??= $this->pk;
-			$model = $relation->getModel()->where((new Raw("`$table`.`$foreignColumn` = `$this->table`.`$localColumn`")));
+			$model = $relation->getModel()->whereRaw("`$table`.`$foreignColumn` = `$this->table`.`$localColumn`");
 			$query = $model->query->select();
 			$model->attachClauses($query);
 			$this->addQueryClause(__FUNCTION__, [$query]);

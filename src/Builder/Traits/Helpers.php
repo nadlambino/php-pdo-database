@@ -91,7 +91,7 @@ trait Helpers
 
 				$sql = (new Select([$rawColumn], $this->connection, $this->inflector))
 					->from($table)
-					->where((new Raw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")))
+					->whereRaw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")
 					->toSql();
 
 				$clause .= " $operator $exists ($sql) ";

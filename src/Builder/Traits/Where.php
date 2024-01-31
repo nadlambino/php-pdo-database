@@ -15,6 +15,11 @@ trait Where
 {
 	protected array $wheres = [];
 
+	public function whereRaw(string $query): static
+	{
+		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new Raw($query))]);
+	}
+
 	public function where(string|Closure|Raw $column, mixed $comparison = null, mixed $value = null): static
 	{
 		if ($column instanceof Raw) {
