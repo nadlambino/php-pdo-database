@@ -102,6 +102,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		'orHaving', 'havingNull', 'orHavingNull', 'havingNotNull', 'orHavingNotNull',
 		'orderAsc', 'orderDesc', 'groupBy', 'innerJoin', 'leftJoin',
 		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union',
+		'whereHas'
 	];
 
 	public function __construct(array $attributes = [])
@@ -349,6 +350,17 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 
 		return $this->find($this->getId());
+	}
+
+	public function whereHas(Model|string $model, ?string $foreignColumn = null, ?string $localColumn = null): static
+	{
+		$table = $model instanceof Model ? $model->table : (new $model())->table;
+		$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
+		$localColumn ??= $this->pk;
+
+		$this->addQueryClause(__FUNCTION__, [$table, $foreignColumn, $localColumn]);
+
+		return $this;
 	}
 
 	/**

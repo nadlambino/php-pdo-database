@@ -152,7 +152,7 @@ trait Where
 		return $this->addConditions(Reserved::WHERE, Reserved::OR, false, $parameters);
 	}
 
-	public function whereHas(string $table, string $tableColumn, string $parentTableColumn)
+	public function whereHas(string $table, string $tableColumn, string $parentTableColumn): static
 	{
 		$parameters = $this->getConditionalParams($tableColumn, '=', $parentTableColumn);
 

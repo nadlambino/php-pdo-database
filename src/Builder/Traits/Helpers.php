@@ -93,7 +93,7 @@ trait Helpers
 					->where((new Raw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")))
 					->toSql();
 
-				$clause .= "$operator $exists ($sql)";
+				$clause .= " $operator $exists ($sql) ";
 			} else if (str_contains($comparison, Reserved::BETWEEN->value) && is_array($value)) {
 				$count = count($this->getParameters());
 				[$lowerBound, $upperBound] = $value;
