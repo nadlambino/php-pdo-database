@@ -32,9 +32,10 @@ abstract class Base implements QueryInterface
 	public function execute(): bool
 	{
 		$this->statement = $this->connection->prepare($this->toSql());
+		$parameters = $this->getParameters();
 
-		foreach ($this->getParameters() as $key => $value) {
-			$this->statement->bindValue($key, $value, $this->type($value));
+		foreach ($parameters as $placeholder => $value) {
+			$this->statement->bindValue($placeholder, $value, $this->type($value));
 		}
 
 		return $this->statement->execute();
