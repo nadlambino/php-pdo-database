@@ -74,7 +74,7 @@ class Select extends Base
 	public function limit(int $limit): static
 	{
 		$this->limit = $limit;
-		$this->addParameter($this->generatePlaceholder('limit'), $limit);
+		$this->addParameter($this->generatePlaceholder('limit', suffix: ''), $limit);
 
 		return $this;
 	}
@@ -82,7 +82,7 @@ class Select extends Base
 	public function offset(int $offset): static
 	{
 		$this->offset = $offset;
-		$this->addParameter($this->generatePlaceholder('offset'), $offset);
+		$this->addParameter($this->generatePlaceholder('offset', suffix: ''), $offset);
 
 		return $this;
 	}
@@ -191,7 +191,7 @@ class Select extends Base
 			return '';
 		}
 
-		return $this->concat(Reserved::LIMIT->value, ':limit');
+		return $this->concat(Reserved::LIMIT->value, $this->generatePlaceholder('limit', suffix: ''));
 	}
 
 	private function getOffsetClause(): string
@@ -200,7 +200,7 @@ class Select extends Base
 			return '';
 		}
 
-		return $this->concat(Reserved::OFFSET->value, ':offset');
+		return $this->concat(Reserved::OFFSET->value, $this->generatePlaceholder('limit', suffix: ''));
 	}
 
 	private function getUnionClause(): string

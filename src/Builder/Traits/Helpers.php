@@ -46,7 +46,7 @@ trait Helpers
 		$suffix ??= count($this->getParameters());
 		$placeholder = implode('_', [':' . $prefix, $column, $suffix]);
 
-		return str_replace(['.', ' '], '_', $placeholder);
+		return trim(str_replace(['.', ' '], '_', $placeholder), '_');
 	}
 
 	protected function addConditions(Reserved $clause, ?Reserved $operator, bool $grouped, array $parameters): static
