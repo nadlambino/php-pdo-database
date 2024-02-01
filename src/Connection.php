@@ -6,7 +6,6 @@ namespace Inspira\Database;
 
 use Closure;
 use Exception;
-use Inspira\Config\Config;
 use Inspira\Container\Container;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Connectors\ConnectorInterface;
@@ -42,9 +41,9 @@ class Connection
 
 	/**
 	 * @param Container $container  A dependency injection container for managing class dependencies.
-	 * @param Config $config A config class instance.
+	 * @param array $config An array of database configurations.
 	 */
-	public function __construct(protected Container $container, protected Config $config)
+	public function __construct(protected Container $container, protected array $config)
 	{
 		// Registering singletons and bindings in the container.
 		$this->container->singleton(PDO::class, fn() => $this->create());
@@ -84,45 +83,45 @@ class Connection
 		}
 
 		// Get the connection name from the configuration.
-		$name = $this->config->get("database.$this->name");
+		$name = $this->config[$this->name];
 
 		// Throw an exception if the connection name is not found in the configuration.
 		if (empty($name)) {
 			throw new RuntimeException("Unknown connection name `$this->name`.");
 		}
 
+		if (!isset($this->config['connections'])) {
+			throw new RuntimeException("Connections configurations are not defined in the configuration array.");
+		}
+
 		// Get the connection configurations from the configuration file.
-		$configs = $this->config->get("database.connections.$name");
+		$connection = $this->config['connections'][$name];
 
 		// Throw an exception if the connection configurations are not found.
-		if (empty($configs)) {
+		if (!isset($connection)) {
 			throw new RuntimeException("Unknown connection configuration `$name`.");
 		}
 
-		if (!is_array($configs)) {
-			throw new RuntimeException("Connection structure must be an array containing its configurations.");
-		}
-
-		$connector = $this->container->getConcreteBinding($driver = $configs['driver']);
+		$connector = $this->container->getConcreteBinding($driver = $connection['driver']);
 
 		if (empty($connector)) {
 			throw new RuntimeException("Connector class for `$driver` driver is not found.");
 		}
 
-		$timezone = $this->config->get('database.timezone') ?? $this->config->get('app.timezone', '+00:00');
-		$configs['timezone'] = strtolower($timezone) === 'utc' ? '+00:00' : $timezone;
+		$timezone = $this->config['timezone'] ?? '+00:00';
+		$connection['timezone'] = strtolower($timezone) === 'utc' ? '+00:00' : $timezone;
 
-		$connection = match (true) {
-			is_string($connector) => new $connector($configs),
+		$database = match (true) {
+			is_string($connector) => new $connector($connection),
 			$connector instanceof Closure => $this->container->resolve($connector),
 			default => $connector
 		};
 
-		if (!($connection instanceof ConnectorInterface)) {
+		if (!($database instanceof ConnectorInterface)) {
 			throw new RuntimeException("Connector class for `$driver` driver must be an instance of " . ConnectorInterface::class);
 		}
 
-		return static::$pool[$this->name] = $connection->connect();
+		return static::$pool[$this->name] = $database->connect();
 	}
 
 	/**
