@@ -4,7 +4,6 @@
     "type": "library",
     "require": {
         "inspira/container": "dev-master",
-        "inspira/config": "dev-master",
         "inspira/contracts": "dev-master",
         "inspira/utils": "dev-master",
         "symfony/string": "7.1.x-dev",
@@ -29,6 +28,7 @@
     "minimum-stability": "dev",
     "require-dev": {
         "symfony/var-dumper": "7.1.x-dev",
-        "inspira/error-page": "dev-master"
+        "inspira/error-page": "dev-master",
+        "inspira/config": "dev-master"
     }
 }

@@ -152,16 +152,9 @@ trait Helpers
 		return compact('column', 'comparison', 'value');
 	}
 
-	protected function quote(string|Raw|null $string): string
+	public function quote(string|Raw|null $string): string
 	{
-		$driver = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-
-		return match (true) {
-			is_null($string) => '',
-			$string instanceof Raw => (string)$string,
-			in_array($driver, ['mysql', 'sqlite']) => "`$string`",
-			default => '"' . $string . '"'
-		};
+		return query_quote($this->connection, $string);
 	}
 
 	protected function concat(...$strings): string

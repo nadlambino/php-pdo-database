@@ -369,10 +369,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		if (method_exists($this, $modelOrRelation)) {
 			/** @var HasRelation $relation */
 			$relation = $this->$modelOrRelation();
-			$table = $relation->getModel()->table;
-			$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
-			$localColumn ??= $this->pk;
-			$modelOrRelation = $relation->getModel()->whereRaw("`$table`.`$foreignColumn` = `$this->table`.`$localColumn`");
+			$foreignTable = query_quote($this->connection, $this->table);
+			$table = query_quote($this->connection, $relation->getModel()->table);
+			$foreignColumn ??= query_quote($this->connection, $this->inflector->singularize($this->table)[0] . '_id');
+			$localColumn ??= query_quote($this->connection, $this->pk);
+			$modelOrRelation = $relation->getModel()->whereRaw("$table.$foreignColumn = $foreignTable.$localColumn");
 			$query = $modelOrRelation->query->select();
 			$modelOrRelation->attachClauses($query);
 			$this->addQueryClause(__FUNCTION__, [$query]);
