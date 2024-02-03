@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
         "php": "^8.3",
+        "ext-pdo": "*",
         "inspira/container": "dev-master",
         "inspira/contracts": "dev-master",
         "inspira/utils": "dev-master",
