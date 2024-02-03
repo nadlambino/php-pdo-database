@@ -11,16 +11,16 @@ class BadMethodCallException extends BaseBadMethodCallException
 {
 	public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null, string $method = null)
 	{
-		$didYouMean = null;
+		$message = empty($message) ? "Call to undefined method `$method`." : $message;
 		$class = $this->getCallingClass();
 
 		if (isset($class, $method)) {
 			$methods = get_class_methods($class);
 			$closest = closest_match($method, $methods);
-			$didYouMean = $closest ? " Did you mean `$closest`?" : '';
+			$message .= $closest ? " Did you mean `$closest`?" : '';
 		}
 
-		parent::__construct($message . $didYouMean, $code, $previous);
+		parent::__construct($message, $code, $previous);
 	}
 
 	protected function getCallingClass(): ?string

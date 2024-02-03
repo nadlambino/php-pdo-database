@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Inspira\Database\ORM;
 
 use ArrayAccess;
-use BadMethodCallException;
 use Closure;
 use Exception;
 use Inspira\Augmentable\Augmentable;
@@ -13,6 +12,7 @@ use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Raw;
+use Inspira\Database\Exceptions\BadMethodCallException;
 use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Query as QueryTrait;
@@ -171,7 +171,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 
 		if (!method_exists($this->query, $method)) {
-			throw new BadMethodCallException("Call to undefined method: `$method`");
+			throw new BadMethodCallException(method: $method);
 		}
 
 		return $this->query->$method(...$arguments);
