@@ -13,9 +13,9 @@ use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\Builder\Query;
 use Inspira\Database\Builder\Raw;
-use Inspira\Database\ORM\Relation\HasRelation;
 use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
+use Inspira\Database\ORM\Traits\Query as QueryTrait;
 use Inspira\Database\ORM\Traits\Relations;
 use IteratorAggregate;
 use PDO;
@@ -69,7 +69,7 @@ use Throwable;
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use IteratorAggregatable, ArrayAccessible, Relations, Augmentable {
+	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Augmentable {
 		Augmentable::__call as augmentCall;
 	}
 
@@ -352,42 +352,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 
 		return $this->find($this->getId());
-	}
-
-	public function whereHas(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null): static
-	{
-		// Handles model
-		if ($modelOrRelation instanceof Model) {
-			$query = $modelOrRelation->query->select();
-			$modelOrRelation->attachClauses($query);
-			$this->addQueryClause(__FUNCTION__, [$query]);
-
-			return $this;
-		}
-
-		// Handles model from relation
-		if (method_exists($this, $modelOrRelation)) {
-			/** @var HasRelation $relation */
-			$relation = $this->$modelOrRelation();
-			$foreignTable = query_quote($this->connection, $this->table);
-			$table = query_quote($this->connection, $relation->getModel()->table);
-			$foreignColumn ??= query_quote($this->connection, $this->inflector->singularize($this->table)[0] . '_id');
-			$localColumn ??= query_quote($this->connection, $this->pk);
-			$modelOrRelation = $relation->getModel()->whereRaw("$table.$foreignColumn = $foreignTable.$localColumn");
-			$query = $modelOrRelation->query->select();
-			$modelOrRelation->attachClauses($query);
-			$this->addQueryClause(__FUNCTION__, [$query]);
-
-			return $this;
-		}
-
-		$table = !class_exists($modelOrRelation) ? $modelOrRelation : (new $modelOrRelation())->table;
-		$foreignColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
-		$localColumn ??= $this->pk;
-
-		$this->addQueryClause(__FUNCTION__, [$table, $foreignColumn, $localColumn]);
-
-		return $this;
 	}
 
 	public function toSql(): string
