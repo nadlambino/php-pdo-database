@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "633aead75bad3606847a79fef14d933e",
+    "content-hash": "6f13eb2f342260ff85b8edeefcbeb193",
     "packages": [
         {
             "name": "inspira/augmentable",
@@ -46,6 +46,51 @@
                 "source": "https://github.com/nadlambino/php-augmentable/tree/master"
             },
             "time": "2024-01-12T11:39:31+00:00"
+        },
+        {
+            "name": "inspira/closest-match",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nadlambino/php-closest-match.git",
+                "reference": "335ffb81040cf688c9990ec290ffbfafa3a5a500"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nadlambino/php-closest-match/zipball/335ffb81040cf688c9990ec290ffbfafa3a5a500",
+                "reference": "335ffb81040cf688c9990ec290ffbfafa3a5a500",
+                "shasum": ""
+            },
+            "require-dev": {
+                "php": "^8.3",
+                "symfony/var-dumper": "7.1.x-dev"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Inspira\\ClosesMatch\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ronald Lambino",
+                    "email": "50892397+nadlambino@users.noreply.github.com"
+                }
+            ],
+            "description": "Find the closest match of a string.",
+            "support": {
+                "issues": "https://github.com/nadlambino/php-closest-match/issues",
+                "source": "https://github.com/nadlambino/php-closest-match/tree/master"
+            },
+            "time": "2024-02-03T10:49:36+00:00"
         },
         {
             "name": "inspira/collection",
@@ -1221,13 +1266,17 @@
         "symfony/string": 20,
         "inspira/augmentable": 20,
         "inspira/collection": 20,
+        "inspira/closest-match": 20,
         "symfony/var-dumper": 20,
         "inspira/error-page": 20,
         "inspira/config": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^8.3",
+        "ext-pdo": "*"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
 }
