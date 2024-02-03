@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\ORM\Traits;
 
+use BadMethodCallException;
 use Inspira\Database\ORM\Model;
 use Inspira\Database\ORM\ModelCollection;
 use Inspira\Database\ORM\Relation\HasMany;
@@ -15,6 +16,10 @@ trait Relations
 
 	public function with(string $relation): static
 	{
+		if (!method_exists($this, $relation)) {
+			throw new BadMethodCallException("Unknown relationship method [$relation].");
+		}
+
 		// If the current model already has an ID, we will just call the relationship method
 		// Then assign the return value to the property with the same name as the method
 		if ($this->hasId()) {

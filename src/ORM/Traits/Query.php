@@ -19,6 +19,11 @@ trait Query
 		return $this->whereExists($modelOrRelation, $foreignColumn, $localColumn, false);
 	}
 
+	public function withHas(string $relation): static
+	{
+		return $this->with($relation)->whereHas($relation);
+	}
+
 	protected function whereExists(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null, bool $exists = true): static
 	{
 		$method = $exists ? 'whereHas' : 'whereDoesntHave';
