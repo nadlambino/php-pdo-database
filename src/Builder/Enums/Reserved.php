@@ -13,6 +13,7 @@ enum Reserved: string
 	case AND = 'AND';
 	case OR = 'OR';
 	case EXISTS = 'EXISTS';
+	case NOT_EXISTS = 'NOT EXISTS';
 	case INSERT_INTO = 'INSERT INTO';
 	case VALUES = 'VALUES';
 	case UPDATE = 'UPDATE';

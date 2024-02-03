@@ -158,18 +158,31 @@ trait Where
 		return $this->addConditions(Reserved::WHERE, Reserved::OR, false, $parameters);
 	}
 
-	public function whereHas(Select|string $table, string $tableColumn = '', string $parentTableColumn = ''): static
+	public function whereHas(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
+	{
+		return $this->whereExists($table, $tableColumn, $parentTableColumn);
+	}
+
+	public function whereDoesntHave(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
+	{
+		return $this->whereExists($table, $tableColumn, $parentTableColumn, false);
+	}
+
+	protected function whereExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null, $exists = true): static
 	{
 		if ($table instanceof Select) {
 			$sql = $table->toSql();
 			$this->parameters = [...$this->parameters, ...$table->getParameters()];
-			$exists = Reserved::EXISTS->value;
+			$existsQuery = $exists ? Reserved::EXISTS->value : Reserved::NOT_EXISTS->value;
 
-			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => " $exists ($sql) "]);
+			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => " $existsQuery ($sql) "]);
 		}
 
+		$tableColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
+		$parentTableColumn ??= 'id';
 		$parameters = $this->getConditionalParams($tableColumn, '=', $parentTableColumn);
 		$parameters['table'] = $table;
+		$parameters['exists'] = $exists;
 
 		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, $parameters);
 	}

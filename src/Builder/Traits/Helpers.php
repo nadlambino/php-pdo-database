@@ -90,13 +90,15 @@ trait Helpers
 			$comparison = $condition['parameters']['comparison'];
 			$table = $condition['parameters']['table'] ?? null;
 
-			// Handles WHERE EXISTS query
+			// Handles WHERE EXISTS/NOT EXISTS query
 			if (isset($table)) {
 				$quotedTable = $this->quote($table);
 				$quotedParentTable = $this->quote($this->table);
 				$quotedTableColumn = $this->quote($rawColumn);
 				$quotedParentTableColumn = $this->quote($value);
-				$exists = Reserved::EXISTS->value;
+				$exists = isset($condition['parameters']['exists']) && $condition['parameters']['exists']
+					? Reserved::EXISTS->value
+					: Reserved::NOT_EXISTS->value;
 
 				$sql = (new Select([$rawColumn], $this->connection, $this->inflector))
 					->from($table)
