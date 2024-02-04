@@ -62,6 +62,7 @@ use Inspira\Database\ORM\ModelCollection;
  * @method bool destroy()
  * @method Model refresh()
  * @method bool save()
+ * @method string toSql()
  */
 abstract class HasRelation
 {
