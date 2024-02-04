@@ -10,25 +10,24 @@ use Exception;
 use Inspira\Augmentable\Augmentable;
 use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
+use Inspira\Database\Builder\Delete;
+use Inspira\Database\Builder\Insert;
 use Inspira\Database\Builder\Query;
-use Inspira\Database\Builder\Raw;
+use Inspira\Database\Builder\Select;
+use Inspira\Database\Builder\Update;
 use Inspira\Database\Exceptions\BadMethodCallException;
+use Inspira\Database\ORM\Traits\Aggregates;
 use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Query as QueryTrait;
 use Inspira\Database\ORM\Traits\Relations;
 use IteratorAggregate;
 use PDO;
-use ReturnTypeWillChange;
 use Symfony\Component\String\Inflector\InflectorInterface;
 use Throwable;
 
 /**
  * @method self distinct()
- * @method self sum(Raw|string $column, ?string $alias = null)
- * @method self avg(Raw|string $column, ?string $alias = null)
- * @method self min(Raw|string $column, ?string $alias = null)
- * @method self max(Raw|string $column, ?string $alias = null)
  * @method self whereRaw(string $query)
  * @method self where(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method self orWhere(string|Closure $column, mixed $comparison = null, mixed $value = null)
@@ -69,7 +68,7 @@ use Throwable;
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Augmentable {
+	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Aggregates, Augmentable {
 		Augmentable::__call as augmentCall;
 	}
 
@@ -96,15 +95,13 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	protected array $attributes = [];
 
 	protected const QUERY_METHODS = [
-		'distinct', 'count', 'sum', 'avg', 'min',
-		'max', 'where', 'orWhere', 'whereLike', 'whereNotLike',
+		'distinct', 'where', 'orWhere', 'whereLike', 'whereNotLike',
 		'orWhereLike', 'orWhereNotLike', 'whereNull', 'whereNotNull', 'orWhereNull',
 		'orWhereNotNull', 'whereBetween', 'whereNotBetween', 'orWhereBetween', 'orWhereNotBetween',
 		'whereIn', 'whereNotIn', 'orWhereIn', 'orWhereNotIn', 'having',
 		'orHaving', 'havingNull', 'orHavingNull', 'havingNotNull', 'orHavingNotNull',
 		'orderAsc', 'orderDesc', 'groupBy', 'innerJoin', 'leftJoin',
-		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union',
-		'whereHas', 'whereRaw'
+		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union', 'whereRaw'
 	];
 
 	public function __construct(array $attributes = [])
@@ -362,19 +359,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return $query->toSql();
 	}
 
-	/**
-	 * @return int
-	 */
-	#[ReturnTypeWillChange]
-	public function count(): int
-	{
-		$columnToCount = $this->pk;
-		$columnAlias = 'count';
-		$this->addQueryClause(__FUNCTION__, [$columnToCount, $columnAlias]);
-
-		return $this->first()->$columnAlias ?? 0;
-	}
-
 	public function toArray(): array
 	{
 		return array_map(function($attribute) {
@@ -457,10 +441,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	/**
 	 * Append the clauses to the query object
 	 *
-	 * @param mixed $query
+	 * @param Insert|Select|Update|Delete $query
 	 * @return void
 	 */
-	private function attachClauses(mixed $query): void
+	private function attachClauses(Insert|Select|Update|Delete $query): void
 	{
 		foreach ($this->clauses as $clause) {
 			$method = $clause['name'];
