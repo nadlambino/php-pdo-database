@@ -105,7 +105,7 @@ trait Helpers
 					->whereRaw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")
 					->toSql();
 
-				$clause .= " $operator $exists ($sql) ";
+				$clause .= " $operator $exists ( $sql ) ";
 			}
 
 			// Handles WHERE BETWEEN query

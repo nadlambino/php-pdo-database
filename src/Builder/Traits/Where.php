@@ -175,7 +175,7 @@ trait Where
 			$this->parameters = [...$this->parameters, ...$table->getParameters()];
 			$existsQuery = $exists ? Reserved::EXISTS->value : Reserved::NOT_EXISTS->value;
 
-			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => " $existsQuery ($sql) "]);
+			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => " $existsQuery ( $sql ) "]);
 		}
 
 		$tableColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
