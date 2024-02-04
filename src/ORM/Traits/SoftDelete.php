@@ -24,7 +24,7 @@ trait SoftDelete
 			]);
 	}
 
-	public function withTrashed()
+	public function withTrashed(): static
 	{
 		foreach($this->clauses as $index => $clause) {
 			if ($clause['name'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
@@ -36,7 +36,7 @@ trait SoftDelete
 		return $this;
 	}
 
-	public function onlyTrashed()
+	public function onlyTrashed(): static
 	{
 		foreach($this->clauses as $index => $clause) {
 			if ($clause['name'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
