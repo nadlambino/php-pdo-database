@@ -158,17 +158,17 @@ trait Where
 		return $this->addConditions(Reserved::WHERE, Reserved::OR, false, $parameters);
 	}
 
-	public function whereHas(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
+	public function whereExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
 	{
-		return $this->whereExists($table, $tableColumn, $parentTableColumn);
+		return $this->handleWhereExists($table, $tableColumn, $parentTableColumn);
 	}
 
-	public function whereDoesntHave(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
+	public function whereNotExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
 	{
-		return $this->whereExists($table, $tableColumn, $parentTableColumn, false);
+		return $this->handleWhereExists($table, $tableColumn, $parentTableColumn, false);
 	}
 
-	protected function whereExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null, $exists = true): static
+	protected function handleWhereExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null, bool $exists = true): static
 	{
 		if ($table instanceof Select) {
 			$sql = $table->toSql();

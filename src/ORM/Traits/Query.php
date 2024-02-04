@@ -9,24 +9,24 @@ use Inspira\Database\ORM\Relation\HasRelation;
 
 trait Query
 {
-	public function whereHas(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null): static
+	public function whereExists(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null): static
 	{
-		return $this->whereExists($modelOrRelation, $foreignColumn, $localColumn);
+		return $this->handleWhereExists($modelOrRelation, $foreignColumn, $localColumn);
 	}
 
-	public function whereDoesntHave(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null): static
+	public function whereNotExists(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null): static
 	{
-		return $this->whereExists($modelOrRelation, $foreignColumn, $localColumn, false);
+		return $this->handleWhereExists($modelOrRelation, $foreignColumn, $localColumn, false);
 	}
 
-	public function withHas(string $relation): static
+	public function withExisting(string $relation): static
 	{
-		return $this->with($relation)->whereHas($relation);
+		return $this->with($relation)->whereExists($relation);
 	}
 
-	protected function whereExists(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null, bool $exists = true): static
+	protected function handleWhereExists(Model|string $modelOrRelation, ?string $foreignColumn = null, ?string $localColumn = null, bool $exists = true): static
 	{
-		$method = $exists ? 'whereHas' : 'whereDoesntHave';
+		$method = $exists ? 'whereExists' : 'whereNotExists';
 
 		// Handles model
 		if ($modelOrRelation instanceof Model) {
