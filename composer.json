@@ -31,7 +31,6 @@
     "minimum-stability": "dev",
     "require-dev": {
         "symfony/var-dumper": "7.1.x-dev",
-        "inspira/error-page": "dev-master",
-        "inspira/config": "dev-master"
+        "inspira/error-page": "dev-master"
     }
 }
