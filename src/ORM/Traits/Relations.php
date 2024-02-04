@@ -24,7 +24,8 @@ trait Relations
 		// Then assign the return value to the property with the same name as the method
 		if ($this->hasId()) {
 			$model = $this->$relation();
-			$this->$relation = $this->resolveMethod($model);
+			$property = camel_to_snake($relation);
+			$this->$property = $this->resolveMethod($model);
 
 			return $this;
 		}
@@ -86,7 +87,8 @@ trait Relations
 
 		if (is_array($models)) {
 			foreach ($models as $model) {
-				$model->$method = match (true) {
+				$property = camel_to_snake($method);
+				$model->$property = match (true) {
 					$response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()} => $response,
 					$response instanceof ModelCollection && $relation instanceof HasOne => $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()})->first(),
 					$response instanceof ModelCollection && $relation instanceof HasMany => $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()}),

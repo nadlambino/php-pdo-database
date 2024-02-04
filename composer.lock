@@ -234,12 +234,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nadlambino/php-utils.git",
-                "reference": "c0151130ede0430d705d4cf75759e172380524d9"
+                "reference": "253f57eaa27f465d1191ce12e5201eeb0379828b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nadlambino/php-utils/zipball/c0151130ede0430d705d4cf75759e172380524d9",
-                "reference": "c0151130ede0430d705d4cf75759e172380524d9",
+                "url": "https://api.github.com/repos/nadlambino/php-utils/zipball/253f57eaa27f465d1191ce12e5201eeb0379828b",
+                "reference": "253f57eaa27f465d1191ce12e5201eeb0379828b",
                 "shasum": ""
             },
             "require": {
@@ -271,7 +271,7 @@
                 "issues": "https://github.com/nadlambino/php-utils/issues",
                 "source": "https://github.com/nadlambino/php-utils/tree/master"
             },
-            "time": "2024-02-02T10:50:42+00:00"
+            "time": "2024-02-04T07:54:13+00:00"
         },
         {
             "name": "psr/container",
