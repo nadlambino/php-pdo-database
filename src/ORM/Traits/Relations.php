@@ -86,19 +86,11 @@ trait Relations
 
 		if (is_array($models)) {
 			foreach ($models as $model) {
-				if ($response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()}) {
-					$model->$method = $response;
-				}
-
-				if ($response instanceof ModelCollection) {
-					if ($relation instanceof HasOne) {
-						$model->$method = $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()})->first();
-					}
-
-					if ($relation instanceof HasMany) {
-						$model->$method = $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()});
-					}
-				}
+				$model->$method = match (true) {
+					$response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()} => $response,
+					$response instanceof ModelCollection && $relation instanceof HasOne => $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()})->first(),
+					$response instanceof ModelCollection && $relation instanceof HasMany => $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()}),
+				};
 
 				$model->relations = array_unique($this->relations);
 			}
@@ -112,20 +104,10 @@ trait Relations
 
 	private function resolveMethod(HasOne|HasMany $model, array $ids = []): mixed
 	{
-		if ($model instanceof HasOne) {
-			if (!empty($ids)) {
-				$response = $model->whereIn($model->getForeignKey(), $ids)->get();
-			} else {
-				$response = $model->first();
-			}
-		} else {
-			if (!empty($ids)) {
-				$response = $model->whereIn($model->getForeignKey(), $ids)->get();
-			} else {
-				$response = $model->get();
-			}
-		}
-
-		return $response;
+		return match (true) {
+			!empty($ids) => $model->whereIn($model->getForeignKey(), $ids)->get(),
+			$model instanceof HasOne && empty($ids) => $model->first(),
+			$model instanceof HasMany && empty($ids) => $model->get(),
+		};
 	}
 }
