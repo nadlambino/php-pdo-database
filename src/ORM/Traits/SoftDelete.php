@@ -27,7 +27,7 @@ trait SoftDelete
 	public function withTrashed(): static
 	{
 		foreach($this->clauses as $index => $clause) {
-			if ($clause['name'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
+			if ($clause['method'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
 				unset($this->clauses[$index]);
 				break;
 			}
@@ -39,9 +39,9 @@ trait SoftDelete
 	public function onlyTrashed(): static
 	{
 		foreach($this->clauses as $index => $clause) {
-			if ($clause['name'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
+			if ($clause['method'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
 				unset($this->clauses[$index]);
-				array_unshift($this->clauses, ['name' => 'whereNotNull', 'arguments' => [$this->deletedAt]]);
+				array_unshift($this->clauses, ['method' => 'whereNotNull', 'arguments' => [$this->deletedAt]]);
 				break;
 			}
 		}

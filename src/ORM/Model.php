@@ -433,9 +433,9 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 			->table($this->table);
 	}
 
-	protected function addQueryClause(string $name, array $arguments): void
+	protected function addQueryClause(string $method, array $arguments): void
 	{
-		$this->clauses[] = compact('name', 'arguments');
+		$this->clauses[] = compact('method', 'arguments');
 	}
 
 	/**
@@ -447,7 +447,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	private function attachClauses(Insert|Select|Update|Delete $query): void
 	{
 		foreach ($this->clauses as $clause) {
-			$method = $clause['name'];
+			$method = $clause['method'];
 			$arguments = $clause['arguments'];
 
 			$query->$method(...$arguments);
