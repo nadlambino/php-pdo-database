@@ -379,6 +379,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	{
 		return array_map(function($attribute) {
 			return match (true) {
+				$attribute instanceof Model => iterator_to_array($attribute),
 				$attribute instanceof Arrayable => array_values($attribute->toArray()),
 				is_iterable($attribute) => array_values(iterator_to_array($attribute)),
 				default => $attribute
