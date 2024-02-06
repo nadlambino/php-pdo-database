@@ -56,7 +56,6 @@ use Inspira\Database\ORM\ModelCollection;
  * @method Model find(mixed $id)
  * @method ModelCollection get(...$columns)
  * @method Model count(string|Raw $column)
- * @method bool create(array $data)
  * @method bool update(array $data)
  * @method bool delete()
  * @method bool destroy()
@@ -102,13 +101,13 @@ abstract class HasRelation
 		return $this->localKey;
 	}
 
-	public function attach(array $data): bool
+	public function create(array $data): bool
 	{
 		$foreignKeyValue = $this->foreignModel->{$this->localKey};
 		if (!is_null($foreignKeyValue)) {
 			$data[$this->getForeignKey()] = $foreignKeyValue;
 		}
 
-		return $this->create($data);
+		return $this->model?->create($data);
 	}
 }
