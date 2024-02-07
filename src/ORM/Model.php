@@ -21,10 +21,10 @@ use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Query as QueryTrait;
 use Inspira\Database\ORM\Traits\Relations;
+use Inspira\Database\ORM\Traits\WithTimestamps;
 use IteratorAggregate;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
-use Throwable;
 
 /**
  * @method self distinct()
@@ -68,7 +68,7 @@ use Throwable;
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Aggregates, Augmentable {
+	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Aggregates, WithTimestamps, Augmentable {
 		Augmentable::__call as augmentCall;
 	}
 
@@ -197,7 +197,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
 	 *
 	 * @param ...$columns
-	 * @return $this|null
+	 * @return static|null
 	 */
 	public function first(...$columns): ?static
 	{
@@ -214,7 +214,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
 	 *
 	 * @param ...$columns
-	 * @return $this|null
+	 * @return static|null
 	 */
 	public function last(...$columns): ?static
 	{
@@ -231,7 +231,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
 	 *
 	 * @param mixed $id
-	 * @return $this|null
+	 * @return static|null
 	 */
 	public function find(mixed $id): ?static
 	{
@@ -267,18 +267,17 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 * $data could be a single or multidimensional array of column => value pairs
 	 *
 	 * @param array $data
-	 * @return bool
+	 * @return static|false
 	 */
-	public function create(array $data): bool
+	public function create(array $data): static|false
 	{
-		$created = $this->query->insert($data)->execute();
+		$created = $this->attachCreatedAt($data)->query->insert($data)->execute();
 
 		if ($created) {
-			$this->{$this->pk} = $this->connection->lastInsertId();
-			$this->oldAttributes = $data;
+			return $this->find($this->connection->lastInsertId());
 		}
 
-		return $created;
+		return false;
 	}
 
 	/**
@@ -292,7 +291,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function update(array $data): bool
 	{
 		$oldAttributes = $this->toArray();
-		$query = $this->query->update($this->table)->set($data);
+		$query = $this->attachUpdatedAt($data)->query->update($this->table)->set($data);
 		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
 		$this->attachClauses($query);
 
@@ -300,7 +299,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		if ($updated) {
 			$this->oldAttributes = $oldAttributes;
-			$this->attributes = $data + $this->attributes;
+			$this->attributes = [...$this->attributes, ...$data];
 		}
 
 		return $updated;

@@ -40,7 +40,13 @@ trait ArrayAccessible
 	 */
 	public function offsetSet(mixed $offset, mixed $value): void
 	{
-		empty($offset) ? $this->attributes[] = $value : $this->attributes[$offset] = $value;
+		if (empty($offset)) {
+			$this->attributes[] = $value;
+		} else {
+			$old = $this->attributes;
+			$this->attributes[$offset] = $value;
+			$this->oldAttributes = $old + $this->oldAttributes;
+		}
 	}
 
 	/**
