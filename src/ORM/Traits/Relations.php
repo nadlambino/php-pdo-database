@@ -84,10 +84,10 @@ trait Relations
 		/** @var HasOne|HasMany $relation */
 		$relation = $model->$method();
 		$response = $this->resolveMethod($relation, $ids);
+		$property = camel_to_snake($method);
 
 		if (is_array($models)) {
 			foreach ($models as $model) {
-				$property = camel_to_snake($method);
 				$model->$property = match (true) {
 					$response instanceof Model && $model->{$relation->getLocalKey()} === $response->{$relation->getForeignKey()} => $response,
 					$response instanceof ModelCollection && $relation instanceof HasOne => $response->where($relation->getForeignKey(), $model->{$relation->getLocalKey()})->first(),
@@ -97,7 +97,7 @@ trait Relations
 				$model->relations = array_unique($this->relations);
 			}
 		} else {
-			$models->$method = $relation instanceof HasOne ? $response->first() : $response;
+			$models->$property = $relation instanceof HasOne ? $response->first() : $response;
 			$models->relations = array_unique($this->relations);
 		}
 
