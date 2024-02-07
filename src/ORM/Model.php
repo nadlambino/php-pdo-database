@@ -21,7 +21,6 @@ use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Query as QueryTrait;
 use Inspira\Database\ORM\Traits\Relations;
-use Inspira\Database\ORM\Traits\WithTimestamps;
 use IteratorAggregate;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -68,7 +67,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Aggregates, WithTimestamps, Augmentable {
+	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Aggregates, Augmentable {
 		Augmentable::__call as augmentCall;
 	}
 
@@ -93,6 +92,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	protected array $oldAttributes = [];
 
 	protected array $attributes = [];
+
+	protected const CREATED_AT = 'created_at';
+
+	protected const UPDATED_AT = 'updated_at';
+
+	protected const DELETED_AT = 'deleted_at';
 
 	private const QUERY_METHODS = [
 		'distinct', 'where', 'orWhere', 'whereLike', 'whereNotLike',
@@ -467,15 +472,33 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 	}
 
+	private function attachCreatedAt(array &$data): static
+	{
+		if (static::CREATED_AT) {
+			$data[static::CREATED_AT] = date('Y-m-d H:i:s');
+		}
+
+		return $this;
+	}
+
+	private function attachUpdatedAt(array &$data): static
+	{
+		if (static::UPDATED_AT) {
+			$data[static::UPDATED_AT] = date('Y-m-d H:i:s');
+		}
+
+		return $this;
+	}
+
 	private function isSoftDeletable(): bool
 	{
-		return method_exists($this, 'softDelete') && property_exists($this, 'deletedAt');
+		return method_exists($this, 'softDelete') && defined('static::DELETED_AT');
 	}
 
 	private function setSofDelete()
 	{
 		if ($this->isSoftDeletable()) {
-			$this->addQueryClause('whereNull', [$this->deletedAt]);
+			$this->addQueryClause('whereNull', [static::DELETED_AT]);
 		}
 	}
 }

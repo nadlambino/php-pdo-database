@@ -13,21 +13,19 @@ use Inspira\Database\Builder\Update;
  */
 trait SoftDelete
 {
-	protected string $deletedAt = 'deleted_at';
-
 	protected function softDelete(): Update
 	{
 		return $this->query
 			->update($this->table)
 			->set([
-				$this->deletedAt => date('Y-m-d H:i:s')
+				static::DELETED_AT => date('Y-m-d H:i:s')
 			]);
 	}
 
 	public function withTrashed(): static
 	{
 		foreach($this->clauses as $index => $clause) {
-			if ($clause['method'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
+			if ($clause['method'] === 'whereNull' && in_array(static::DELETED_AT, $clause['arguments'])) {
 				unset($this->clauses[$index]);
 				break;
 			}
@@ -39,9 +37,9 @@ trait SoftDelete
 	public function onlyTrashed(): static
 	{
 		foreach($this->clauses as $index => $clause) {
-			if ($clause['method'] === 'whereNull' && in_array($this->deletedAt, $clause['arguments'])) {
+			if ($clause['method'] === 'whereNull' && in_array(static::DELETED_AT, $clause['arguments'])) {
 				unset($this->clauses[$index]);
-				array_unshift($this->clauses, ['method' => 'whereNotNull', 'arguments' => [$this->deletedAt]]);
+				array_unshift($this->clauses, ['method' => 'whereNotNull', 'arguments' => [static::DELETED_AT]]);
 				break;
 			}
 		}
