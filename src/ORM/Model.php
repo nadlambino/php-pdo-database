@@ -143,11 +143,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function __get(string $name): mixed
 	{
-		try {
-			return $this[$name];
-		} catch (Throwable) {
-			throw new Exception("Property `$name` does not exist on model `$this->model`.");
-		}
+		return $this[$name];
 	}
 
 	/**
