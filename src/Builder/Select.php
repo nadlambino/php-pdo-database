@@ -200,7 +200,7 @@ class Select extends Base
 			return '';
 		}
 
-		return $this->concat(Reserved::OFFSET->value, $this->generatePlaceholder('limit', suffix: ''));
+		return $this->concat(Reserved::OFFSET->value, $this->generatePlaceholder('offset', suffix: ''));
 	}
 
 	private function getUnionClause(): string
