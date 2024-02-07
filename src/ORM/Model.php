@@ -352,11 +352,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	{
 		$attributes = $this->toArray();
 
-		if (empty($attributes)) {
+		if (empty($attributes) || empty($id = $this->getId())) {
 			return $this;
 		}
 
-		return $this->find($this->getId());
+		return $this->find($id);
 	}
 
 	public function toSql(): string
