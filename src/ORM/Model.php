@@ -300,6 +300,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		if ($updated) {
 			$this->oldAttributes = $oldAttributes;
+			$this->attributes = $data + $this->attributes;
 		}
 
 		return $updated;
@@ -357,6 +358,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 
 		return $this->find($id);
+	}
+
+	public function old(?string $attribute = null)
+	{
+		return empty($attribute) ? $this->oldAttributes : $this->oldAttributes[$attribute];
 	}
 
 	public function toSql(): string
