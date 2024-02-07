@@ -150,6 +150,18 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 	}
 
+	/**
+	 * Create a new instance of the model and call the method from the instance
+	 *
+	 * @param string $method
+	 * @param array $arguments
+	 * @return mixed
+	 */
+	public static function __callStatic(string $method, array $arguments): mixed
+	{
+		return (new static())->$method(...$arguments);
+	}
+
 	public function __call(string $method, array $arguments)
 	{
 		if ($this->augmented($method)) {
