@@ -94,7 +94,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected array $attributes = [];
 
-	protected const QUERY_METHODS = [
+	private const QUERY_METHODS = [
 		'distinct', 'where', 'orWhere', 'whereLike', 'whereNotLike',
 		'orWhereLike', 'orWhereNotLike', 'whereNull', 'whereNotNull', 'orWhereNull',
 		'orWhereNotNull', 'whereBetween', 'whereNotBetween', 'orWhereBetween', 'orWhereNotBetween',
