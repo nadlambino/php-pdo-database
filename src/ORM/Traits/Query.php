@@ -53,7 +53,7 @@ trait Query
 			return $this;
 		}
 
-		$table = !class_exists($modelOrRelation) ? $modelOrRelation : (new $modelOrRelation())->table;
+		$table = class_exists($modelOrRelation) ? (new $modelOrRelation())->table : $modelOrRelation;
 		$this->addQuery($method, [$table, $foreignColumn, $localColumn]);
 
 		return $this;
