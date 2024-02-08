@@ -44,6 +44,7 @@ trait ArrayAccessible
 			$this->attributes[] = $value;
 		} else {
 			$old = $this->attributes;
+			$old[$offset] ??= $value;
 			$this->attributes[$offset] = $value;
 			$this->oldAttributes = [...$old, ...$this->oldAttributes];
 		}
