@@ -480,44 +480,36 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function attachCreatedAt(array &$data): static
 	{
-		if (empty(static::CREATED_AT) || !static::CREATED_AT) {
-			return $this;
-		}
-
-		$provided = isset($data[static::CREATED_AT]);
-
-		if ($provided && $data[static::CREATED_AT] === false) {
-			throw new InvalidArgumentException(sprintf("Invalid DateTime value provided for `%s` field", static::CREATED_AT));
-		}
-
-		$date = $data[static::CREATED_AT] ?? date(static::DATE_TIME_FORMAT);
-
-		$data[static::CREATED_AT] = $provided
-			? $date instanceof DateTime ? $date->format(static::DATE_TIME_FORMAT) : $date
-			: $date;
-
-		$this->{static::CREATED_AT} = $data[static::CREATED_AT];
-
-		return $this;
+		return $this->handleTimestamp(static::CREATED_AT, $data);
 	}
 
 	private function attachUpdatedAt(array &$data): static
 	{
-		if (empty(static::UPDATED_AT) || !static::UPDATED_AT) {
+		return $this->handleTimestamp(static::UPDATED_AT, $data);
+	}
+
+	private function handleTimestamp(string|false|null $timestampKey, array &$data): static
+	{
+		if (empty($timestampKey)) {
 			return $this;
 		}
 
-		if ($data[static::UPDATED_AT] === false) {
-			throw new InvalidArgumentException(sprintf("Invalid DateTime value provided for `%s` field", static::UPDATED_AT));
+		$provided = isset($data[$timestampKey]);
+		$date = match (true) {
+			$provided && is_string($data[$timestampKey]) => date_create($data[$timestampKey]),
+			$provided && $data[$timestampKey] !== $this->old($timestampKey) => $data[$timestampKey],
+			default => date(static::DATE_TIME_FORMAT)
+		};
+
+		if ($date === false) {
+			throw new InvalidArgumentException(sprintf("Invalid DateTime value provided for `%s` field", $timestampKey));
 		}
 
-		$date = $data[static::UPDATED_AT] ?? date(static::DATE_TIME_FORMAT);
-
-		$data[static::UPDATED_AT] = isset($data[static::UPDATED_AT])
-			? $date instanceof DateTime ? $date->format(static::DATE_TIME_FORMAT) : $date
+		$data[$timestampKey] = $date instanceof DateTime
+			? $date->format(static::DATE_TIME_FORMAT)
 			: $date;
 
-		$this->{static::UPDATED_AT} = $data[static::UPDATED_AT];
+		$this->{$timestampKey} = $data[$timestampKey];
 
 		return $this;
 	}
