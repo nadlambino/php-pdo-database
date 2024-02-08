@@ -202,6 +202,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return new ModelCollection($models, $this->model);
 	}
 
+	public function getArray(...$columns): array
+	{
+		return $this->get(...$columns)->toArray();
+	}
+
 	/**
 	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
 	 *
