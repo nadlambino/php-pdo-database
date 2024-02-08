@@ -6,6 +6,7 @@ namespace Inspira\Database\ORM;
 
 use ArrayAccess;
 use Closure;
+use DateTime;
 use Exception;
 use Inspira\Augmentable\Augmentable;
 use Inspira\Container\Container;
@@ -21,6 +22,7 @@ use Inspira\Database\ORM\Traits\ArrayAccessible;
 use Inspira\Database\ORM\Traits\IteratorAggregatable;
 use Inspira\Database\ORM\Traits\Query as QueryTrait;
 use Inspira\Database\ORM\Traits\Relations;
+use InvalidArgumentException;
 use IteratorAggregate;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -63,7 +65,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  * @method self limit(int $limit)
  * @method self offset(int $offset)
  * @method self union(Closure $closure)
- * @method softDelete()
+ * @method Update softDelete()
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
@@ -98,6 +100,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	protected const UPDATED_AT = 'updated_at';
 
 	protected const DELETED_AT = 'deleted_at';
+
+	protected const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
 	private const QUERY_METHODS = [
 		'distinct', 'where', 'orWhere', 'whereLike', 'whereNotLike',
@@ -261,7 +265,9 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$attributes = $this->toArray();
 
 		if ($this->hasId()) {
-			return $this->where($this->pk, $this->getId())->update($attributes);
+			return $this->attachUpdatedAt($attributes)
+				->where($this->pk, $this->getId())
+				->update($attributes);
 		}
 
 		return $this->create($attributes);
@@ -474,18 +480,44 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function attachCreatedAt(array &$data): static
 	{
-		if (static::CREATED_AT) {
-			$data[static::CREATED_AT] = date('Y-m-d H:i:s');
+		if (empty(static::CREATED_AT) || !static::CREATED_AT) {
+			return $this;
 		}
+
+		$provided = isset($data[static::CREATED_AT]);
+
+		if ($provided && $data[static::CREATED_AT] === false) {
+			throw new InvalidArgumentException(sprintf("Invalid DateTime value provided for `%s` field", static::CREATED_AT));
+		}
+
+		$date = $data[static::CREATED_AT] ?? date(static::DATE_TIME_FORMAT);
+
+		$data[static::CREATED_AT] = $provided
+			? $date instanceof DateTime ? $date->format(static::DATE_TIME_FORMAT) : $date
+			: $date;
+
+		$this->{static::CREATED_AT} = $data[static::CREATED_AT];
 
 		return $this;
 	}
 
 	private function attachUpdatedAt(array &$data): static
 	{
-		if (static::UPDATED_AT) {
-			$data[static::UPDATED_AT] = date('Y-m-d H:i:s');
+		if (empty(static::UPDATED_AT) || !static::UPDATED_AT) {
+			return $this;
 		}
+
+		if ($data[static::UPDATED_AT] === false) {
+			throw new InvalidArgumentException(sprintf("Invalid DateTime value provided for `%s` field", static::UPDATED_AT));
+		}
+
+		$date = $data[static::UPDATED_AT] ?? date(static::DATE_TIME_FORMAT);
+
+		$data[static::UPDATED_AT] = isset($data[static::UPDATED_AT])
+			? $date instanceof DateTime ? $date->format(static::DATE_TIME_FORMAT) : $date
+			: $date;
+
+		$this->{static::UPDATED_AT} = $data[static::UPDATED_AT];
 
 		return $this;
 	}
