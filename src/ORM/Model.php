@@ -103,7 +103,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
-	private const QUERY_METHODS = [
+	protected const QUERY_METHODS = [
 		'distinct', 'where', 'orWhere', 'whereLike', 'whereNotLike',
 		'orWhereLike', 'orWhereNotLike', 'whereNull', 'whereNotNull', 'orWhereNull',
 		'orWhereNotNull', 'whereBetween', 'whereNotBetween', 'orWhereBetween', 'orWhereNotBetween',
