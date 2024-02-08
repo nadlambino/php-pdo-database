@@ -31,8 +31,8 @@ trait Query
 		// Handles model
 		if ($modelOrRelation instanceof Model) {
 			$query = $modelOrRelation->query->select();
-			$modelOrRelation->attachClauses($query);
-			$this->addQueryClause($method, [$query]);
+			$modelOrRelation->attachQueries($query);
+			$this->addQuery($method, [$query]);
 
 			return $this;
 		}
@@ -47,14 +47,14 @@ trait Query
 			$localColumn ??= query_quote($this->connection, $this->pk);
 			$modelOrRelation = $relation->getModel()->whereRaw("$table.$foreignColumn = $foreignTable.$localColumn");
 			$query = $modelOrRelation->query->select();
-			$modelOrRelation->attachClauses($query);
-			$this->addQueryClause($method, [$query]);
+			$modelOrRelation->attachQueries($query);
+			$this->addQuery($method, [$query]);
 
 			return $this;
 		}
 
 		$table = !class_exists($modelOrRelation) ? $modelOrRelation : (new $modelOrRelation())->table;
-		$this->addQueryClause($method, [$table, $foreignColumn, $localColumn]);
+		$this->addQuery($method, [$table, $foreignColumn, $localColumn]);
 
 		return $this;
 	}

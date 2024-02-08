@@ -89,7 +89,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected readonly string $model;
 
-	protected array $clauses = [];
+	protected array $queries = [];
 
 	protected array $oldAttributes = [];
 
@@ -174,12 +174,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 
 		// If method doesn't exist in query object, and it is one of the available methods,
-		// We will compile them into the `$clauses` array for later use in the query builder
+		// We will compile them into the `$queries` array for later use in the query builder
 		// Then on our query methods (get, first, last, update, and delete),
-		// We will loop through these `$clauses` and append them in the query builder
+		// We will loop through these `$queries` and append them in the query builder
 		if (in_array($method, self::QUERY_METHODS)) {
 			$self = clone $this;
-			$self->addQueryClause($method, $arguments);
+			$self->addQuery($method, $arguments);
 
 			return $self;
 		}
@@ -194,7 +194,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function get(...$columns): ModelCollection
 	{
 		$query = $this->query->select(...$columns);
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		$models = $query->get();
 		$this->attachRelations($models);
@@ -211,7 +211,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function first(...$columns): ?static
 	{
 		$query = $this->query->select(...$columns);
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		$model = $query->limit(1)->first();
 		$this->attachRelations($model);
@@ -228,7 +228,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function last(...$columns): ?static
 	{
 		$query = $this->query->select(...$columns);
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		$model = $query->orderDesc($this->pk)->limit(1)->first();
 		$this->attachRelations($model);
@@ -245,7 +245,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function find(mixed $id): ?static
 	{
 		$query = $this->query->select()->where($this->findBy, $id);
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		$model = $query->first();
 		$this->attachRelations($model);
@@ -304,7 +304,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$oldAttributes = $this->toArray();
 		$query = $this->attachUpdatedAt($data)->query->update($this->table)->set($data);
 		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		$updated = $query->execute();
 
@@ -336,7 +336,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 			? $this->softDelete()
 			: $this->query->delete($this->table);
 
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		return $query->execute();
 	}
@@ -378,7 +378,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function toSql(): string
 	{
 		$query = $this->query->select('*');
-		$this->attachClauses($query);
+		$this->attachQueries($query);
 
 		return $query->toSql();
 	}
@@ -409,12 +409,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected function isQueryNotModified(): bool
 	{
-		$countClauses = count($this->clauses);
-		// If the model is soft deletable and the clauses count is 1
+		$countClauses = count($this->queries);
+		// If the model is soft deletable and the queries count is 1
 		// It means there are no chained queries upon calling this method
 		$softDeletableNoAddedQuery = $this->isSoftDeletable() && $countClauses === 1;
 
-		// If the model is non-soft deletable and clauses count is 0
+		// If the model is non-soft deletable and queries count is 0
 		// It means there are no chained queries upon calling this method
 		$nonSoftDeletableNoAddedQuery = !$this->isSoftDeletable() && $countClauses === 0;
 
@@ -457,20 +457,20 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 			->table($this->table);
 	}
 
-	protected function addQueryClause(string $method, array $arguments): void
+	protected function addQuery(string $method, array $arguments): void
 	{
-		$this->clauses[] = compact('method', 'arguments');
+		$this->queries[] = compact('method', 'arguments');
 	}
 
 	/**
-	 * Append the clauses to the query object
+	 * Attach the queries to the query object
 	 *
 	 * @param Insert|Select|Update|Delete $query
 	 * @return void
 	 */
-	private function attachClauses(Insert|Select|Update|Delete $query): void
+	private function attachQueries(Insert|Select|Update|Delete $query): void
 	{
-		foreach ($this->clauses as $clause) {
+		foreach ($this->queries as $clause) {
 			$method = $clause['method'];
 			$arguments = $clause['arguments'];
 
@@ -522,7 +522,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	private function setSofDelete()
 	{
 		if ($this->isSoftDeletable()) {
-			$this->addQueryClause('whereNull', [static::DELETED_AT]);
+			$this->addQuery('whereNull', [static::DELETED_AT]);
 		}
 	}
 }

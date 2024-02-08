@@ -8,8 +8,7 @@ use Inspira\Database\Builder\Update;
 /**
  * @property-read Query $query
  * @property-read string $table
- * @method appendQueryClauses(mixed $query)
- * @method addQueryClause(string $name, array $arguments)
+ * @method addQuery(string $method, array $arguments)
  */
 trait SoftDelete
 {
@@ -18,15 +17,15 @@ trait SoftDelete
 		return $this->query
 			->update($this->table)
 			->set([
-				static::DELETED_AT => date('Y-m-d H:i:s')
+				static::DELETED_AT => date(static::DATE_TIME_FORMAT)
 			]);
 	}
 
 	public function withTrashed(): static
 	{
-		foreach($this->clauses as $index => $clause) {
+		foreach($this->queries as $index => $clause) {
 			if ($clause['method'] === 'whereNull' && in_array(static::DELETED_AT, $clause['arguments'])) {
-				unset($this->clauses[$index]);
+				unset($this->queries[$index]);
 				break;
 			}
 		}
@@ -36,10 +35,10 @@ trait SoftDelete
 
 	public function onlyTrashed(): static
 	{
-		foreach($this->clauses as $index => $clause) {
+		foreach($this->queries as $index => $clause) {
 			if ($clause['method'] === 'whereNull' && in_array(static::DELETED_AT, $clause['arguments'])) {
-				unset($this->clauses[$index]);
-				array_unshift($this->clauses, ['method' => 'whereNotNull', 'arguments' => [static::DELETED_AT]]);
+				unset($this->queries[$index]);
+				$this->addQuery('whereNotNull', [static::DELETED_AT]);
 				break;
 			}
 		}
