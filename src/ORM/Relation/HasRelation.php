@@ -101,7 +101,7 @@ abstract class HasRelation
 		return $this->localKey;
 	}
 
-	public function create(array $data): bool
+	public function create(array $data): Model|false
 	{
 		$foreignKeyValue = $this->foreignModel->{$this->localKey};
 		if (!is_null($foreignKeyValue)) {
