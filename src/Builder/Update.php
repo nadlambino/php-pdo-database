@@ -28,13 +28,16 @@ class Update extends Base
 			return '';
 		}
 
-		$sql = $this->concat(
-			Reserved::UPDATE->value,
-			pdo_quote($this->table),
-			$this->getJoinClause(),
-			Reserved::SET->value,
-			$this->getColumnClause(),
-			$this->getWhereClause()
+		$sql = implode(
+			' ',
+			[
+				Reserved::UPDATE->value,
+				pdo_quote($this->table),
+				$this->getJoinClause(),
+				Reserved::SET->value,
+				$this->getColumnClause(),
+				$this->getWhereClause()
+			]
 		);
 
 		return $this->trimWhiteSpace($sql);
@@ -51,7 +54,7 @@ class Update extends Base
 			}
 
 			$placeholder = $this->generatePlaceholder($column);
-			$clause .= $this->concat(pdo_quote($column), '=', $placeholder, $glue);
+			$clause .= implode(' ', [pdo_quote($column), '=', $placeholder, $glue]);
 			$this->addParameter($placeholder, $value);
 		}
 

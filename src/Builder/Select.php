@@ -106,16 +106,19 @@ class Select extends Base
 			return '';
 		}
 
-		$sql = $this->concat(
-			$this->getSelectClause(),
-			$this->getJoinClause(),
-			$this->getWhereClause(),
-			$this->getGroupByClause(),
-			$this->getHavingClause(),
-			$this->getOrderClause(),
-			$this->getUnionClause(),
-			$this->getLimitClause(),
-			$this->getOffsetClause(),
+		$sql = implode(
+			' ',
+			[
+				$this->getSelectClause(),
+				$this->getJoinClause(),
+				$this->getWhereClause(),
+				$this->getGroupByClause(),
+				$this->getHavingClause(),
+				$this->getOrderClause(),
+				$this->getUnionClause(),
+				$this->getLimitClause(),
+				$this->getOffsetClause(),
+			]
 		);
 
 		return $this->trimWhiteSpace($sql);
@@ -146,12 +149,15 @@ class Select extends Base
 		$columns = empty($columns) ? Reserved::ALL->value : $columns;
 		$columns = $this->distinct ? Reserved::DISTINCT->value . ' ' . $columns : $columns;
 
-		return $this->concat(
-			Reserved::SELECT->value,
-			$columns,
-			Reserved::FROM->value,
-			pdo_quote($this->table),
-			pdo_quote($this->tableAlias)
+		return implode(
+			' ',
+			[
+				Reserved::SELECT->value,
+				$columns,
+				Reserved::FROM->value,
+				pdo_quote($this->table),
+				pdo_quote($this->tableAlias)
+			]
 		);
 	}
 
@@ -179,7 +185,14 @@ class Select extends Base
 				continue;
 			}
 
-			$aliased[] = $this->concat($this->getFormattedColumn($column), Reserved::AS->value, pdo_quote($alias));
+			$aliased[] = implode(
+				' ',
+				[
+					$this->getFormattedColumn($column),
+					Reserved::AS->value,
+					pdo_quote($alias)
+				]
+			);
 		}
 
 		return implode(', ', $aliased);
@@ -191,7 +204,13 @@ class Select extends Base
 			return '';
 		}
 
-		return $this->concat(Reserved::LIMIT->value, $this->generatePlaceholder('limit', suffix: ''));
+		return implode(
+			' ',
+			[
+				Reserved::LIMIT->value,
+				$this->generatePlaceholder('limit', suffix: '')
+			]
+		);
 	}
 
 	private function getOffsetClause(): string
@@ -200,7 +219,13 @@ class Select extends Base
 			return '';
 		}
 
-		return $this->concat(Reserved::OFFSET->value, $this->generatePlaceholder('offset', suffix: ''));
+		return implode(
+			' ',
+			[
+				Reserved::OFFSET->value,
+				$this->generatePlaceholder('offset', suffix: '')
+			]
+		);
 	}
 
 	private function getUnionClause(): string
@@ -208,7 +233,14 @@ class Select extends Base
 		$clause = '';
 
 		foreach ($this->unions as $union) {
-			$clause .= $this->concat(' ', Reserved::UNION->value, $union);
+			$clause .= implode(
+				' ',
+				[
+					' ',
+					Reserved::UNION->value,
+					$union
+				]
+			);
 		}
 
 		return $clause;

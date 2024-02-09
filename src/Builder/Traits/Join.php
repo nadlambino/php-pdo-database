@@ -88,11 +88,11 @@ trait Join
 
 		foreach ($this->joins as $join) {
 			if ($join['type'] === Reserved::CROSS_JOIN->value) {
-				$clause .= ' ' . $this->concat($join['type'], $join['table'], $join['alias']);
+				$clause .= ' ' . implode(' ', [$join['type'], $join['table'], $join['alias']]);
 				continue;
 			}
 
-			$clause .= ' ' . $this->concat($join['type'], $join['table'], $join['alias'], Reserved::ON->value, $join['local'], $join['comparison'], $join['foreign']);
+			$clause .= ' ' . implode(' ', [$join['type'], $join['table'], $join['alias'], Reserved::ON->value, $join['local'], $join['comparison'], $join['foreign']]);
 		}
 
 		return $clause;

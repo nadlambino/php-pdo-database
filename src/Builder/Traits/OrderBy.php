@@ -33,10 +33,10 @@ trait OrderBy
 		$columns = array_keys($this->orders);
 		$last = end($columns);
 		foreach ($this->orders as $column => $order) {
-			$clause .= $this->concat($column, $order);
+			$clause .= implode(' ', [$column, $order]);
 			$clause .= $column === $last ? '' : ', ';
 		}
 
-		return empty($clause) ? '' : $this->concat(Reserved::ORDER_BY->value, $clause);
+		return empty($clause) ? '' : implode(' ', [Reserved::ORDER_BY->value, $clause]);
 	}
 }

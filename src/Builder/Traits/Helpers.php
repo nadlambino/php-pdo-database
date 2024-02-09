@@ -73,13 +73,13 @@ trait Helpers
 			// If it's a nested group, recursively generate the nested WHERE clause
 			if (isset($condition['grouped']) && $condition['grouped'] === true) {
 				$groupedWhere = $this->getConditions($condition['parameters'], $for);
-				$clause .= $this->concat(' ', $operator, '(', $groupedWhere, ')');
+				$clause .= implode(' ', [' ', $operator, '(', $groupedWhere, ')']);
 				continue;
 			}
 
 			// If it's a raw query, accept it and continue to the next condition
 			if (isset($condition['parameters']['raw'])) {
-				$clause .= $this->concat(' ', $operator, ' ', $condition['parameters']['raw']);
+				$clause .= implode(' ', [' ', $operator, ' ', $condition['parameters']['raw']]);
 				continue;
 			}
 
@@ -114,7 +114,7 @@ trait Helpers
 				[$lowerBound, $upperBound] = $value;
 				$lowerBoundPlaceholder = $this->generatePlaceholder($rawColumn, suffix: (string)$count);
 				$upperBoundPlaceholder = $this->generatePlaceholder($rawColumn, suffix: (string)($count + 1));
-				$clause .= $this->concat(' ', $operator, $column, $comparison, $lowerBoundPlaceholder, Reserved::AND->value, $upperBoundPlaceholder);
+				$clause .= implode(' ', [' ', $operator, $column, $comparison, $lowerBoundPlaceholder, Reserved::AND->value, $upperBoundPlaceholder]);
 				$this->addParameter($lowerBoundPlaceholder, $lowerBound);
 				$this->addParameter($upperBoundPlaceholder, $upperBound);
 			}
@@ -128,13 +128,13 @@ trait Helpers
 					$this->addParameter($placeholder, $v);
 				}
 				$placeholders = trim($placeholders, ', ');
-				$clause .= $this->concat(' ', $operator, $column, $comparison, "($placeholders)");
+				$clause .= implode(' ', [' ', $operator, $column, $comparison, "($placeholders)"]);
 			}
 
 			// Handles WHERE query
 			else {
 				$placeholder = $this->generatePlaceholder($rawColumn);
-				$clause .= $this->concat(' ', $operator, $column, $comparison, $placeholder);
+				$clause .= implode(' ', [' ', $operator, $column, $comparison, $placeholder]);
 				$this->addParameter($placeholder, $value);
 			}
 		}
@@ -152,11 +152,6 @@ trait Helpers
 		}
 
 		return compact('column', 'comparison', 'value');
-	}
-
-	protected function concat(...$strings): string
-	{
-		return implode(' ', $strings);
 	}
 
 	protected function getFormattedColumn(string $column): string

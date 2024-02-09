@@ -78,6 +78,6 @@ trait Having
 	{
 		$conditions = $this->getConditions($this->havings, Reserved::HAVING->value);
 
-		return empty(trim($conditions)) ? '' : $this->concat(Reserved::HAVING->value, $conditions);
+		return empty(trim($conditions)) ? '' : implode(' ', [Reserved::HAVING->value, $conditions]);
 	}
 }

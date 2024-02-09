@@ -201,6 +201,6 @@ trait Where
 	{
 		$conditions = $this->getConditions($this->wheres, Reserved::WHERE->value);
 
-		return empty(trim($conditions)) ? '' : $this->concat(Reserved::WHERE->value, $conditions);
+		return empty(trim($conditions)) ? '' : implode(' ', [Reserved::WHERE->value, $conditions]);
 	}
 }

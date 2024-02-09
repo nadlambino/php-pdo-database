@@ -20,13 +20,16 @@ class Delete extends Base
 
 		$join = $this->getJoinClause();
 		$table = pdo_quote($this->table);
-		$sql = $this->concat(
-			Reserved::DELETE->value,
-			empty($join) ? '' : $table,
-			Reserved::FROM->value,
-			$table,
-			$join,
-			$this->getWhereClause()
+		$sql = implode(
+			' ',
+			[
+				Reserved::DELETE->value,
+				empty($join) ? '' : $table,
+				Reserved::FROM->value,
+				$table,
+				$join,
+				$this->getWhereClause()
+			]
 		);
 
 		return $this->trimWhiteSpace($sql);

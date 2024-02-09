@@ -28,12 +28,15 @@ class Insert extends Base
 			return '';
 		}
 
-		$sql = $this->concat(
-			Reserved::INSERT_INTO->value,
-			pdo_quote($this->table),
-			$this->getColumnClause(),
-			Reserved::VALUES->value,
-			$this->getValuesClause()
+		$sql = implode(
+			' ',
+			[
+				Reserved::INSERT_INTO->value,
+				pdo_quote($this->table),
+				$this->getColumnClause(),
+				Reserved::VALUES->value,
+				$this->getValuesClause()
+			]
 		);
 
 		return $this->trimWhiteSpace($sql);
