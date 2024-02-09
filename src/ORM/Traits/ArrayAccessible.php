@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Inspira\Database\ORM\Traits;
 
+use Inspira\Container\Container;
+
 /**
  * @property $attributes
  */
@@ -49,6 +51,8 @@ trait ArrayAccessible
 			return;
 		}
 
+		$value = $this->cast($offset, $value);
+
 		$old = $this->attributes;
 		$old[$offset] ??= $value;
 		$this->attributes[$offset] = $value;
@@ -63,5 +67,20 @@ trait ArrayAccessible
 	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->attributes[$offset]);
+	}
+
+	private function cast(mixed $attribute, mixed $initialValue): mixed
+	{
+		if (!isset($this->casts[$attribute])) {
+			return $initialValue;
+		}
+
+		$type = $this->casts[$attribute];
+
+		return match (true) {
+			class_exists($type) => new $type($initialValue),
+			Container::getInstance()->has($type) => new (Container::getInstance()->make($type))($initialValue),
+			default => set_type($initialValue, $type)
+		};
 	}
 }

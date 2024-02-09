@@ -97,6 +97,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected array $hidden = [];
 
+	protected array $casts = [];
+
 	protected const CREATED_AT = 'created_at';
 
 	protected const UPDATED_AT = 'updated_at';
@@ -277,7 +279,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 				->update($attributes);
 		}
 
-		return $this->create($attributes);
+		return $this->create($attributes) !== false;
 	}
 
 	/**

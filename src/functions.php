@@ -47,3 +47,12 @@ if (!function_exists('normalize_whitespace')) {
 		return preg_replace('/\s+/', ' ', trim($string));
 	}
 }
+
+if (!function_exists('set_type')) {
+	function set_type(mixed $value, string $type)
+	{
+		settype($value, $type);
+
+		return $value;
+	}
+}
