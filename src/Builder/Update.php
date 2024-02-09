@@ -40,7 +40,7 @@ class Update extends Base
 			]
 		);
 
-		return $this->trimWhiteSpace($sql);
+		return normalize_whitespace($sql);
 	}
 
 	private function getColumnClause(): string

@@ -121,7 +121,7 @@ class Select extends Base
 			]
 		);
 
-		return $this->trimWhiteSpace($sql);
+		return normalize_whitespace($sql);
 	}
 
 	private function setFetchMode(): void

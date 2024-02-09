@@ -39,7 +39,7 @@ class Insert extends Base
 			]
 		);
 
-		return $this->trimWhiteSpace($sql);
+		return normalize_whitespace($sql);
 	}
 
 	private function getColumnClause(): string

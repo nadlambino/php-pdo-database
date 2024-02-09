@@ -40,3 +40,10 @@ if (!function_exists('pdo_type')) {
 		};
 	}
 }
+
+if (!function_exists('normalize_whitespace')) {
+	function normalize_whitespace(string $string): string
+	{
+		return preg_replace('/\s+/', ' ', trim($string));
+	}
+}

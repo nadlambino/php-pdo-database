@@ -32,7 +32,7 @@ class Delete extends Base
 			]
 		);
 
-		return $this->trimWhiteSpace($sql);
+		return normalize_whitespace($sql);
 	}
 
 	public function clean(): static

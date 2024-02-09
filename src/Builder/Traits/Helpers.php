@@ -163,9 +163,4 @@ trait Helpers
 
 		return isset($exploded[1]) ? "$table.$column" : $column;
 	}
-
-	protected function trimWhiteSpace(string $string): string
-	{
-		return preg_replace('/\s+/', ' ', trim($string));
-	}
 }
