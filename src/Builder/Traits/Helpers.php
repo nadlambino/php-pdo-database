@@ -166,15 +166,7 @@ trait Helpers
 
 	protected function type(mixed $value): int
 	{
-		$type = gettype($value);
-
-		return match (true) {
-			$type === 'NULL' => PDO::PARAM_NULL,
-			$type === 'boolean' => PDO::PARAM_BOOL,
-			$type === 'integer' => PDO::PARAM_INT,
-			$type === 'resource' => PDO::PARAM_LOB,
-			default => PDO::PARAM_STR,
-		};
+		return pdo_type($value);
 	}
 
 	protected function getFormattedColumn(string $column): string

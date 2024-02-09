@@ -22,3 +22,18 @@ if (!function_exists('query_quote')) {
 		};
 	}
 }
+
+if (!function_exists('pdo_type')) {
+	function pdo_type(mixed $value): int
+	{
+		$type = gettype($value);
+
+		return match (true) {
+			$type === 'NULL' => PDO::PARAM_NULL,
+			$type === 'boolean' => PDO::PARAM_BOOL,
+			$type === 'integer' => PDO::PARAM_INT,
+			$type === 'resource' => PDO::PARAM_LOB,
+			default => PDO::PARAM_STR,
+		};
+	}
+}

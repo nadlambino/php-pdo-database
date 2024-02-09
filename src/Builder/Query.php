@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\Builder;
 
+use Inspira\Database\Builder\Traits\Helpers;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
@@ -56,21 +57,14 @@ class Query
 	}
 
 	/**
-	 * Pass a raw query which will then be directly used
-	 * Make sure that you sanitized what you pass here
+	 * Create a raw SQL statement
 	 *
-	 * @param string $query
-	 * @return Raw
+	 * @param string $sql
+	 * @param array $parameters
+	 * @return Sql
 	 */
-	public function raw(string $query): Raw
+	public function raw(string $sql, array $parameters = []): Sql
 	{
-		if (isset($this->raw)) {
-			return $this->raw->query($query);
-		}
-
-		$this->raw = new Raw();
-		$this->raw->query($query);
-
-		return $this->raw;
+		return new Sql($this->connection, $sql, $parameters);
 	}
 }
