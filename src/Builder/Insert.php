@@ -30,7 +30,7 @@ class Insert extends Base
 
 		$sql = $this->concat(
 			Reserved::INSERT_INTO->value,
-			$this->quote($this->table),
+			pdo_quote($this->table),
 			$this->getColumnClause(),
 			Reserved::VALUES->value,
 			$this->getValuesClause()
@@ -46,7 +46,7 @@ class Insert extends Base
 		$glue = ', ';
 
 		foreach ($data as $column => $value) {
-			$clause .= $this->quote($column) . $glue;
+			$clause .= pdo_quote($column) . $glue;
 		}
 
 		$clause = trim($clause, $glue);

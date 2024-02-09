@@ -69,8 +69,8 @@ trait Join
 		$rawTable = $alias ?? $table;
 		$local = $this->getFormattedColumn("$this->table.{$column}_id");
 		$foreign = $this->getFormattedColumn("$rawTable.id");
-		$table = $this->quote($table);
-		$alias = isset($alias) ? $this->quote($alias) : null;
+		$table = pdo_quote($table);
+		$alias = isset($alias) ? pdo_quote($alias) : null;
 
 		if ($table === Reserved::CROSS_JOIN->value) {
 			$local = null;

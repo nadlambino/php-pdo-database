@@ -54,7 +54,7 @@ trait Aggregates
 			$this->$property[Reserved::ALL->value] = Reserved::ALL->value;
 		} else {
 			$alias = $alias ?? (string)$column;
-			$this->$property[$this->quote($alias)] = $column instanceof Raw ? $column : $this->getFormattedColumn($column);
+			$this->$property[pdo_quote($alias)] = $column instanceof Raw ? $column : $this->getFormattedColumn($column);
 		}
 
 		return $this;

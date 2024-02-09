@@ -30,7 +30,7 @@ class Update extends Base
 
 		$sql = $this->concat(
 			Reserved::UPDATE->value,
-			$this->quote($this->table),
+			pdo_quote($this->table),
 			$this->getJoinClause(),
 			Reserved::SET->value,
 			$this->getColumnClause(),
@@ -51,7 +51,7 @@ class Update extends Base
 			}
 
 			$placeholder = $this->generatePlaceholder($column);
-			$clause .= $this->concat($this->quote($column), '=', $placeholder, $glue);
+			$clause .= $this->concat(pdo_quote($column), '=', $placeholder, $glue);
 			$this->addParameter($placeholder, $value);
 		}
 

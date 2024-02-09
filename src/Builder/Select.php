@@ -150,8 +150,8 @@ class Select extends Base
 			Reserved::SELECT->value,
 			$columns,
 			Reserved::FROM->value,
-			$this->quote($this->table),
-			$this->quote($this->tableAlias)
+			pdo_quote($this->table),
+			pdo_quote($this->tableAlias)
 		);
 	}
 
@@ -179,7 +179,7 @@ class Select extends Base
 				continue;
 			}
 
-			$aliased[] = $this->concat($this->getFormattedColumn($column), Reserved::AS->value, $this->quote($alias));
+			$aliased[] = $this->concat($this->getFormattedColumn($column), Reserved::AS->value, pdo_quote($alias));
 		}
 
 		return implode(', ', $aliased);

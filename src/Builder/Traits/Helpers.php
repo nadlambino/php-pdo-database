@@ -85,17 +85,17 @@ trait Helpers
 
 			// Regular condition with named placeholder
 			$rawColumn = $condition['parameters']['column'];
-			$column = $for === Reserved::WHERE->value ? $this->getFormattedColumn($rawColumn) : $this->quote($rawColumn);
+			$column = $for === Reserved::WHERE->value ? $this->getFormattedColumn($rawColumn) : pdo_quote($rawColumn);
 			$value = $condition['parameters']['value'];
 			$comparison = $condition['parameters']['comparison'];
 			$table = $condition['parameters']['table'] ?? null;
 
 			// Handles WHERE EXISTS/NOT EXISTS query
 			if (isset($table)) {
-				$quotedTable = $this->quote($table);
-				$quotedParentTable = $this->quote($this->table);
-				$quotedTableColumn = $this->quote($rawColumn);
-				$quotedParentTableColumn = $this->quote($value);
+				$quotedTable = pdo_quote($table);
+				$quotedParentTable = pdo_quote($this->table);
+				$quotedTableColumn = pdo_quote($rawColumn);
+				$quotedParentTableColumn = pdo_quote($value);
 				$exists = isset($condition['parameters']['exists']) && $condition['parameters']['exists']
 					? Reserved::EXISTS->value
 					: Reserved::NOT_EXISTS->value;
@@ -154,27 +154,17 @@ trait Helpers
 		return compact('column', 'comparison', 'value');
 	}
 
-	public function quote(string|Raw|null $string): string
-	{
-		return query_quote($this->connection, $string);
-	}
-
 	protected function concat(...$strings): string
 	{
 		return implode(' ', $strings);
 	}
 
-	protected function type(mixed $value): int
-	{
-		return pdo_type($value);
-	}
-
 	protected function getFormattedColumn(string $column): string
 	{
 		$exploded = explode('.', $column);
-		$table = $this->quote($exploded[0]);
+		$table = pdo_quote($exploded[0]);
 		$column = $exploded[1] ?? $exploded[0];
-		$column = $column === Reserved::ALL->value ? $column : $this->quote($column);
+		$column = $column === Reserved::ALL->value ? $column : pdo_quote($column);
 
 		return isset($exploded[1]) ? "$table.$column" : $column;
 	}

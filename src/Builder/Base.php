@@ -35,7 +35,7 @@ abstract class Base implements QueryInterface
 		$parameters = $this->getParameters();
 
 		foreach ($parameters as $placeholder => $value) {
-			$this->statement->bindValue($placeholder, $value, $this->type($value));
+			$this->statement->bindValue($placeholder, $value, pdo_type($value));
 		}
 
 		return $this->statement->execute();

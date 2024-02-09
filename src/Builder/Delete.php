@@ -19,7 +19,7 @@ class Delete extends Base
 		}
 
 		$join = $this->getJoinClause();
-		$table = $this->quote($this->table);
+		$table = pdo_quote($this->table);
 		$sql = $this->concat(
 			Reserved::DELETE->value,
 			empty($join) ? '' : $table,

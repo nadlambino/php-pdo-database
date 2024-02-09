@@ -1,5 +1,6 @@
 <?php
 
+use Inspira\Container\Container;
 use Inspira\Database\Builder\Raw;
 
 if (!function_exists('get_short_class_name')) {
@@ -9,10 +10,12 @@ if (!function_exists('get_short_class_name')) {
 	}
 }
 
-if (!function_exists('query_quote')) {
-	function query_quote(PDO $connection, Raw|string|null $string): string
+if (!function_exists('pdo_quote')) {
+	function pdo_quote(Raw|string|null $string, ?PDO $connection = null): string
 	{
-		$driver = $connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+		/** @var PDO $connection */
+		$connection ??= Container::getInstance()->make(PDO::class);
+		$driver = $connection?->getAttribute(PDO::ATTR_DRIVER_NAME);
 
 		return match (true) {
 			is_null($string) => '',

@@ -41,10 +41,10 @@ trait Query
 		if (method_exists($this, $modelOrRelation)) {
 			/** @var HasRelation $relation */
 			$relation = $this->$modelOrRelation();
-			$foreignTable = query_quote($this->connection, $this->table);
-			$table = query_quote($this->connection, $relation->getModel()->table);
-			$foreignColumn ??= query_quote($this->connection, $this->inflector->singularize($this->table)[0] . '_id');
-			$localColumn ??= query_quote($this->connection, $this->pk);
+			$foreignTable = pdo_quote($this->table);
+			$table = pdo_quote($relation->getModel()->table);
+			$foreignColumn ??= pdo_quote($this->inflector->singularize($this->table)[0] . '_id');
+			$localColumn ??= pdo_quote($this->pk);
 			$modelOrRelation = $relation->getModel()->whereRaw("$table.$foreignColumn = $foreignTable.$localColumn");
 			$query = $modelOrRelation->query->select();
 			$modelOrRelation->attachQueries($query);
