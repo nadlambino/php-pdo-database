@@ -13,6 +13,11 @@ class Raw
 		$this->query = $query;
 	}
 
+	public static function make(string $query): static
+	{
+		return new static($query);
+	}
+
 	public function query(string $query): static
 	{
 		$this->query = $query;
