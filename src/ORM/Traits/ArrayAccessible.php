@@ -35,7 +35,6 @@ trait ArrayAccessible
 
 	/**
 	 * Sets the value at the specified offset.
-	 * If offset is empty, push the value to attributes.
 	 *
 	 * @param mixed $offset The offset to set.
 	 * @param mixed $value The value to set.
@@ -43,15 +42,12 @@ trait ArrayAccessible
 	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		if (empty($offset)) {
-			$this->attributes[] = $value;
 			return;
 		}
 
 		if (in_array($offset, $this->hidden)) {
 			return;
 		}
-
-		$value = $this->cast($offset, $value);
 
 		$old = $this->attributes;
 		$old[$offset] ??= $value;
@@ -67,20 +63,5 @@ trait ArrayAccessible
 	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->attributes[$offset]);
-	}
-
-	private function cast(mixed $attribute, mixed $initialValue): mixed
-	{
-		if (!isset($this->casts[$attribute])) {
-			return $initialValue;
-		}
-
-		$type = $this->casts[$attribute];
-
-		return match (true) {
-			class_exists($type) => new $type($initialValue),
-			Container::getInstance()->has($type) => new (Container::getInstance()->make($type))($initialValue),
-			default => set_type($initialValue, $type)
-		};
 	}
 }

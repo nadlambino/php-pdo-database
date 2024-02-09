@@ -127,7 +127,68 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$this->setTable();
 		$this->setQuery();
 		$this->setSofDelete();
-		$this->attributes = empty($attributes) ? $this->attributes : $attributes;
+		$this->setAttributes($attributes);
+	}
+
+	public function setAttribute(string $column, mixed $value)
+	{
+		$value = $this->cast($column, $value);
+		$this->attributes[$column] = $value;
+	}
+
+	private function setAttributes(array $attributes)
+	{
+		foreach ($attributes as $column => $value) {
+			$value = $this->cast($column, $value);
+			$this->setAttribute($column, $value);
+		}
+	}
+
+	private function castData(array $data): array
+	{
+		$casted = [];
+
+		foreach ($data as $column => $value) {
+			$value = $this->cast($column, $value);
+			$casted[$column] = $value;
+		}
+
+		return $casted;
+	}
+
+	private function removeHiddenAttributes()
+	{
+		foreach ($this->attributes as $column => $value) {
+			if (in_array($column, $this->hidden)) {
+				unset($this->attributes[$column]);
+			}
+		}
+	}
+
+	private function removeHiddenOldAttributes()
+	{
+		foreach ($this->oldAttributes as $column => $value) {
+			if (in_array($column, $this->hidden)) {
+				unset($this->oldAttributes[$column]);
+			}
+		}
+	}
+
+	private function cast(mixed $column, mixed $initialValue): mixed
+	{
+		if (!isset($this->casts[$column])) {
+			return $initialValue;
+		}
+
+		$type = $this->casts[$column];
+
+		return match (true) {
+			in_array($type, ['bool', 'boolean', 'int', 'integer', 'float', 'double', 'string', 'array', 'object', 'null']) => set_type($initialValue, $type),
+			is_callable($type) => $type($initialValue),
+			class_exists($type) => new $type($initialValue),
+			Container::getInstance()->has($type) => new (Container::getInstance()->make($type))($initialValue),
+			default => $initialValue
+		};
 	}
 
 	public function getPk(): string
@@ -274,9 +335,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$attributes = $this->toArray();
 
 		if ($this->hasId()) {
-			return $this->attachUpdatedAt($attributes)
-				->where($this->pk, $this->getId())
-				->update($attributes);
+			return $this->update($attributes);
 		}
 
 		return $this->create($attributes) !== false;
@@ -291,7 +350,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function create(array $data): static|false
 	{
-		$created = $this->attachCreatedAt($data)->query->insert($data)->execute();
+		$castedData = $this->castData($data);
+		$created = $this->attachCreatedAt($castedData)->query->insert($castedData)->execute();
 
 		if ($created) {
 			return $this->find($this->connection->lastInsertId());
@@ -311,7 +371,9 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function update(array $data): bool
 	{
 		$oldAttributes = $this->toArray();
-		$query = $this->attachUpdatedAt($data)->query->update($this->table)->set($data);
+		$castedData = $this->castData($data);
+
+		$query = $this->attachUpdatedAt($castedData)->query->update($this->table)->set($castedData);
 		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
 		$this->attachQueries($query);
 
@@ -319,7 +381,9 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		if ($updated) {
 			$this->oldAttributes = $oldAttributes;
-			$this->attributes = [...$this->attributes, ...$data];
+			$this->attributes = [...$this->oldAttributes, ...$castedData];
+			$this->removeHiddenAttributes();
+			$this->removeHiddenOldAttributes();
 		}
 
 		return $updated;
@@ -381,7 +445,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function old(?string $attribute = null)
 	{
-		return empty($attribute) ? $this->oldAttributes : $this->oldAttributes[$attribute];
+		return empty($attribute) ? $this->oldAttributes : $this->oldAttributes[$attribute] ?? null;
 	}
 
 	public function toSql(): string
@@ -505,8 +569,9 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		$provided = isset($data[$timestampKey]);
 		$date = match (true) {
+			$provided && $data[$timestampKey] === $this->old($timestampKey) => date(static::DATE_TIME_FORMAT),
 			$provided && is_string($data[$timestampKey]) => date_create($data[$timestampKey]),
-			$provided && $data[$timestampKey] !== $this->old($timestampKey) => $data[$timestampKey],
+			$provided => $data[$timestampKey],
 			default => date(static::DATE_TIME_FORMAT)
 		};
 
