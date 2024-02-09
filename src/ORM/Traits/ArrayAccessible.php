@@ -42,12 +42,17 @@ trait ArrayAccessible
 	{
 		if (empty($offset)) {
 			$this->attributes[] = $value;
-		} else {
-			$old = $this->attributes;
-			$old[$offset] ??= $value;
-			$this->attributes[$offset] = $value;
-			$this->oldAttributes = [...$old, ...$this->oldAttributes];
+			return;
 		}
+
+		if (in_array($offset, $this->hidden)) {
+			return;
+		}
+
+		$old = $this->attributes;
+		$old[$offset] ??= $value;
+		$this->attributes[$offset] = $value;
+		$this->oldAttributes = [...$old, ...$this->oldAttributes];
 	}
 
 	/**

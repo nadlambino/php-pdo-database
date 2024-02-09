@@ -95,6 +95,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected array $attributes = [];
 
+	protected array $hidden = [];
+
 	protected const CREATED_AT = 'created_at';
 
 	protected const UPDATED_AT = 'updated_at';
