@@ -2,6 +2,8 @@
 
 use Inspira\Container\Container;
 use Inspira\Database\QueryBuilder\RawQuery;
+use Symfony\Component\String\Inflector\EnglishInflector;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
 if (!function_exists('get_short_class_name')) {
 	function get_short_class_name(string $class): string
@@ -54,5 +56,23 @@ if (!function_exists('set_type')) {
 		settype($value, $type);
 
 		return $value;
+	}
+}
+
+if (!function_exists('singularize')) {
+	function singularize(string $word, ?InflectorInterface $inflector = null): string
+	{
+		$inflector ??= new EnglishInflector();
+
+		return $inflector->singularize($word)[0] ?? $word;
+	}
+}
+
+if (!function_exists('pluralize')) {
+	function pluralize(string $word, ?InflectorInterface $inflector = null): string
+	{
+		$inflector ??= new EnglishInflector();
+
+		return $inflector->pluralize($word)[0] ?? $word;
 	}
 }

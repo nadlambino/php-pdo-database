@@ -65,10 +65,10 @@ trait Join
 
 	protected function addJoin(string $type, string $table, ?string $alias = null, string $comparison = '='): static
 	{
-		$column = $table;
+		$foreignTable = singularize($this->table);
 		$rawTable = $alias ?? $table;
-		$local = $this->getFormattedColumn("$this->table.{$column}_id");
-		$foreign = $this->getFormattedColumn("$rawTable.id");
+		$local = $this->getFormattedColumn("$this->table.id");
+		$foreign = $this->getFormattedColumn("$rawTable.{$foreignTable}_id");
 		$table = pdo_quote($table);
 		$alias = isset($alias) ? pdo_quote($alias) : null;
 
