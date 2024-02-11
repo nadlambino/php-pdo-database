@@ -8,7 +8,7 @@ use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\SelectQuery;
 use PDO;
 
-trait Helpers
+trait QueryHelper
 {
 	/**
 	 * This holds the bound parameters to the query where key is the placeholder

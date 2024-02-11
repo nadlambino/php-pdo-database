@@ -13,7 +13,7 @@ use PDO;
  */
 class WhereClause
 {
-	use Traits\Where, Traits\Helpers;
+	use Traits\Where, Traits\QueryHelper;
 
 	public function __construct(protected PDO $connection)
 	{

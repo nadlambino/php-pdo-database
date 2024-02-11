@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\QueryBuilder;
 
-use Inspira\Database\QueryBuilder\Traits\Helpers;
+use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 

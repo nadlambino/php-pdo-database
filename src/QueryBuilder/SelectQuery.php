@@ -12,7 +12,7 @@ use Inspira\Database\QueryBuilder\Traits\Aggregates;
 use Inspira\Database\QueryBuilder\Traits\CanSetTable;
 use Inspira\Database\QueryBuilder\Traits\GroupBy;
 use Inspira\Database\QueryBuilder\Traits\Having;
-use Inspira\Database\QueryBuilder\Traits\Helpers;
+use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\OrderBy;
 use Inspira\Database\QueryBuilder\Traits\Where;
@@ -20,7 +20,7 @@ use PDO;
 
 class SelectQuery extends AbstractQuery
 {
-	use Where, OrderBy, GroupBy, Having, Aggregates, Join, Helpers, CanSetTable;
+	use Where, OrderBy, GroupBy, Having, Aggregates, Join, QueryHelper, CanSetTable;
 
 	protected bool $distinct = false;
 

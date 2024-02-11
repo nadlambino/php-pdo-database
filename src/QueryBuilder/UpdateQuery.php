@@ -6,7 +6,7 @@ namespace Inspira\Database\QueryBuilder;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\CanSetTable;
-use Inspira\Database\QueryBuilder\Traits\Helpers;
+use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use InvalidArgumentException;
@@ -14,7 +14,7 @@ use PDO;
 
 class UpdateQuery extends AbstractQuery
 {
-	use Where, Join, Helpers, CanSetTable;
+	use Where, Join, QueryHelper, CanSetTable;
 
 	protected array $data = [];
 

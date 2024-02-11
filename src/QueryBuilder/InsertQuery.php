@@ -6,13 +6,13 @@ namespace Inspira\Database\QueryBuilder;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\CanSetTable;
-use Inspira\Database\QueryBuilder\Traits\Helpers;
+use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
 class InsertQuery extends AbstractQuery
 {
-	use Helpers, CanSetTable;
+	use QueryHelper, CanSetTable;
 
 	public function __construct(protected array $data, protected ?PDO $connection)
 	{

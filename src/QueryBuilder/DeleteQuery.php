@@ -6,14 +6,14 @@ namespace Inspira\Database\QueryBuilder;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\CanSetTable;
-use Inspira\Database\QueryBuilder\Traits\Helpers;
+use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
 
 class DeleteQuery extends AbstractQuery
 {
-	use Where, Join, Helpers, CanSetTable;
+	use Where, Join, QueryHelper, CanSetTable;
 
 	public function __construct(protected ?PDO $connection, ?string $table = null)
 	{

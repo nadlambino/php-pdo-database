@@ -13,7 +13,7 @@ use PDO;
  */
 class HavingClause
 {
-	use Traits\Having, Traits\Helpers;
+	use Traits\Having, Traits\QueryHelper;
 
 	public function __construct(protected PDO $connection)
 	{
