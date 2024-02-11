@@ -46,9 +46,9 @@ class ConnectionFactory
 			throw new RuntimeException("Unknown connection configuration `$connectionName`.");
 		}
 
-		$connector = $this->container->getConcreteBinding($driver = $configuration['driver']);
+		$driver = $this->container->getConcreteBinding($driver = $configuration['driver']);
 
-		if (empty($connector)) {
+		if (empty($driver)) {
 			throw new RuntimeException("Connector class for `$driver` driver is not found.");
 		}
 
@@ -56,9 +56,9 @@ class ConnectionFactory
 		$configuration['timezone'] = strtolower($timezone) === 'utc' ? '+00:00' : $timezone;
 
 		$connection = match (true) {
-			is_string($connector) => new $connector($configuration),
-			$connector instanceof Closure => $this->container->resolve($connector),
-			default => $connector
+			is_string($driver) => new $driver($configuration),
+			$driver instanceof Closure => $this->container->resolve($driver),
+			default => $driver
 		};
 
 		if (!($connection instanceof DriverInterface)) {
