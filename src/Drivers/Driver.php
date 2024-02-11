@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Connectors;
+namespace Inspira\Database\Drivers;
 
 use InvalidArgumentException;
 use PDO;
 
-abstract class Connector implements ConnectorInterface
+abstract class Driver implements DriverInterface
 {
 	protected array $attributes = [
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

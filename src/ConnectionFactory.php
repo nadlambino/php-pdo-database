@@ -6,10 +6,10 @@ namespace Inspira\Database;
 
 use Closure;
 use Inspira\Container\Container;
-use Inspira\Database\Connectors\ConnectorInterface;
-use Inspira\Database\Connectors\MySql;
-use Inspira\Database\Connectors\PgSql;
-use Inspira\Database\Connectors\Sqlite;
+use Inspira\Database\Drivers\DriverInterface;
+use Inspira\Database\Drivers\MySqlDriver;
+use Inspira\Database\Drivers\PgSqlDriver;
+use Inspira\Database\Drivers\Sqlite;
 use PDO;
 use RuntimeException;
 
@@ -23,8 +23,8 @@ class ConnectionFactory
 {
 	public function __construct(protected Container $container, protected array $config, protected string $name = 'default')
 	{
-		$this->container->bind('mysql', MySql::class);
-		$this->container->bind('pgsql', PgSql::class);
+		$this->container->bind('mysql', MySqlDriver::class);
+		$this->container->bind('pgsql', PgSqlDriver::class);
 		$this->container->bind('sqlite', Sqlite::class);
 	}
 
@@ -61,8 +61,8 @@ class ConnectionFactory
 			default => $connector
 		};
 
-		if (!($connection instanceof ConnectorInterface)) {
-			throw new RuntimeException("Connector class for `$driver` driver must be an instance of " . ConnectorInterface::class);
+		if (!($connection instanceof DriverInterface)) {
+			throw new RuntimeException("Connector class for `$driver` driver must be an instance of " . DriverInterface::class);
 		}
 
 		$pdo = $connection->connect();

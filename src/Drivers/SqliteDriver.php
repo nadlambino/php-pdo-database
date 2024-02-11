@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Connectors;
+namespace Inspira\Database\Drivers;
 
 use InvalidArgumentException;
 use PDO;
 
-class Sqlite extends Connector
+class Sqlite extends Driver
 {
 	protected string $driver = 'sqlite';
 

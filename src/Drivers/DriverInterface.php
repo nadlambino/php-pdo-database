@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Connectors;
+namespace Inspira\Database\Drivers;
 
 use PDO;
 
-interface ConnectorInterface
+interface DriverInterface
 {
 	public function connect(): PDO;
 }

@@ -2,33 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Connectors;
+namespace Inspira\Database\Drivers;
 
 use Inspira\Collection\Collection;
 use PDO;
 
-class MySql extends Connector
+class PgSqlDriver extends Driver
 {
 	use WithCredentials;
 
-	protected string $driver = 'mysql';
+	protected string $driver = 'pgsql';
 
 	protected ?string $databaseUrl;
 
-	protected string $host;
+	private string $host;
 
-	protected int $port;
+	private int $port;
 
-	protected string $database;
+	private string $database;
 
 	public function __construct(protected array $configs)
 	{
 		parent::__construct($this->configs);
 		$this->databaseUrl = $this->configs['database_url'] ?? null;
 		$this->host = $this->configs['host'] ?? 'localhost';
-		$this->port = (int)$this->configs['port'] ?? 3306;
+		$this->port = (int)$this->configs['port'] ?? 5432;
 		$this->database = $this->configs['database'] ?? '';
-		$this->setCredentials('root');
+		$this->setCredentials();
 	}
 
 	public function connect(): PDO
@@ -54,10 +54,10 @@ class MySql extends Connector
 	protected function setTimezone(PDO $pdo)
 	{
 		$commands = new Collection($this->commands);
-		if (!is_null($commands->whereLike(null, 'time_zone')->first())) {
+		if (!is_null($commands->whereLike(null, 'TIME ZONE'))) {
 			return;
 		}
 
-		$pdo->exec("SET time_zone = '$this->timezone'");
+		$pdo->exec("SET TIME ZONE '$this->timezone'");
 	}
 }
