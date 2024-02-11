@@ -10,12 +10,12 @@ trait OrderBy
 {
 	protected array $orders = [];
 
-	public function orderAsc(string $column): static
+	public function orderByAsc(string $column): static
 	{
 		return $this->addOrder(Reserved::ASC, $column);
 	}
 
-	public function orderDesc(string $column): static
+	public function orderByDesc(string $column): static
 	{
 		return $this->addOrder(Reserved::DESC, $column);
 	}

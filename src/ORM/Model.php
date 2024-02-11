@@ -54,8 +54,8 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  * @method self orHavingNull(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method self havingNotNull(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method self orHavingNotNull(string|Closure $column, mixed $comparison = null, mixed $value = null)
- * @method self orderAsc(string $column)
- * @method self orderDesc(string $column)
+ * @method self orderByAsc(string $column)
+ * @method self orderByDesc(string $column)
  * @method self groupBy(string $column)
  * @method self innerJoin(string $table, ?string $alias = null)
  * @method self leftJoin(string $table, ?string $alias = null)
@@ -113,7 +113,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		'orWhereNotNull', 'whereBetween', 'whereNotBetween', 'orWhereBetween', 'orWhereNotBetween',
 		'whereIn', 'whereNotIn', 'orWhereIn', 'orWhereNotIn', 'having',
 		'orHaving', 'havingNull', 'orHavingNull', 'havingNotNull', 'orHavingNotNull',
-		'orderAsc', 'orderDesc', 'groupBy', 'innerJoin', 'leftJoin',
+		'orderByAsc', 'orderByDesc', 'groupBy', 'innerJoin', 'leftJoin',
 		'rightJoin', 'crossJoin', 'on', 'limit', 'offset', 'union', 'whereRaw'
 	];
 
@@ -300,7 +300,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$query = $this->query->select(...$columns);
 		$this->attachQueries($query);
 
-		$model = $query->orderDesc($this->pk)->limit(1)->first();
+		$model = $query->orderByDesc($this->pk)->limit(1)->first();
 		$this->attachRelations($model);
 
 		return $model;
