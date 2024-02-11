@@ -10,21 +10,15 @@ use Symfony\Component\String\Inflector\InflectorInterface;
 
 abstract class AbstractQuery implements QueryInterface
 {
-	protected readonly string $table;
-
-	protected ?string $tableAlias = null;
-
 	protected ?PDOStatement $statement = null;
 
 	public function __construct(
 		protected ?PDO                $connection,
 		protected ?InflectorInterface $inflector,
-		?string                       $table = null
 	)
 	{
 		$this->connection ??= Container::getInstance()->get(PDO::class);
 		$this->inflector ??= Container::getInstance()->get(InflectorInterface::class);
-		$this->setTable($table);
 	}
 
 	public function __toString(): string
@@ -60,17 +54,8 @@ abstract class AbstractQuery implements QueryInterface
 		return $this->statement->execute();
 	}
 
-	protected function setTable(?string $table)
-	{
-		if (!empty($table)) {
-			$this->table = $table;
-		}
-	}
-
 	protected function clean()
 	{
 		$this->statement = null;
-		$this->table = null;
-		$this->tableAlias = null;
 	}
 }

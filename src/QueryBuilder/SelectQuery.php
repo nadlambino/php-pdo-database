@@ -9,6 +9,7 @@ use Inspira\Database\QueryBuilder\Clauses\Select as SelectBuilder;
 use Inspira\Database\QueryBuilder\Enums\Aggregates as Agg;
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\Aggregates;
+use Inspira\Database\QueryBuilder\Traits\CanSetTable;
 use Inspira\Database\QueryBuilder\Traits\GroupBy;
 use Inspira\Database\QueryBuilder\Traits\Having;
 use Inspira\Database\QueryBuilder\Traits\Helpers;
@@ -20,7 +21,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
 
 class SelectQuery extends AbstractQuery
 {
-	use Where, OrderBy, GroupBy, Having, Aggregates, Join, Helpers;
+	use Where, OrderBy, GroupBy, Having, Aggregates, Join, Helpers, CanSetTable;
 
 	protected bool $distinct = false;
 
