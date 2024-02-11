@@ -17,15 +17,11 @@ trait Where
 
 	public function whereRaw(string $query): static
 	{
-		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new RawQuery($this->connection, $query))]);
+		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new RawQuery($query, connection: $this->connection))]);
 	}
 
-	public function where(string|Closure|RawQuery $column, mixed $comparison = null, mixed $value = null): static
+	public function where(string|Closure $column, mixed $comparison = null, mixed $value = null): static
 	{
-		if ($column instanceof RawQuery) {
-			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) $column]);
-		}
-
 		if ($column instanceof Closure) {
 			return $this->addWhereGroup(Reserved::AND, $column);
 		}

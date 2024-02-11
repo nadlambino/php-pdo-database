@@ -63,6 +63,6 @@ class Query
 	 */
 	public function raw(string $sql, array $parameters = []): RawQuery
 	{
-		return new RawQuery($this->connection, $sql, $parameters);
+		return new RawQuery($sql, $parameters, $this->connection);
 	}
 }

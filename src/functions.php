@@ -19,7 +19,7 @@ if (!function_exists('pdo_quote')) {
 
 		return match (true) {
 			is_null($string) => '',
-			$string instanceof RawQuery => (string)$string,
+			$string instanceof RawQuery => $string->toRawSql(),
 			in_array($driver, ['mysql', 'sqlite']) => "`$string`",
 			default => '"' . $string . '"'
 		};
