@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder\Traits;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
-use Inspira\Database\QueryBuilder\RawQuery;
 use Inspira\Database\QueryBuilder\SelectQuery;
 use PDO;
 

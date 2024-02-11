@@ -59,10 +59,10 @@ class Query
 	 *
 	 * @param string $sql
 	 * @param array $parameters
-	 * @return Sql
+	 * @return RawQuery
 	 */
-	public function raw(string $sql, array $parameters = []): Sql
+	public function raw(string $sql, array $parameters = []): RawQuery
 	{
-		return new Sql($this->connection, $sql, $parameters);
+		return new RawQuery($this->connection, $sql, $parameters);
 	}
 }

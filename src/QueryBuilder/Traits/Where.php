@@ -17,7 +17,7 @@ trait Where
 
 	public function whereRaw(string $query): static
 	{
-		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new RawQuery($query))]);
+		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new RawQuery($this->connection, $query))]);
 	}
 
 	public function where(string|Closure|RawQuery $column, mixed $comparison = null, mixed $value = null): static

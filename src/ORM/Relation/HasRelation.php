@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Inspira\Database\ORM\Relation;
 
 use Closure;
-use Inspira\Database\QueryBuilder\RawQuery;
 use Inspira\Database\ORM\Model;
 use Inspira\Database\ORM\ModelCollection;
+use Inspira\Database\QueryBuilder\RawQuery;
 
 /**
  * @method Model distinct()
@@ -55,7 +55,7 @@ use Inspira\Database\ORM\ModelCollection;
  * @method Model last(...$columns)
  * @method Model find(mixed $id)
  * @method ModelCollection get(...$columns)
- * @method Model count(string|RawQuery $column)
+ * @method Model count(RawQuery|string $column)
  * @method bool update(array $data)
  * @method bool delete()
  * @method bool destroy()
