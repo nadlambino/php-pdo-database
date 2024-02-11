@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder;
+namespace Inspira\Database\QueryBuilder;
 
 use PDO;
 use PDOStatement;

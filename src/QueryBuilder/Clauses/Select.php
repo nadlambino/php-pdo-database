@@ -1,8 +1,8 @@
 <?php
 
-namespace Inspira\Database\Builder\Clauses;
+namespace Inspira\Database\QueryBuilder\Clauses;
 
-use Inspira\Database\Builder\Select as SelectBuilder;
+use Inspira\Database\QueryBuilder\Select as SelectBuilder;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 

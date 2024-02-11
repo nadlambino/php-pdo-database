@@ -1,7 +1,7 @@
 <?php
 
 use Inspira\Container\Container;
-use Inspira\Database\Builder\Raw;
+use Inspira\Database\QueryBuilder\Raw;
 
 if (!function_exists('get_short_class_name')) {
 	function get_short_class_name(string $class): string

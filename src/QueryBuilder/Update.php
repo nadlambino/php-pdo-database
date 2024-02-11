@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder;
+namespace Inspira\Database\QueryBuilder;
 
-use Inspira\Database\Builder\Enums\Reserved;
-use Inspira\Database\Builder\Traits\Join;
-use Inspira\Database\Builder\Traits\Where;
+use Inspira\Database\QueryBuilder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Traits\Join;
+use Inspira\Database\QueryBuilder\Traits\Where;
 use InvalidArgumentException;
 
 class Update extends Base

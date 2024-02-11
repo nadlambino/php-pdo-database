@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder\Enums;
+namespace Inspira\Database\QueryBuilder\Enums;
 
 enum Reserved: string
 {

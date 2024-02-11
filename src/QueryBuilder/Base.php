@@ -1,9 +1,8 @@
 <?php
 
-namespace Inspira\Database\Builder;
+namespace Inspira\Database\QueryBuilder;
 
-use Inspira\Database\Builder\Contracts\QueryInterface;
-use Inspira\Database\Builder\Traits\Helpers;
+use Inspira\Database\QueryBuilder\Traits\Helpers;
 use PDO;
 use PDOStatement;
 use Symfony\Component\String\Inflector\InflectorInterface;

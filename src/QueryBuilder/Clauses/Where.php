@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder\Clauses;
+namespace Inspira\Database\QueryBuilder\Clauses;
 
-use Inspira\Database\Builder\Traits;
+use Inspira\Database\QueryBuilder\Traits;
 use PDO;
 
 /**

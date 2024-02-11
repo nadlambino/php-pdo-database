@@ -7,7 +7,7 @@ namespace Inspira\Database;
 use Closure;
 use Exception;
 use Inspira\Container\Container;
-use Inspira\Database\Builder\Query;
+use Inspira\Database\QueryBuilder\Query;
 use Inspira\Database\Drivers\DriverInterface;
 use Inspira\Database\Drivers\MySqlDriver;
 use Inspira\Database\Drivers\PgSqlDriver;

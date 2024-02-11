@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder;
+namespace Inspira\Database\QueryBuilder;
 
-use Inspira\Database\Builder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Enums\Reserved;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 

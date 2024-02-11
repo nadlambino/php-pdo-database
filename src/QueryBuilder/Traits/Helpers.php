@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder\Traits;
+namespace Inspira\Database\QueryBuilder\Traits;
 
-use Inspira\Database\Builder\Enums\Reserved;
-use Inspira\Database\Builder\Raw;
-use Inspira\Database\Builder\Select;
+use Inspira\Database\QueryBuilder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Raw;
+use Inspira\Database\QueryBuilder\Select;
 use PDO;
 
 trait Helpers

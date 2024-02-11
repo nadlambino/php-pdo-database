@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Inspira\Database\ORM\Relation;
 
 use Closure;
-use Inspira\Database\Builder\Raw;
+use Inspira\Database\QueryBuilder\Raw;
 use Inspira\Database\ORM\Model;
 use Inspira\Database\ORM\ModelCollection;
 

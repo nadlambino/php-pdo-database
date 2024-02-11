@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder\Traits;
+namespace Inspira\Database\QueryBuilder\Traits;
 
-use Inspira\Database\Builder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Enums\Reserved;
 
 /**
  * The convention we follow here is that the left table should be the one that holds the reference key

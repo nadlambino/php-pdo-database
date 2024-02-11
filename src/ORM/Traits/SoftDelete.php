@@ -2,8 +2,8 @@
 
 namespace Inspira\Database\ORM\Traits;
 
-use Inspira\Database\Builder\Query;
-use Inspira\Database\Builder\Update;
+use Inspira\Database\QueryBuilder\Query;
+use Inspira\Database\QueryBuilder\Update;
 
 /**
  * @property-read Query $query

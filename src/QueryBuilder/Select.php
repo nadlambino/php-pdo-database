@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder;
+namespace Inspira\Database\QueryBuilder;
 
 use Closure;
-use Inspira\Database\Builder\Clauses\Select as SelectBuilder;
-use Inspira\Database\Builder\Enums\Aggregates as Agg;
-use Inspira\Database\Builder\Enums\Reserved;
-use Inspira\Database\Builder\Traits\Aggregates;
-use Inspira\Database\Builder\Traits\GroupBy;
-use Inspira\Database\Builder\Traits\Having;
-use Inspira\Database\Builder\Traits\Join;
-use Inspira\Database\Builder\Traits\OrderBy;
-use Inspira\Database\Builder\Traits\Where;
+use Inspira\Database\QueryBuilder\Clauses\Select as SelectBuilder;
+use Inspira\Database\QueryBuilder\Enums\Aggregates as Agg;
+use Inspira\Database\QueryBuilder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Traits\Aggregates;
+use Inspira\Database\QueryBuilder\Traits\GroupBy;
+use Inspira\Database\QueryBuilder\Traits\Having;
+use Inspira\Database\QueryBuilder\Traits\Join;
+use Inspira\Database\QueryBuilder\Traits\OrderBy;
+use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Inspira\Database\Builder\Contracts;
+namespace Inspira\Database\QueryBuilder;
 
 interface QueryInterface
 {
