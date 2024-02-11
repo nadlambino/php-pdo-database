@@ -8,5 +8,7 @@ interface QueryInterface
 {
 	public function toSql(): string;
 
+	public function toRawSql(): string;
+
 	public function execute(): mixed;
 }

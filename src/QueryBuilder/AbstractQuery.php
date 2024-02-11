@@ -28,6 +28,16 @@ abstract class AbstractQuery implements QueryInterface
 
 	abstract public function toSql(): string;
 
+	public function toRawSql(): string
+	{
+		$sql = $this->toSql();
+		$parameters = array_map(function ($parameter) {
+			return var_export($parameter, true);
+		}, $this->parameters ?? []);
+
+		return str_replace(array_keys($parameters), array_values($parameters), $sql);
+	}
+
 	public function execute(): bool
 	{
 		$this->statement = $this->connection->prepare($this->toSql());

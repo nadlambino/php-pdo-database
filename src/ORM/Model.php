@@ -456,6 +456,14 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return $query->toSql();
 	}
 
+	public function toRawSql(): string
+	{
+		$query = $this->query->select('*');
+		$this->attachQueries($query);
+
+		return $query->toRawSql();
+	}
+
 	public function toArray(): array
 	{
 		return array_map(function($attribute) {

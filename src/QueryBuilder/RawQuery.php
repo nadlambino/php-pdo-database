@@ -8,7 +8,7 @@ use PDO;
 use PDOStatement;
 use RuntimeException;
 
-class RawQuery implements QueryInterface, RawQueryInterface
+class RawQuery implements QueryInterface
 {
 	protected ?PDOStatement $statement = null;
 
@@ -47,7 +47,11 @@ class RawQuery implements QueryInterface, RawQueryInterface
 
 	public function toRawSql(): string
 	{
-		return str_replace(array_keys($this->parameters), array_values($this->parameters), $this->sql);
+		$parameters = array_map(function ($parameter) {
+			return var_export($parameter, true);
+		}, $this->parameters);
+
+		return str_replace(array_keys($parameters), array_values($parameters), $this->sql);
 	}
 
 	public function get($fetchMode = PDO::FETCH_ASSOC): array|false|null
