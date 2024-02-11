@@ -11,7 +11,7 @@ use PDO;
  * The purpose of this class is to be use as a wrapper for the Inspira\Database\Traits\Where trait
  * This is the one that will be pass to a closure that needs a builder with only the Where methods
  */
-class Where
+class WhereClause
 {
 	use Traits\Where, Traits\Helpers;
 

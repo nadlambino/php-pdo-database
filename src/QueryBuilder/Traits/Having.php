@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder\Traits;
 
 use Closure;
-use Inspira\Database\QueryBuilder\Clauses\Having as HavingBuilder;
+use Inspira\Database\QueryBuilder\Clauses\HavingClause;
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use PDO;
 
@@ -66,9 +66,9 @@ trait Having
 
 	protected function addHavingGroup(?Reserved $operator, Closure $closure): static
 	{
-		// Pass the HavingBuilder object to the closure to ensure that it receives the builder
+		// Pass the HavingClause object to the closure to ensure that it receives the builder
 		// with only the methods that it needs and usable within the Having query clause
-		$builder = new HavingBuilder($this->connection);
+		$builder = new HavingClause($this->connection);
 		$closure($builder);
 
 		return $this->addConditions(Reserved::HAVING, $operator, true, $builder->getHavings());

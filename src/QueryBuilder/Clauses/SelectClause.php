@@ -11,7 +11,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  * This is the one that will be pass to a closure that needs the Inspira\Database\Builder\Select class
  * This ensures that the closure will receive the correct builder with only the methods that it needs
  */
-class Select
+class SelectClause
 {
 	private ?SelectBuilder $select = null;
 

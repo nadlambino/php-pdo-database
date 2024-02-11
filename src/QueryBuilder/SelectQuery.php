@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder;
 
 use Closure;
-use Inspira\Database\QueryBuilder\Clauses\Select as SelectBuilder;
+use Inspira\Database\QueryBuilder\Clauses\SelectClause;
 use Inspira\Database\QueryBuilder\Enums\Aggregates as Agg;
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\Aggregates;
@@ -89,9 +89,9 @@ class SelectQuery extends AbstractQuery
 
 	public function union(Closure $closure): static
 	{
-		// Pass the SelectBuilder object to the closure to ensure that it receives the builder
+		// Pass the SelectClause object to the closure to ensure that it receives the builder
 		// with only the methods that it needs and usable within the Select query clause
-		$builder = new SelectBuilder($this->connection);
+		$builder = new SelectClause($this->connection);
 		$closure($builder);
 
 		$this->unions[] = $builder->toSql();

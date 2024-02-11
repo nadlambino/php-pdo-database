@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder\Traits;
 
 use Closure;
-use Inspira\Database\QueryBuilder\Clauses\Where as WhereBuilder;
+use Inspira\Database\QueryBuilder\Clauses\WhereClause;
 use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\RawQuery;
 use Inspira\Database\QueryBuilder\SelectQuery;
@@ -185,9 +185,9 @@ trait Where
 
 	protected function addWhereGroup(?Reserved $operator, Closure $closure): static
 	{
-		// Pass the WhereBuilder object to the closure to ensure that it receives the builder
+		// Pass the WhereClause object to the closure to ensure that it receives the builder
 		// with only the methods that it needs and usable within the Where query clause
-		$builder = new WhereBuilder($this->connection);
+		$builder = new WhereClause($this->connection);
 		$closure($builder);
 
 		return $this->addConditions(Reserved::WHERE, $operator, true, $builder->getWheres());
