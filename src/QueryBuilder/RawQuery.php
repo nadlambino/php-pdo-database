@@ -17,7 +17,7 @@ class RawQuery extends AbstractQuery
 		protected ?PDO   $connection = null,
 	)
 	{
-		parent::__construct($this->connection, null);
+		parent::__construct($this->connection);
 	}
 
 	public function toSql(): string

@@ -10,16 +10,15 @@ use Inspira\Database\QueryBuilder\Traits\Helpers;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
-use Symfony\Component\String\Inflector\InflectorInterface;
 
 class DeleteQuery extends AbstractQuery
 {
 	use Where, Join, Helpers, CanSetTable;
 
-	public function __construct(protected ?PDO $connection, protected ?InflectorInterface $inflector, ?string $table = null)
+	public function __construct(protected ?PDO $connection, ?string $table = null)
 	{
 		$this->setTable($table);
-		parent::__construct($this->connection, $this->inflector);
+		parent::__construct($this->connection);
 	}
 
 	public function toSql(): string

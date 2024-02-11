@@ -14,7 +14,7 @@ class Query
 
 	private ?string $model = null;
 
-	public function __construct(protected PDO $connection, protected InflectorInterface $inflector)
+	public function __construct(protected PDO $connection)
 	{
 	}
 
@@ -34,24 +34,24 @@ class Query
 
 	public function select(...$columns): SelectQuery
 	{
-		return (new SelectQuery($columns, $this->connection, $this->inflector, $this->model))
+		return (new SelectQuery($columns, $this->connection, $this->model))
 			->from($this->table ?? '');
 	}
 
 	public function insert(array $data): InsertQuery
 	{
-		return (new InsertQuery($data, $this->connection, $this->inflector))
+		return (new InsertQuery($data, $this->connection))
 			->into($this->table ?? '');
 	}
 
 	public function update(string $table): UpdateQuery
 	{
-		return new UpdateQuery($this->connection, $this->inflector, $this->table ?? $table);
+		return new UpdateQuery($this->connection, $this->table ?? $table);
 	}
 
 	public function delete(string $table): DeleteQuery
 	{
-		return new DeleteQuery($this->connection, $this->inflector, $this->table ?? $table);
+		return new DeleteQuery($this->connection, $this->table ?? $table);
 	}
 
 	/**

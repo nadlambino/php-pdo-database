@@ -65,7 +65,7 @@ trait Join
 
 	protected function addJoin(string $type, string $table, ?string $alias = null, string $comparison = '='): static
 	{
-		$column = $this->inflector?->singularize($table)[0] ?? $table;
+		$column = $table;
 		$rawTable = $alias ?? $table;
 		$local = $this->getFormattedColumn("$this->table.{$column}_id");
 		$foreign = $this->getFormattedColumn("$rawTable.id");

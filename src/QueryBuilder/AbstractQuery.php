@@ -6,19 +6,14 @@ use Inspira\Container\Container;
 use PDO;
 use PDOStatement;
 use RuntimeException;
-use Symfony\Component\String\Inflector\InflectorInterface;
 
 abstract class AbstractQuery implements QueryInterface
 {
 	protected ?PDOStatement $statement = null;
 
-	public function __construct(
-		protected ?PDO                $connection,
-		protected ?InflectorInterface $inflector,
-	)
+	public function __construct(protected ?PDO $connection)
 	{
 		$this->connection ??= Container::getInstance()->get(PDO::class);
-		$this->inflector ??= Container::getInstance()->get(InflectorInterface::class);
 	}
 
 	public function __toString(): string

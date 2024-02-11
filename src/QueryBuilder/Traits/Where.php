@@ -174,7 +174,7 @@ trait Where
 			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => " $existsQuery ( $sql ) "]);
 		}
 
-		$tableColumn ??= $this->inflector->singularize($this->table)[0] . '_id';
+		$tableColumn ??= $table . '_id';
 		$parentTableColumn ??= 'id';
 		$parameters = $this->getConditionalParams($tableColumn, '=', $parentTableColumn);
 		$parameters['table'] = $table;

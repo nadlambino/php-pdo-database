@@ -14,9 +14,9 @@ class InsertQuery extends AbstractQuery
 {
 	use Helpers, CanSetTable;
 
-	public function __construct(protected array $data, protected ?PDO $connection, protected ?InflectorInterface $inflector)
+	public function __construct(protected array $data, protected ?PDO $connection)
 	{
-		parent::__construct($this->connection, $this->inflector);
+		parent::__construct($this->connection);
 	}
 
 	public function into(string $table): static

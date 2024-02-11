@@ -17,7 +17,6 @@ use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\OrderBy;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
-use Symfony\Component\String\Inflector\InflectorInterface;
 
 class SelectQuery extends AbstractQuery
 {
@@ -32,13 +31,12 @@ class SelectQuery extends AbstractQuery
 	protected array $unions = [];
 
 	public function __construct(
-		protected array               $columns,
-		protected ?PDO                $connection,
-		protected ?InflectorInterface $inflector,
-		protected string|null         $model = null
+		protected array       $columns,
+		protected ?PDO        $connection,
+		protected string|null $model = null
 	)
 	{
-		parent::__construct($this->connection, $this->inflector);
+		parent::__construct($this->connection);
 	}
 
 	public function distinct(): static
@@ -93,7 +91,7 @@ class SelectQuery extends AbstractQuery
 	{
 		// Pass the SelectBuilder object to the closure to ensure that it receives the builder
 		// with only the methods that it needs and usable within the Select query clause
-		$builder = new SelectBuilder($this->connection, $this->inflector);
+		$builder = new SelectBuilder($this->connection);
 		$closure($builder);
 
 		$this->unions[] = $builder->toSql();

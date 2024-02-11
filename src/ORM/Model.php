@@ -533,7 +533,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function setQuery()
 	{
-		$this->query = (new Query($this->connection, $this->inflector))
+		$this->query = (new Query($this->connection))
 			->model($this->model)
 			->table($this->table);
 	}

@@ -99,7 +99,7 @@ trait Helpers
 					? Reserved::EXISTS->value
 					: Reserved::NOT_EXISTS->value;
 
-				$sql = (new SelectQuery([$rawColumn], $this->connection, $this->inflector))
+				$sql = (new SelectQuery([$rawColumn], $this->connection))
 					->from($table)
 					->whereRaw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")
 					->toSql();
