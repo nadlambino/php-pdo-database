@@ -49,9 +49,9 @@ class Query
 		return new UpdateQuery($this->connection, $this->inflector, $this->table ?? $table);
 	}
 
-	public function delete(string $table): Delete
+	public function delete(string $table): DeleteQuery
 	{
-		return new Delete($this->connection, $this->inflector, $this->table ?? $table);
+		return new DeleteQuery($this->connection, $this->inflector, $this->table ?? $table);
 	}
 
 	/**

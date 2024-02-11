@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Traits\Helpers;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use InvalidArgumentException;
 
 class UpdateQuery extends AbstractQuery
 {
-	use Where, Join;
+	use Where, Join, Helpers;
 
 	protected array $data = [];
 
@@ -63,10 +64,11 @@ class UpdateQuery extends AbstractQuery
 
 	public function clean(): static
 	{
-		$this->cleanUp();
 		$this->data = [];
 		$this->wheres = [];
 		$this->joins = [];
+		$this->setParameters([]);
+		parent::clean();
 
 		return $this;
 	}

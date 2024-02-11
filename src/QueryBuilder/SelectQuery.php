@@ -11,6 +11,7 @@ use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\Aggregates;
 use Inspira\Database\QueryBuilder\Traits\GroupBy;
 use Inspira\Database\QueryBuilder\Traits\Having;
+use Inspira\Database\QueryBuilder\Traits\Helpers;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\OrderBy;
 use Inspira\Database\QueryBuilder\Traits\Where;
@@ -19,7 +20,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
 
 class SelectQuery extends AbstractQuery
 {
-	use Where, OrderBy, GroupBy, Having, Aggregates, Join;
+	use Where, OrderBy, GroupBy, Having, Aggregates, Join, Helpers;
 
 	protected bool $distinct = false;
 
@@ -30,10 +31,10 @@ class SelectQuery extends AbstractQuery
 	protected array $unions = [];
 
 	public function __construct(
-		protected array              $columns,
-		protected PDO                $connection,
-		protected InflectorInterface $inflector,
-		protected string|null        $model = null
+		protected array               $columns,
+		protected ?PDO                $connection,
+		protected ?InflectorInterface $inflector,
+		protected string|null         $model = null
 	)
 	{
 		parent::__construct($this->connection, $this->inflector);
@@ -248,7 +249,6 @@ class SelectQuery extends AbstractQuery
 
 	public function clean(): static
 	{
-		$this->cleanUp();
 		$this->distinct = false;
 		$this->limit = null;
 		$this->offset = null;
@@ -264,6 +264,8 @@ class SelectQuery extends AbstractQuery
 		$this->mins = [];
 		$this->maxs = [];
 		$this->joins = [];
+		$this->setParameters([]);
+		parent::clean();
 
 		return $this;
 	}

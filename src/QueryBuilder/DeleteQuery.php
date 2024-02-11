@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Traits\Helpers;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 
-class Delete extends AbstractQuery
+class DeleteQuery extends AbstractQuery
 {
-	use Where, Join;
+	use Where, Join, Helpers;
 
 	public function toSql(): string
 	{
@@ -37,9 +38,10 @@ class Delete extends AbstractQuery
 
 	public function clean(): static
 	{
-		$this->cleanUp();
 		$this->wheres = [];
 		$this->joins = [];
+		$this->setParameters([]);
+		parent::clean();
 
 		return $this;
 	}

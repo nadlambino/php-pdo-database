@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
+use Inspira\Database\QueryBuilder\Traits\Helpers;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
 class InsertQuery extends AbstractQuery
 {
-	public function __construct(protected array $data, protected PDO $connection, protected InflectorInterface $inflector)
+	use Helpers;
+
+	public function __construct(protected array $data, protected ?PDO $connection, protected ?InflectorInterface $inflector)
 	{
 		parent::__construct($this->connection, $this->inflector);
 	}
@@ -95,8 +98,9 @@ class InsertQuery extends AbstractQuery
 
 	public function clean(): static
 	{
-		$this->cleanUp();
 		$this->data = [];
+		$this->setParameters([]);
+		parent::clean();
 
 		return $this;
 	}

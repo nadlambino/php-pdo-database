@@ -6,9 +6,8 @@ namespace Inspira\Database\QueryBuilder;
 
 use PDO;
 use PDOStatement;
-use RuntimeException;
 
-class RawQuery implements QueryInterface
+class RawQuery extends AbstractQuery
 {
 	protected ?PDOStatement $statement = null;
 
@@ -18,40 +17,12 @@ class RawQuery implements QueryInterface
 		protected ?PDO   $connection = null,
 	)
 	{
-	}
-
-	public function __toString(): string
-	{
-		return $this->toSql();
-	}
-
-	public function execute(): bool
-	{
-		if (empty($this->connection)) {
-			throw new RuntimeException('No PDO connection provided.');
-		}
-
-		$this->statement = $this->connection->prepare($this->toSql());
-
-		foreach ($this->parameters as $placeholder => $value) {
-			$this->statement->bindValue($placeholder, $value, pdo_type($value));
-		}
-
-		return $this->statement->execute();
+		parent::__construct($this->connection, null);
 	}
 
 	public function toSql(): string
 	{
 		return $this->sql;
-	}
-
-	public function toRawSql(): string
-	{
-		$parameters = array_map(function ($parameter) {
-			return var_export($parameter, true);
-		}, $this->parameters);
-
-		return str_replace(array_keys($parameters), array_values($parameters), $this->sql);
 	}
 
 	public function get($fetchMode = PDO::FETCH_ASSOC): array|false|null

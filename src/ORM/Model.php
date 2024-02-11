@@ -11,7 +11,7 @@ use Exception;
 use Inspira\Augmentable\Augmentable;
 use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
-use Inspira\Database\QueryBuilder\Delete;
+use Inspira\Database\QueryBuilder\DeleteQuery;
 use Inspira\Database\QueryBuilder\InsertQuery;
 use Inspira\Database\QueryBuilder\Query;
 use Inspira\Database\QueryBuilder\SelectQuery;
@@ -546,10 +546,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	/**
 	 * Attach the queries to the query object
 	 *
-	 * @param InsertQuery|SelectQuery|UpdateQuery|Delete $query
+	 * @param InsertQuery|SelectQuery|UpdateQuery|DeleteQuery $query
 	 * @return void
 	 */
-	private function attachQueries(InsertQuery|SelectQuery|UpdateQuery|Delete $query): void
+	private function attachQueries(InsertQuery|SelectQuery|UpdateQuery|DeleteQuery $query): void
 	{
 		foreach ($this->queries as $clause) {
 			$method = $clause['method'];
