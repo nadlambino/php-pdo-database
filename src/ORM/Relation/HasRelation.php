@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Inspira\Database\ORM\Relation;
 
 use Closure;
-use Inspira\Database\QueryBuilder\Raw;
+use Inspira\Database\QueryBuilder\RawQuery;
 use Inspira\Database\ORM\Model;
 use Inspira\Database\ORM\ModelCollection;
 
 /**
  * @method Model distinct()
- * @method Model sum(Raw|string $column, ?string $alias = null)
- * @method Model avg(Raw|string $column, ?string $alias = null)
- * @method Model min(Raw|string $column, ?string $alias = null)
- * @method Model max(Raw|string $column, ?string $alias = null)
+ * @method Model sum(RawQuery|string $column, ?string $alias = null)
+ * @method Model avg(RawQuery|string $column, ?string $alias = null)
+ * @method Model min(RawQuery|string $column, ?string $alias = null)
+ * @method Model max(RawQuery|string $column, ?string $alias = null)
  * @method Model where(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method Model orWhere(string|Closure $column, mixed $comparison = null, mixed $value = null)
  * @method Model whereLike(string $column, string $value)
@@ -55,7 +55,7 @@ use Inspira\Database\ORM\ModelCollection;
  * @method Model last(...$columns)
  * @method Model find(mixed $id)
  * @method ModelCollection get(...$columns)
- * @method Model count(string|Raw $column)
+ * @method Model count(string|RawQuery $column)
  * @method bool update(array $data)
  * @method bool delete()
  * @method bool destroy()

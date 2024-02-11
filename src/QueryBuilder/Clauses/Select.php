@@ -2,7 +2,7 @@
 
 namespace Inspira\Database\QueryBuilder\Clauses;
 
-use Inspira\Database\QueryBuilder\Select as SelectBuilder;
+use Inspira\Database\QueryBuilder\SelectQuery as SelectBuilder;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 

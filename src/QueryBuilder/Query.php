@@ -10,8 +10,6 @@ use Symfony\Component\String\Inflector\InflectorInterface;
 
 class Query
 {
-	private ?Raw $raw;
-
 	private ?string $table = null;
 
 	private ?string $model = null;
@@ -34,21 +32,21 @@ class Query
 		return $this;
 	}
 
-	public function select(...$columns): Select
+	public function select(...$columns): SelectQuery
 	{
-		return (new Select($columns, $this->connection, $this->inflector, $this->model))
+		return (new SelectQuery($columns, $this->connection, $this->inflector, $this->model))
 			->from($this->table ?? '');
 	}
 
-	public function insert(array $data): Insert
+	public function insert(array $data): InsertQuery
 	{
-		return (new Insert($data, $this->connection, $this->inflector))
+		return (new InsertQuery($data, $this->connection, $this->inflector))
 			->into($this->table ?? '');
 	}
 
-	public function update(string $table): Update
+	public function update(string $table): UpdateQuery
 	{
-		return new Update($this->connection, $this->inflector, $this->table ?? $table);
+		return new UpdateQuery($this->connection, $this->inflector, $this->table ?? $table);
 	}
 
 	public function delete(string $table): Delete

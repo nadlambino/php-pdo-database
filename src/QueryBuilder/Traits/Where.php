@@ -7,8 +7,8 @@ namespace Inspira\Database\QueryBuilder\Traits;
 use Closure;
 use Inspira\Database\QueryBuilder\Clauses\Where as WhereBuilder;
 use Inspira\Database\QueryBuilder\Enums\Reserved;
-use Inspira\Database\QueryBuilder\Raw;
-use Inspira\Database\QueryBuilder\Select;
+use Inspira\Database\QueryBuilder\RawQuery;
+use Inspira\Database\QueryBuilder\SelectQuery;
 use PDO;
 
 trait Where
@@ -17,12 +17,12 @@ trait Where
 
 	public function whereRaw(string $query): static
 	{
-		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new Raw($query))]);
+		return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) (new RawQuery($query))]);
 	}
 
-	public function where(string|Closure|Raw $column, mixed $comparison = null, mixed $value = null): static
+	public function where(string|Closure|RawQuery $column, mixed $comparison = null, mixed $value = null): static
 	{
-		if ($column instanceof Raw) {
+		if ($column instanceof RawQuery) {
 			return $this->addConditions(Reserved::WHERE, Reserved::AND, false, ['raw' => (string) $column]);
 		}
 
@@ -158,19 +158,19 @@ trait Where
 		return $this->addConditions(Reserved::WHERE, Reserved::OR, false, $parameters);
 	}
 
-	public function whereExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
+	public function whereExists(SelectQuery|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
 	{
 		return $this->handleWhereExists($table, $tableColumn, $parentTableColumn);
 	}
 
-	public function whereNotExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
+	public function whereNotExists(SelectQuery|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null): static
 	{
 		return $this->handleWhereExists($table, $tableColumn, $parentTableColumn, false);
 	}
 
-	protected function handleWhereExists(Select|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null, bool $exists = true): static
+	protected function handleWhereExists(SelectQuery|string $table, ?string $tableColumn = null, ?string $parentTableColumn = null, bool $exists = true): static
 	{
-		if ($table instanceof Select) {
+		if ($table instanceof SelectQuery) {
 			$sql = $table->toSql();
 			$this->parameters = [...$this->parameters, ...$table->getParameters()];
 			$existsQuery = $exists ? Reserved::EXISTS->value : Reserved::NOT_EXISTS->value;

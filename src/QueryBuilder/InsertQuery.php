@@ -8,7 +8,7 @@ use Inspira\Database\QueryBuilder\Enums\Reserved;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
-class Insert extends Base
+class InsertQuery extends AbstractQuery
 {
 	public function __construct(protected array $data, protected PDO $connection, protected InflectorInterface $inflector)
 	{

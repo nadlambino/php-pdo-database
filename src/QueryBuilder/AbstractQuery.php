@@ -7,7 +7,7 @@ use PDO;
 use PDOStatement;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
-abstract class Base implements QueryInterface
+abstract class AbstractQuery implements QueryInterface
 {
 	use Helpers;
 

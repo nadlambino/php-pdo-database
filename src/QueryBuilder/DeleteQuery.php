@@ -8,7 +8,7 @@ use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 
-class Delete extends Base
+class Delete extends AbstractQuery
 {
 	use Where, Join;
 

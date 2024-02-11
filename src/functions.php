@@ -1,7 +1,7 @@
 <?php
 
 use Inspira\Container\Container;
-use Inspira\Database\QueryBuilder\Raw;
+use Inspira\Database\QueryBuilder\RawQuery;
 
 if (!function_exists('get_short_class_name')) {
 	function get_short_class_name(string $class): string
@@ -11,7 +11,7 @@ if (!function_exists('get_short_class_name')) {
 }
 
 if (!function_exists('pdo_quote')) {
-	function pdo_quote(Raw|string|null $string, ?PDO $connection = null): string
+	function pdo_quote(RawQuery|string|null $string, ?PDO $connection = null): string
 	{
 		/** @var PDO $connection */
 		$connection ??= Container::getInstance()->make(PDO::class);
@@ -19,7 +19,7 @@ if (!function_exists('pdo_quote')) {
 
 		return match (true) {
 			is_null($string) => '',
-			$string instanceof Raw => (string)$string,
+			$string instanceof RawQuery => (string)$string,
 			in_array($driver, ['mysql', 'sqlite']) => "`$string`",
 			default => '"' . $string . '"'
 		};

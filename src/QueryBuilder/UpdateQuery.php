@@ -9,7 +9,7 @@ use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use InvalidArgumentException;
 
-class Update extends Base
+class UpdateQuery extends AbstractQuery
 {
 	use Where, Join;
 

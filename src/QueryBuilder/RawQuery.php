@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\QueryBuilder;
 
-class Raw
+class RawQuery
 {
 	private string $query;
 

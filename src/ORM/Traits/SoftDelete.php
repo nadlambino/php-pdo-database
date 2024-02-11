@@ -3,7 +3,7 @@
 namespace Inspira\Database\ORM\Traits;
 
 use Inspira\Database\QueryBuilder\Query;
-use Inspira\Database\QueryBuilder\Update;
+use Inspira\Database\QueryBuilder\UpdateQuery;
 
 /**
  * @property-read Query $query
@@ -12,7 +12,7 @@ use Inspira\Database\QueryBuilder\Update;
  */
 trait SoftDelete
 {
-	protected function softDelete(): Update
+	protected function softDelete(): UpdateQuery
 	{
 		return $this->query
 			->update($this->table)

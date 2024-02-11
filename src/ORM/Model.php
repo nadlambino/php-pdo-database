@@ -12,10 +12,10 @@ use Inspira\Augmentable\Augmentable;
 use Inspira\Container\Container;
 use Inspira\Contracts\Arrayable;
 use Inspira\Database\QueryBuilder\Delete;
-use Inspira\Database\QueryBuilder\Insert;
+use Inspira\Database\QueryBuilder\InsertQuery;
 use Inspira\Database\QueryBuilder\Query;
-use Inspira\Database\QueryBuilder\Select;
-use Inspira\Database\QueryBuilder\Update;
+use Inspira\Database\QueryBuilder\SelectQuery;
+use Inspira\Database\QueryBuilder\UpdateQuery;
 use Inspira\Database\Exceptions\BadMethodCallException;
 use Inspira\Database\ORM\Traits\Aggregates;
 use Inspira\Database\ORM\Traits\ArrayAccessible;
@@ -65,7 +65,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  * @method self limit(int $limit)
  * @method self offset(int $offset)
  * @method self union(Closure $closure)
- * @method Update softDelete()
+ * @method UpdateQuery softDelete()
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
@@ -538,10 +538,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	/**
 	 * Attach the queries to the query object
 	 *
-	 * @param Insert|Select|Update|Delete $query
+	 * @param InsertQuery|SelectQuery|UpdateQuery|Delete $query
 	 * @return void
 	 */
-	private function attachQueries(Insert|Select|Update|Delete $query): void
+	private function attachQueries(InsertQuery|SelectQuery|UpdateQuery|Delete $query): void
 	{
 		foreach ($this->queries as $clause) {
 			$method = $clause['method'];

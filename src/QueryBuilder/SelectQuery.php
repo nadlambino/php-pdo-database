@@ -17,7 +17,7 @@ use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
-class Select extends Base
+class SelectQuery extends AbstractQuery
 {
 	use Where, OrderBy, GroupBy, Having, Aggregates, Join;
 

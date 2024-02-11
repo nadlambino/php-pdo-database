@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Inspira\Database\QueryBuilder\Traits;
 
 use Inspira\Database\QueryBuilder\Enums\Reserved;
-use Inspira\Database\QueryBuilder\Raw;
-use Inspira\Database\QueryBuilder\Select;
+use Inspira\Database\QueryBuilder\RawQuery;
+use Inspira\Database\QueryBuilder\SelectQuery;
 use PDO;
 
 trait Helpers
@@ -100,7 +100,7 @@ trait Helpers
 					? Reserved::EXISTS->value
 					: Reserved::NOT_EXISTS->value;
 
-				$sql = (new Select([$rawColumn], $this->connection, $this->inflector))
+				$sql = (new SelectQuery([$rawColumn], $this->connection, $this->inflector))
 					->from($table)
 					->whereRaw("$quotedTable.$quotedTableColumn $comparison $quotedParentTable.$quotedParentTableColumn")
 					->toSql();
