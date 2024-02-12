@@ -104,6 +104,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected array $mutators = [];
 
+	protected array $accessors = [];
+
 	protected const CREATED_AT = 'created_at';
 
 	protected const UPDATED_AT = 'updated_at';
@@ -153,43 +155,62 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function setAttribute(string $column, mixed $value): void
 	{
-		$this->attributes[$column] = $this->mutate($column, $value);
+		$this->attributes[$column] = $this->modify($column, $value, ModifiersEnum::MUTATORS);
 	}
 
-	public function mutateData(array $data): array
+	private function mutateData(array $data): array
 	{
 		$unmutateds = array_diff_key($data, $this->original);
 
 		foreach ($unmutateds as $column => $value) {
-			$data[$column] = $this->mutate($column, $value);
+			$data[$column] = $this->modify($column, $value, ModifiersEnum::MUTATORS);
 		}
 
 		return $data;
 	}
 
-	private function mutate(string $column, mixed $value): mixed
+	private function accessData(array $data): array
 	{
-		$this->original[$column] = $value;
-		if (!isset($this->mutators[$column])) {
+		/** @var Model $model */
+		foreach ($data as $model) {
+			$attributes = $model->attributes;
+			foreach ($attributes as $column => $value) {
+				$attributes[$column] = $this->modify($column, $value, ModifiersEnum::ACCESSORS);
+			}
+
+			$model->attributes = $attributes;
+		}
+
+		return $data;
+	}
+
+	private function modify(string $column, mixed $value, ModifiersEnum $modifier)
+	{
+		if ($modifier === ModifiersEnum::MUTATORS) {
+			$this->original[$column] = $value;
+		}
+
+		$modifiers = $this->{$modifier->value};
+
+		if (!isset($modifiers[$column])) {
 			return $value;
 		}
 
-		$mutators = $this->mutators[$column];
-		$mutators = is_array($mutators) ? $mutators : [$mutators];
-		$mutated = $value;
+		$valueModifiers = is_array($modifiers[$column]) ? $modifiers[$column] : [$modifiers[$column]];
+		$modified = $value;
 
-		foreach ($mutators as $mutator) {
-			$mutated = match (true) {
-				in_array($mutator, ['bool', 'boolean', 'int', 'integer', 'float', 'double', 'string', 'array', 'object', 'null']) => set_type($mutated, $mutator),
-				is_callable($mutator) => $mutator($mutated),
-				method_exists(static::class, $mutator) => $this->$mutator($mutated),
-				class_exists($mutator) => new $mutator($mutated),
-				Container::getInstance()->has($mutator) => new (Container::getInstance()->make($mutator))($mutated),
-				default => throw new RuntimeException("Mutator `$mutator` is not defined.")
+		foreach ($valueModifiers as $modifier) {
+			$modified = match (true) {
+				in_array($modifier, ['bool', 'boolean', 'int', 'integer', 'float', 'double', 'string', 'array', 'object', 'null']) => set_type($modified, $modifier),
+				is_callable($modifier) => $modifier($modified),
+				method_exists(static::class, $modifier) => $modifier($modified),
+				class_exists($modifier) => new $modifier($modified),
+				Container::getInstance()->has($modifier) => new (Container::getInstance()->make($modifier))($modified),
+				default => throw new RuntimeException("Mutator `$modifier` is not defined.")
 			};
 		}
 
-		return $mutated;
+		return $modified;
 	}
 
 	private function removeHiddenAttributes()
@@ -283,6 +304,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$models = $query->get();
 		$this->attachRelations($models);
 
+		$models = $this->accessData($models);
+
 		return new ModelCollection($models, $this->model);
 	}
 
@@ -305,6 +328,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$model = $query->limit(1)->first();
 		$this->attachRelations($model);
 
+		if ($model) {
+			$model = $this->accessData([$model])[0];
+		}
+
 		return $model;
 	}
 
@@ -322,6 +349,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$model = $query->orderByDesc($this->pk)->limit(1)->first();
 		$this->attachRelations($model);
 
+		if ($model) {
+			$model = $this->accessData([$model])[0];
+		}
+
 		return $model;
 	}
 
@@ -338,6 +369,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		$model = $query->first();
 		$this->attachRelations($model);
+
+		if ($model) {
+			$model = $this->accessData([$model])[0];
+		}
 
 		return $model;
 	}
@@ -486,7 +521,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function toArray(): array
 	{
-		return array_map(function($attribute) {
+		return array_map(function ($attribute) {
 			return match (true) {
 				$attribute instanceof Model => iterator_to_array($attribute),
 				$attribute instanceof Arrayable => array_values($attribute->toArray()),
