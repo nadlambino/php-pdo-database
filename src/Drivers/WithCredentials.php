@@ -10,11 +10,9 @@ trait WithCredentials
 
 	protected function setCredentials(string $defaultUsername = '', string $defaultPassword = ''): void
 	{
-		if (empty($credentials = $this->configs['credentials'])) {
-			$this->credentials = [$defaultUsername, $defaultPassword];
-			return;
-		}
+		$username = $this->configs['username'] ?? $defaultUsername;
+		$password = $this->configs['password'] ?? $defaultPassword;
 
-		$this->credentials = [$credentials['username'] ?? $defaultUsername, $credentials['password'] ?? $defaultPassword];
+		$this->credentials = [$username, $password];
 	}
 }
