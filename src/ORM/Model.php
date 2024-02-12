@@ -156,6 +156,17 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$this->attributes[$column] = $this->mutate($column, $value);
 	}
 
+	public function mutateData(array $data): array
+	{
+		$unmutateds = array_diff_key($data, $this->original);
+
+		foreach ($unmutateds as $column => $value) {
+			$data[$column] = $this->mutate($column, $value);
+		}
+
+		return $data;
+	}
+
 	private function mutate(string $column, mixed $value): mixed
 	{
 		$this->original[$column] = $value;
@@ -358,10 +369,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function create(array $data): static|false
 	{
-		$unmutateds = array_diff_key($data, $this->original);
-		foreach ($unmutateds as $column => $value) {
-			$data[$column] = $this->mutate($column, $value);
-		}
+		$data = $this->mutateData($data);
 
 		$created = $this->attachTimestamps($data)->query->insert($data)->execute();
 
@@ -383,10 +391,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function update(array $data): bool
 	{
 		$oldAttributes = $this->toArray();
-		$unmutateds = array_diff_key($data, $this->original);
-		foreach ($unmutateds as $column => $value) {
-			$data[$column] = $this->mutate($column, $value);
-		}
+		$data = $this->mutateData($data);
 
 		$query = $this->attachTimestamps($data)->query->update($this->table)->set($data);
 		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
