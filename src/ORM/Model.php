@@ -25,6 +25,7 @@ use Inspira\Database\ORM\Traits\Relations;
 use InvalidArgumentException;
 use IteratorAggregate;
 use PDO;
+use RuntimeException;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
@@ -91,13 +92,17 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected array $queries = [];
 
-	protected array $oldAttributes = [];
+	/** @var array Original values of attributes before they were mutated */
+	protected array $original = [];
+
+	/** @var array Old values of attributes before they were updated */
+	protected array $old = [];
 
 	protected array $attributes = [];
 
 	protected array $hidden = [];
 
-	protected array $casts = [];
+	protected array $mutators = [];
 
 	protected const CREATED_AT = 'created_at';
 
@@ -130,30 +135,50 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$this->setAttributes($attributes);
 	}
 
-	public function setAttribute(string $column, mixed $value)
-	{
-		$value = $this->cast($column, $value);
-		$this->attributes[$column] = $value;
-	}
-
 	private function setAttributes(array $attributes)
 	{
 		foreach ($attributes as $column => $value) {
-			$value = $this->cast($column, $value);
 			$this->setAttribute($column, $value);
 		}
 	}
 
-	private function castData(array $data): array
+	/**
+	 * Set the value of the given attribute.
+	 * Doing `$this->some_attribute = "some value"` doesn't work with hidden attributes or with attributes that has mutators.
+	 * This method can be used to set the value those attributes.
+	 *
+	 * @param string $column
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function setAttribute(string $column, mixed $value): void
 	{
-		$casted = [];
+		$this->attributes[$column] = $this->mutate($column, $value);
+	}
 
-		foreach ($data as $column => $value) {
-			$value = $this->cast($column, $value);
-			$casted[$column] = $value;
+	private function mutate(string $column, mixed $value): mixed
+	{
+		$this->original[$column] = $value;
+		if (!isset($this->mutators[$column])) {
+			return $value;
 		}
 
-		return $casted;
+		$mutators = $this->mutators[$column];
+		$mutators = is_array($mutators) ? $mutators : [$mutators];
+		$mutated = $value;
+
+		foreach ($mutators as $mutator) {
+			$mutated = match (true) {
+				in_array($mutator, ['bool', 'boolean', 'int', 'integer', 'float', 'double', 'string', 'array', 'object', 'null']) => set_type($mutated, $mutator),
+				is_callable($mutator) => $mutator($mutated),
+				method_exists(static::class, $mutator) => $this->$mutator($mutated),
+				class_exists($mutator) => new $mutator($mutated),
+				Container::getInstance()->has($mutator) => new (Container::getInstance()->make($mutator))($mutated),
+				default => throw new RuntimeException("Mutator `$mutator` is not defined.")
+			};
+		}
+
+		return $mutated;
 	}
 
 	private function removeHiddenAttributes()
@@ -167,28 +192,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function removeHiddenOldAttributes()
 	{
-		foreach ($this->oldAttributes as $column => $value) {
+		foreach ($this->old as $column => $value) {
 			if (in_array($column, $this->hidden)) {
-				unset($this->oldAttributes[$column]);
+				unset($this->old[$column]);
 			}
 		}
-	}
-
-	private function cast(mixed $column, mixed $initialValue): mixed
-	{
-		if (!isset($this->casts[$column])) {
-			return $initialValue;
-		}
-
-		$type = $this->casts[$column];
-
-		return match (true) {
-			in_array($type, ['bool', 'boolean', 'int', 'integer', 'float', 'double', 'string', 'array', 'object', 'null']) => set_type($initialValue, $type),
-			is_callable($type) => $type($initialValue),
-			class_exists($type) => new $type($initialValue),
-			Container::getInstance()->has($type) => new (Container::getInstance()->make($type))($initialValue),
-			default => $initialValue
-		};
 	}
 
 	public function getPk(): string
@@ -350,8 +358,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function create(array $data): static|false
 	{
-		$castedData = $this->castData($data);
-		$created = $this->attachCreatedAt($castedData)->query->insert($castedData)->execute();
+		$unmutateds = array_diff_key($data, $this->original);
+		foreach ($unmutateds as $column => $value) {
+			$data[$column] = $this->mutate($column, $value);
+		}
+
+		$created = $this->attachTimestamps($data)->query->insert($data)->execute();
 
 		if ($created) {
 			return $this->find($this->connection->lastInsertId());
@@ -371,17 +383,20 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function update(array $data): bool
 	{
 		$oldAttributes = $this->toArray();
-		$castedData = $this->castData($data);
+		$unmutateds = array_diff_key($data, $this->original);
+		foreach ($unmutateds as $column => $value) {
+			$data[$column] = $this->mutate($column, $value);
+		}
 
-		$query = $this->attachUpdatedAt($castedData)->query->update($this->table)->set($castedData);
+		$query = $this->attachTimestamps($data)->query->update($this->table)->set($data);
 		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
 		$this->attachQueries($query);
 
 		$updated = $query->execute();
 
 		if ($updated) {
-			$this->oldAttributes = $oldAttributes;
-			$this->attributes = [...$this->oldAttributes, ...$castedData];
+			$this->old = $oldAttributes;
+			$this->attributes = [...$this->old, ...$data];
 			$this->removeHiddenAttributes();
 			$this->removeHiddenOldAttributes();
 		}
@@ -445,7 +460,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function old(?string $attribute = null)
 	{
-		return empty($attribute) ? $this->oldAttributes : $this->oldAttributes[$attribute] ?? null;
+		return empty($attribute) ? $this->old : $this->old[$attribute] ?? null;
 	}
 
 	public function toSql(): string
@@ -557,6 +572,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 			$query->$method(...$arguments);
 		}
+	}
+
+	private function attachTimestamps(array &$data): static
+	{
+		return $this->attachCreatedAt($data)->attachUpdatedAt($data);
 	}
 
 	private function attachCreatedAt(array &$data): static

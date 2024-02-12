@@ -52,7 +52,7 @@ trait ArrayAccessible
 		$old = $this->attributes;
 		$old[$offset] ??= $value;
 		$this->attributes[$offset] = $value;
-		$this->oldAttributes = [...$old, ...$this->oldAttributes];
+		$this->old = [...$old, ...$this->old];
 	}
 
 	/**
