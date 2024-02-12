@@ -64,7 +64,23 @@ class ConnectionPool
 			return $this->pool[$name];
 		}
 
-		$factory = new ConnectionFactory($this->container, $this->config, $name);
+		$connectionName = $this->config[$name] ?? null;
+
+		if (empty($connectionName)) {
+			throw new RuntimeException("Connection `$name` is not defined.");
+		}
+
+		if (!isset($this->config['connections'])) {
+			throw new RuntimeException("Connections are not defined in the configuration.");
+		}
+
+		$configuration = $this->config['connections'][$connectionName];
+
+		if (!isset($configuration)) {
+			throw new RuntimeException("Connection configuration for `$connectionName` is not defined.");
+		}
+
+		$factory = new ConnectionFactory($this->container, $configuration);
 		$this->pool[$name] = $factory->create();
 
 		return $this->pool[$name];

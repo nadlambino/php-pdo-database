@@ -7,7 +7,7 @@ namespace Inspira\Database\Drivers;
 use InvalidArgumentException;
 use PDO;
 
-class Sqlite extends Driver
+class SqliteDriver extends Driver
 {
 	protected string $driver = 'sqlite';
 

@@ -9,7 +9,7 @@ use Inspira\Container\Container;
 use Inspira\Database\Drivers\DriverInterface;
 use Inspira\Database\Drivers\MySqlDriver;
 use Inspira\Database\Drivers\PgSqlDriver;
-use Inspira\Database\Drivers\Sqlite;
+use Inspira\Database\Drivers\SqliteDriver;
 use PDO;
 use RuntimeException;
 
@@ -21,42 +21,26 @@ use RuntimeException;
  */
 class ConnectionFactory
 {
-	public function __construct(protected Container $container, protected array $config, protected string $name = 'default')
+	public function __construct(protected Container $container, protected array $config)
 	{
 		$this->container->bind('mysql', MySqlDriver::class);
 		$this->container->bind('pgsql', PgSqlDriver::class);
-		$this->container->bind('sqlite', Sqlite::class);
+		$this->container->bind('sqlite', SqliteDriver::class);
 	}
 
 	public function create(): PDO
 	{
-		$connectionName = $this->config[$this->name] ?? null;
-
-		if (empty($connectionName)) {
-			throw new RuntimeException("Unknown connection name `$this->name`.");
-		}
-
-		if (!isset($this->config['connections'])) {
-			throw new RuntimeException("Connections configurations are not defined in the configuration array.");
-		}
-
-		$configuration = $this->config['connections'][$connectionName];
-
-		if (!isset($configuration)) {
-			throw new RuntimeException("Unknown connection configuration `$connectionName`.");
-		}
-
-		$driver = $this->container->getConcreteBinding($driver = $configuration['driver']);
+		$driver = $this->container->getConcreteBinding($this->config['driver']);
 
 		if (empty($driver)) {
 			throw new RuntimeException("Connector class for `$driver` driver is not found.");
 		}
 
 		$timezone = $this->config['timezone'] ?? '+00:00';
-		$configuration['timezone'] = strtolower($timezone) === 'utc' ? '+00:00' : $timezone;
+		$this->config['timezone'] = strtolower($timezone) === 'utc' ? '+00:00' : $timezone;
 
 		$connection = match (true) {
-			is_string($driver) => new $driver($configuration),
+			is_string($driver) => new $driver($this->config),
 			$driver instanceof Closure => $this->container->resolve($driver),
 			default => $driver
 		};
