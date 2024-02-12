@@ -4,18 +4,9 @@ declare(strict_types=1);
 
 namespace Inspira\Database;
 
-use Closure;
-use Exception;
 use Inspira\Container\Container;
-use Inspira\Database\QueryBuilder\Query;
-use Inspira\Database\Drivers\DriverInterface;
-use Inspira\Database\Drivers\MySqlDriver;
-use Inspira\Database\Drivers\PgSqlDriver;
-use Inspira\Database\Drivers\Sqlite;
 use PDO;
 use RuntimeException;
-use Symfony\Component\String\Inflector\EnglishInflector;
-use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
  * Class ConnectionPool
