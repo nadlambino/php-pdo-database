@@ -186,6 +186,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function modify(string $column, mixed $value, ModifiersEnum $modifier)
 	{
+		// Store the original value of the attribute before mutating them
 		if ($modifier === ModifiersEnum::MUTATORS) {
 			$this->original[$column] = $value;
 		}
