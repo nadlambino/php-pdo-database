@@ -177,6 +177,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	{
 		foreach ($data as $model) {
 			$attributes = $model->attributes;
+
 			foreach ($attributes as $column => $value) {
 				$attributes[$column] = $this->modify($column, $value, ModifierTypes::ACCESSORS);
 			}
@@ -193,14 +194,14 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$modifierKey = $modifier->value;
 		$modifierLabel = ucwords($this->inflector->singularize($modifierKey)[0] ?? $modifierKey);
 
-		if ($modifier === ModifierTypes::MUTATORS) {
-			$this->original[$column] = $value;
-		}
-
 		$modifiers = $this->$modifierKey;
 
 		if (!isset($modifiers[$column])) {
 			return $value;
+		}
+
+		if ($modifier === ModifierTypes::MUTATORS) {
+			$this->original[$column] = $value;
 		}
 
 		$valueModifiers = is_array($modifiers[$column]) ? $modifiers[$column] : [$modifiers[$column]];
@@ -210,7 +211,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 			$modified = match (true) {
 				in_array($modifier, ['bool', 'boolean', 'int', 'integer', 'float', 'double', 'string', 'array', 'object', 'null']) => set_type($modified, $modifier),
 				is_callable($modifier) => $modifier($modified),
-				method_exists(static::class, $modifier) => $modifier($modified),
+				method_exists(static::class, $modifier) => $this->$modifier($modified),
 				class_exists($modifier) => new $modifier($modified),
 				$this->container->has($modifier) => new ($this->container->make($modifier))($modified),
 				default => throw new RuntimeException("$modifierLabel `$modifier` is not defined.")
@@ -397,7 +398,13 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$created = $this->attachTimestamps($data)->query->insert($data)->execute();
 
 		if ($created) {
-			return $this->find($this->connection->lastInsertId());
+			$model = $this->find($this->connection->lastInsertId());
+			$this->removeHiddenAttributesFrom(AttributeTypes::ATTRIBUTES);
+			$this->removeHiddenAttributesFrom(AttributeTypes::OLD);
+			$this->removeHiddenAttributesFrom(AttributeTypes::ORIGINAL);
+			$model->original = $this->original;
+
+			return $model;
 		}
 
 		return false;
@@ -423,6 +430,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 			$this->attributes = [...$this->old, ...$data];
 			$this->removeHiddenAttributesFrom(AttributeTypes::ATTRIBUTES);
 			$this->removeHiddenAttributesFrom(AttributeTypes::OLD);
+			$this->removeHiddenAttributesFrom(AttributeTypes::ORIGINAL);
 		}
 
 		return $updated;
