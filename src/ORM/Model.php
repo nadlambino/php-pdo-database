@@ -76,19 +76,19 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected Container $container;
 
+	protected InflectorInterface $inflector;
+
+	protected PDO $connection;
+
+	protected ?Query $query = null;
+
+	protected readonly string $model;
+
 	protected string $table = '';
 
 	protected string $pk = 'id';
 
 	protected string $findBy = '';
-
-	protected ?Query $query = null;
-
-	protected PDO $connection;
-
-	protected InflectorInterface $inflector;
-
-	protected readonly string $model;
 
 	protected array $queries = [];
 
@@ -169,9 +169,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return $data;
 	}
 
+	/**
+	 * @param Model[] $data
+	 * @return array
+	 */
 	private function accessData(array $data): array
 	{
-		/** @var Model $model */
 		foreach ($data as $model) {
 			$attributes = $model->attributes;
 			foreach ($attributes as $column => $value) {
@@ -187,11 +190,14 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	private function modify(string $column, mixed $value, ModifiersEnum $modifier)
 	{
 		// Store the original value of the attribute before mutating them
+		$modifierKey = $modifier->value;
+		$modifierLabel = ucwords($this->inflector->singularize($modifierKey)[0] ?? $modifierKey);
+
 		if ($modifier === ModifiersEnum::MUTATORS) {
 			$this->original[$column] = $value;
 		}
 
-		$modifiers = $this->{$modifier->value};
+		$modifiers = $this->$modifierKey;
 
 		if (!isset($modifiers[$column])) {
 			return $value;
@@ -206,8 +212,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 				is_callable($modifier) => $modifier($modified),
 				method_exists(static::class, $modifier) => $modifier($modified),
 				class_exists($modifier) => new $modifier($modified),
-				Container::getInstance()->has($modifier) => new (Container::getInstance()->make($modifier))($modified),
-				default => throw new RuntimeException("Mutator `$modifier` is not defined.")
+				$this->container->has($modifier) => new ($this->container->make($modifier))($modified),
+				default => throw new RuntimeException("$modifierLabel `$modifier` is not defined.")
 			};
 		}
 
@@ -316,8 +322,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
-	 *
 	 * @param ...$columns
 	 * @return static|null
 	 */
@@ -337,8 +341,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
-	 *
 	 * @param ...$columns
 	 * @return static|null
 	 */
@@ -358,8 +360,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Note: When chained with query methods, it will create a new query and the active model won't be affected
-	 *
 	 * @param mixed $id
 	 * @return static|null
 	 */
@@ -379,10 +379,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Update or create a new model
-	 * Note: When updating a user using this approach, it won't store the old values to the oldAttributes property
-	 * If you need to have a reference to the old values, consider using the `update` method.
-	 *
 	 * @return bool
 	 */
 	public function save(): bool
@@ -417,10 +413,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Update a models combined with where clause
-	 * Note: When calling the `update` method on an active model, it will update the active model
-	 * When chained with query methods, it will create a new query and the active model won't be affected
-	 *
 	 * @param array $data
 	 * @return bool
 	 */
@@ -429,7 +421,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$oldAttributes = $this->toArray();
 		$data = $this->mutateData($data);
 
-		$query = $this->attachTimestamps($data)->query->update($this->table)->set($data);
+		$query = $this->attachUpdatedAt($data)->query->update($this->table)->set($data);
 		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
 		$this->attachQueries($query);
 
@@ -446,10 +438,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	}
 
 	/**
-	 * Delete a models combined with where clause
-	 * Note: When calling the `delete` method on an active model, it will delete the active model
-	 * When chained with query methods, it will create a new query and the active model won't be affected
-	 *
 	 * @return bool
 	 */
 	public function delete(): bool
