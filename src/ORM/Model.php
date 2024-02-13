@@ -155,7 +155,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	 */
 	public function setAttribute(string $column, mixed $value): void
 	{
-		$this->attributes[$column] = $this->modify($column, $value, ModifiersEnum::MUTATORS);
+		$this->attributes[$column] = $this->modify($column, $value, ModifierTypes::MUTATORS);
 	}
 
 	private function mutateData(array $data): array
@@ -163,7 +163,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$unmutateds = array_diff_key($data, $this->original);
 
 		foreach ($unmutateds as $column => $value) {
-			$data[$column] = $this->modify($column, $value, ModifiersEnum::MUTATORS);
+			$data[$column] = $this->modify($column, $value, ModifierTypes::MUTATORS);
 		}
 
 		return $data;
@@ -178,7 +178,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		foreach ($data as $model) {
 			$attributes = $model->attributes;
 			foreach ($attributes as $column => $value) {
-				$attributes[$column] = $this->modify($column, $value, ModifiersEnum::ACCESSORS);
+				$attributes[$column] = $this->modify($column, $value, ModifierTypes::ACCESSORS);
 			}
 
 			$model->attributes = $attributes;
@@ -187,13 +187,13 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return $data;
 	}
 
-	private function modify(string $column, mixed $value, ModifiersEnum $modifier)
+	private function modify(string $column, mixed $value, ModifierTypes $modifier)
 	{
 		// Store the original value of the attribute before mutating them
 		$modifierKey = $modifier->value;
 		$modifierLabel = ucwords($this->inflector->singularize($modifierKey)[0] ?? $modifierKey);
 
-		if ($modifier === ModifiersEnum::MUTATORS) {
+		if ($modifier === ModifierTypes::MUTATORS) {
 			$this->original[$column] = $value;
 		}
 
@@ -220,20 +220,11 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		return $modified;
 	}
 
-	private function removeHiddenAttributes()
+	private function removeHiddenAttributesFrom(AttributeTypes $type)
 	{
-		foreach ($this->attributes as $column => $value) {
+		foreach ($this->{$type->value} as $column => $value) {
 			if (in_array($column, $this->hidden)) {
-				unset($this->attributes[$column]);
-			}
-		}
-	}
-
-	private function removeHiddenOldAttributes()
-	{
-		foreach ($this->old as $column => $value) {
-			if (in_array($column, $this->hidden)) {
-				unset($this->old[$column]);
+				unset($this->{$type->value}[$column]);
 			}
 		}
 	}
@@ -430,8 +421,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		if ($updated) {
 			$this->old = $oldAttributes;
 			$this->attributes = [...$this->old, ...$data];
-			$this->removeHiddenAttributes();
-			$this->removeHiddenOldAttributes();
+			$this->removeHiddenAttributesFrom(AttributeTypes::ATTRIBUTES);
+			$this->removeHiddenAttributesFrom(AttributeTypes::OLD);
 		}
 
 		return $updated;
@@ -639,8 +630,6 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$data[$timestampKey] = $date instanceof DateTime
 			? $date->format(static::DATE_TIME_FORMAT)
 			: $date;
-
-		$this->{$timestampKey} = $data[$timestampKey];
 
 		return $this;
 	}

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Inspira\Database\ORM;
 
-enum ModifiersEnum: string
+enum ModifierTypes: string
 {
 	case ACCESSORS = 'accessors';
 	case MUTATORS = 'mutators';
