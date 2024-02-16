@@ -91,7 +91,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected string $table = '';
 
-	protected string $pk = 'id';
+	protected string $primaryKey = 'id';
 
 	protected string $findBy = '';
 
@@ -135,7 +135,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	public function __construct(array $attributes = [])
 	{
 		$this->boot();
-		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
+		$this->findBy = empty($this->findBy) ? $this->primaryKey : $this->findBy;
 		$this->setAttributes($attributes);
 	}
 
@@ -269,7 +269,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function getPk(): string
 	{
-		return $this->pk;
+		return $this->primaryKey;
 	}
 
 	/**
@@ -378,7 +378,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$query = $this->query->select(...$columns);
 		$this->attachQueries($query);
 
-		$model = $query->orderByDesc($this->pk)->limit(1)->first();
+		$model = $query->orderByDesc($this->primaryKey)->limit(1)->first();
 		$this->attachRelations($model);
 
 		if ($model) {
@@ -457,7 +457,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$data = $this->mutateData($data);
 
 		$query = $this->attachUpdatedAt($data)->query->update($this->table)->set($data);
-		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->pk, $this->getId()) : $query;
+		$query = $this->hasId() && $this->isQueryNotModified() ? $query->where($this->primaryKey, $this->getId()) : $query;
 		$this->attachQueries($query);
 
 		$updated = $query->execute();
@@ -506,7 +506,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 				? $this->softDelete()
 				: $this->query->delete($this->table);
 
-			return $query->where($this->pk, $this->getId())->execute();
+			return $query->where($this->primaryKey, $this->getId())->execute();
 		}
 
 		return false;
@@ -560,12 +560,12 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	{
 		$attributes = $this->toArray();
 
-		return isset($attributes[$this->pk]) && !is_null($attributes[$this->pk]);
+		return isset($attributes[$this->primaryKey]) && !is_null($attributes[$this->primaryKey]);
 	}
 
 	public function getId(): mixed
 	{
-		return $this->hasId() ? $this->{$this->pk} : null;
+		return $this->hasId() ? $this->{$this->primaryKey} : null;
 	}
 
 	protected function isQueryNotModified(): bool

@@ -44,7 +44,7 @@ trait Query
 			$foreignTable = pdo_quote($this->table);
 			$table = pdo_quote($relation->getModel()->table);
 			$foreignColumn ??= pdo_quote($this->inflector->singularize($this->table)[0] . '_id');
-			$localColumn ??= pdo_quote($this->pk);
+			$localColumn ??= pdo_quote($this->primaryKey);
 			$modelOrRelation = $relation->getModel()->whereRaw("$table.$foreignColumn = $foreignTable.$localColumn");
 			$query = $modelOrRelation->query->select();
 			$modelOrRelation->attachQueries($query);
