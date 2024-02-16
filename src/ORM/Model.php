@@ -70,9 +70,14 @@ use Symfony\Component\String\Inflector\InflectorInterface;
  */
 abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 {
-	use IteratorAggregatable, ArrayAccessible, Relations, QueryTrait, Aggregates, Augmentable {
-		Augmentable::__call as augmentCall;
-	}
+	use IteratorAggregatable,
+		ArrayAccessible,
+		Relations,
+		QueryTrait,
+		Aggregates,
+		Augmentable {
+			Augmentable::__call as augmentCall;
+		}
 
 	protected Container $container;
 
