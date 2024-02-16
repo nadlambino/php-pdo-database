@@ -11,7 +11,7 @@ class HasMany extends HasRelation
 	public function __construct(protected Model $foreignModel, protected string|Model $relation, protected ?string $foreignKey = null, protected ?string $localKey = null)
 	{
 		$this->relation = $relation instanceof Model ? $relation : new $relation();
-		$this->foreignKey ??= get_short_class_name(get_class($this->foreignModel)) . '_id';
+		$this->foreignKey ??= class_basename(get_class($this->foreignModel)) . '_id';
 		$this->localKey ??= $this->foreignModel->getPk();
 
 		if (!is_null($this->foreignModel->{$this->localKey})) {

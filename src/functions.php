@@ -5,10 +5,12 @@ use Inspira\Database\QueryBuilder\RawQuery;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
-if (!function_exists('get_short_class_name')) {
-	function get_short_class_name(string $class): string
+if (!function_exists('class_basename')) {
+	function class_basename(string $class, bool $lower = true): string
 	{
-		return strtolower(basename(str_replace('\\', '/', $class)));
+		$basename = basename(str_replace('\\', '/', $class));
+
+		return $lower ? strtolower($basename) : $basename;
 	}
 }
 
@@ -74,5 +76,19 @@ if (!function_exists('pluralize')) {
 		$inflector ??= new EnglishInflector();
 
 		return $inflector->pluralize($word)[0] ?? $word;
+	}
+}
+
+if (!function_exists('get_traits')) {
+	function get_traits(string $class): array
+	{
+		$traits = class_uses($class);
+		$parent = get_parent_class($class);
+
+		if ($parent !== false) {
+			$traits = [...$traits, ...get_traits($parent)];
+		}
+
+		return $traits;
 	}
 }

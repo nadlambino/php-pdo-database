@@ -90,6 +90,8 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected string $findBy = '';
 
+	protected array $traits = [];
+
 	protected array $queries = [];
 
 	/** @var array Original values of attributes before they were mutated */
@@ -126,15 +128,40 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	public function __construct(array $attributes = [])
 	{
-		$this->container = Container::getInstance();
+		$this->boot();
 		$this->findBy = empty($this->findBy) ? $this->pk : $this->findBy;
+		$this->setAttributes($attributes);
+	}
+
+	private function boot()
+	{
+		$this->bootServices();
+		$this->bootTraits();
+	}
+
+	private function bootServices()
+	{
+		$this->container = Container::getInstance();
 		$this->setConnection();
 		$this->setInflector();
 		$this->setModel();
 		$this->setTable();
 		$this->setQuery();
-		$this->setSofDelete();
-		$this->setAttributes($attributes);
+	}
+
+	private function bootTraits(): void
+	{
+		$traits = get_traits(static::class);
+
+		foreach ($traits as $trait) {
+			$baseName = class_basename($trait, false);
+			$method = 'boot' . $baseName;
+
+			if (method_exists($this, $method) && !in_array($trait, $this->traits)) {
+				$this->$method();
+				$this->traits[] = $trait;
+			}
+		}
 	}
 
 	private function setAttributes(array $attributes)
@@ -206,6 +233,10 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 		$valueModifiers = is_array($modifiers[$column]) ? $modifiers[$column] : [$modifiers[$column]];
 		$modified = $value;
+
+		if ($modified === null) {
+			return null;
+		}
 
 		foreach ($valueModifiers as $modifier) {
 			$modified = match (true) {
@@ -569,7 +600,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function setTable()
 	{
-		$class = get_short_class_name($this->model);
+		$class = class_basename($this->model);
 		$class = $this->inflector->pluralize($class)[0] ?? $class;
 		$this->table = empty($this->table) ? strtolower($class) : $this->table;
 	}
@@ -645,12 +676,5 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 	private function isSoftDeletable(): bool
 	{
 		return method_exists($this, 'softDelete') && defined('static::DELETED_AT');
-	}
-
-	private function setSofDelete()
-	{
-		if ($this->isSoftDeletable()) {
-			$this->addQuery('whereNull', [static::DELETED_AT]);
-		}
 	}
 }

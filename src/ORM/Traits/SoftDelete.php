@@ -12,6 +12,13 @@ use Inspira\Database\QueryBuilder\UpdateQuery;
  */
 trait SoftDelete
 {
+	protected function bootSoftDelete(): void
+	{
+		if (method_exists($this, 'softDelete') && defined('static::DELETED_AT')) {
+			$this->addQuery('whereNull', [static::DELETED_AT]);
+		}
+	}
+
 	protected function softDelete(): UpdateQuery
 	{
 		return $this->query

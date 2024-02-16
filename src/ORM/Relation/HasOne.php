@@ -11,7 +11,7 @@ class HasOne extends HasRelation
 	public function __construct(protected Model $foreignModel, protected string|Model $relation, protected ?string $foreignKey = null, protected ?string $localKey = null)
 	{
 		$this->relation = $relation instanceof Model ? $relation : new $relation();
-		$this->foreignKey ??= get_short_class_name(get_class($foreignModel)) . '_id';
+		$this->foreignKey ??= class_basename(get_class($foreignModel)) . '_id';
 		$this->localKey ??= $foreignModel->getPk();
 
 		if (!is_null($foreignModel->{$this->localKey})) {
