@@ -90,6 +90,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	protected string $findBy = '';
 
+	/** @var array Automatically booted traits */
 	protected array $traits = [];
 
 	protected array $queries = [];
