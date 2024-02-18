@@ -33,7 +33,7 @@ class ConnectionFactory
 		$driver = $this->container->getConcreteBinding($this->config['driver']);
 
 		if (empty($driver)) {
-			throw new RuntimeException("Connector class for `$driver` driver is not found.");
+			throw new RuntimeException("Connection driver for `$driver` is not found.");
 		}
 
 		$timezone = $this->config['timezone'] ?? '+00:00';
@@ -46,7 +46,7 @@ class ConnectionFactory
 		};
 
 		if (!($connection instanceof DriverInterface)) {
-			throw new RuntimeException("Connector class for `$driver` driver must be an instance of " . DriverInterface::class);
+			throw new RuntimeException("Connection driver for `$driver` must be an instance of " . DriverInterface::class);
 		}
 
 		$pdo = $connection->connect();
