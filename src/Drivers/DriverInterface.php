@@ -9,4 +9,6 @@ use PDO;
 interface DriverInterface
 {
 	public function connect(): PDO;
+
+	public function getDsn(): string;
 }
