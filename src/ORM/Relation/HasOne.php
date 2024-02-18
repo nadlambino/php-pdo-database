@@ -12,7 +12,7 @@ class HasOne extends HasRelation
 	{
 		$this->relation = $relation instanceof Model ? $relation : new $relation();
 		$this->foreignKey ??= class_basename(get_class($foreignModel)) . '_id';
-		$this->localKey ??= $foreignModel->getPk();
+		$this->localKey ??= $foreignModel->getPrimaryKey();
 
 		if (!is_null($foreignModel->{$this->localKey})) {
 			$this->relation = $this->relation->where($this->foreignKey, $foreignModel->{$this->localKey});

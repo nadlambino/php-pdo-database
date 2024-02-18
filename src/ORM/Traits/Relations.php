@@ -61,8 +61,8 @@ trait Relations
 		}
 
 		$ids = is_array($models)
-			? array_map(fn ($model) =>$model->{$model->getPk()}, $models)
-			: [$models->{$models->getPk()}];
+			? array_map(fn ($model) =>$model->{$model->getPrimaryKey()}, $models)
+			: [$models->{$models->getPrimaryKey()}];
 
 		foreach ($this->relations as $relation) {
 			$this->resolveRelation($this, $relation, $models, $ids);

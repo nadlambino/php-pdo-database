@@ -267,7 +267,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		}
 	}
 
-	public function getPk(): string
+	public function getPrimaryKey(): string
 	{
 		return $this->primaryKey;
 	}
