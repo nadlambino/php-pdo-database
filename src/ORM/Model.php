@@ -160,7 +160,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 		$traits = get_traits(static::class);
 
 		foreach ($traits as $trait) {
-			$baseName = class_basename($trait, false);
+			$baseName = class_basename($trait);
 			$method = 'boot' . $baseName;
 
 			if (method_exists($this, $method) && !in_array($trait, $this->traits)) {
@@ -606,7 +606,7 @@ abstract class Model implements IteratorAggregate, ArrayAccess, Arrayable
 
 	private function setTable()
 	{
-		$class = class_basename($this->model);
+		$class = strtolower(class_basename($this->model));
 		$class = $this->inflector->pluralize($class)[0] ?? $class;
 		$this->table = empty($this->table) ? strtolower($class) : $this->table;
 	}

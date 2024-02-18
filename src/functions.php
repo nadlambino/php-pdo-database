@@ -6,11 +6,9 @@ use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
 if (!function_exists('class_basename')) {
-	function class_basename(string $class, bool $lower = true): string
+	function class_basename(string $class): string
 	{
-		$basename = basename(str_replace('\\', '/', $class));
-
-		return $lower ? strtolower($basename) : $basename;
+		return basename(str_replace('\\', '/', $class));
 	}
 }
 
