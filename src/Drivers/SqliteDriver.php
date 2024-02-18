@@ -37,12 +37,12 @@ class SqliteDriver extends Driver
 			return $this->databaseUrl;
 		}
 
-		$this->validateSQLiteDatabase();
+		$this->validateDatabasePath();
 
 		return "$this->driver:$this->database";
 	}
 
-	private function validateSQLiteDatabase(): void
+	private function validateDatabasePath(): void
 	{
 		$path = realpath($this->database);
 
