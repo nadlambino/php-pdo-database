@@ -5,13 +5,6 @@ use Inspira\Database\QueryBuilder\RawQuery;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
 
-if (!function_exists('class_basename')) {
-	function class_basename(string $class): string
-	{
-		return basename(str_replace('\\', '/', $class));
-	}
-}
-
 if (!function_exists('pdo_quote')) {
 	function pdo_quote(RawQuery|string|null $string, ?PDO $connection = null): string
 	{
@@ -43,22 +36,6 @@ if (!function_exists('pdo_type')) {
 	}
 }
 
-if (!function_exists('normalize_whitespace')) {
-	function normalize_whitespace(string $string): string
-	{
-		return preg_replace('/\s+/', ' ', trim($string));
-	}
-}
-
-if (!function_exists('set_type')) {
-	function set_type(mixed $value, string $type)
-	{
-		settype($value, $type);
-
-		return $value;
-	}
-}
-
 if (!function_exists('singularize')) {
 	function singularize(string $word, ?InflectorInterface $inflector = null): string
 	{
@@ -74,19 +51,5 @@ if (!function_exists('pluralize')) {
 		$inflector ??= new EnglishInflector();
 
 		return $inflector->pluralize($word)[0] ?? $word;
-	}
-}
-
-if (!function_exists('get_traits')) {
-	function get_traits(string $class): array
-	{
-		$traits = class_uses($class);
-		$parent = get_parent_class($class);
-
-		if ($parent !== false) {
-			$traits = [...$traits, ...get_traits($parent)];
-		}
-
-		return $traits;
 	}
 }
