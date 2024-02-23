@@ -56,12 +56,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nadlambino/php-collection.git",
-                "reference": "02430528cc94137130cab034c182e964383ea1e2"
+                "reference": "331df0fd596f9615dc7c9eb22a68cabf8e3e43e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nadlambino/php-collection/zipball/02430528cc94137130cab034c182e964383ea1e2",
-                "reference": "02430528cc94137130cab034c182e964383ea1e2",
+                "url": "https://api.github.com/repos/nadlambino/php-collection/zipball/331df0fd596f9615dc7c9eb22a68cabf8e3e43e0",
+                "reference": "331df0fd596f9615dc7c9eb22a68cabf8e3e43e0",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                 "issues": "https://github.com/nadlambino/php-collection/issues",
                 "source": "https://github.com/nadlambino/php-collection/tree/master"
             },
-            "time": "2024-02-04T03:37:07+00:00"
+            "time": "2024-02-23T08:33:04+00:00"
         },
         {
             "name": "inspira/container",
@@ -758,12 +758,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nadlambino/php-error-page.git",
-                "reference": "11a7323be3d2232d8b204232342dc0443743f8a5"
+                "reference": "ec6528d2c9d77bf4e4470dc0a714cfc8e89fcc74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nadlambino/php-error-page/zipball/11a7323be3d2232d8b204232342dc0443743f8a5",
-                "reference": "11a7323be3d2232d8b204232342dc0443743f8a5",
+                "url": "https://api.github.com/repos/nadlambino/php-error-page/zipball/ec6528d2c9d77bf4e4470dc0a714cfc8e89fcc74",
+                "reference": "ec6528d2c9d77bf4e4470dc0a714cfc8e89fcc74",
                 "shasum": ""
             },
             "require": {
@@ -797,7 +797,7 @@
                 "issues": "https://github.com/nadlambino/php-error-page/issues",
                 "source": "https://github.com/nadlambino/php-error-page/tree/master"
             },
-            "time": "2024-02-21T07:44:51+00:00"
+            "time": "2024-02-23T09:21:39+00:00"
         },
         {
             "name": "symfony/var-dumper",
