@@ -27,6 +27,9 @@ use IteratorAggregate;
 use PDO;
 use RuntimeException;
 use Symfony\Component\String\Inflector\InflectorInterface;
+use function Inspira\Utils\class_basename;
+use function Inspira\Utils\get_traits;
+use function Inspira\Utils\set_type;
 
 /**
  * @method self distinct()

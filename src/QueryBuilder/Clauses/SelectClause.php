@@ -4,7 +4,6 @@ namespace Inspira\Database\QueryBuilder\Clauses;
 
 use Inspira\Database\QueryBuilder\SelectQuery as SelectBuilder;
 use PDO;
-use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
  * The purpose of this class is to be use as a wrapper for the Inspira\Database\Builder\Select class

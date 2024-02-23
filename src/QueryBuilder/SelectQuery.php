@@ -17,6 +17,8 @@ use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\OrderBy;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
+use function Inspira\Utils\flatten;
+use function Inspira\Utils\normalize_whitespace;
 
 class SelectQuery extends AbstractQuery
 {

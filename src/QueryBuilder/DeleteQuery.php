@@ -10,6 +10,7 @@ use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use PDO;
+use function Inspira\Utils\normalize_whitespace;
 
 class DeleteQuery extends AbstractQuery
 {

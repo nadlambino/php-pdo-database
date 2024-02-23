@@ -8,7 +8,8 @@ use Inspira\Database\QueryBuilder\Enums\Reserved;
 use Inspira\Database\QueryBuilder\Traits\CanSetTable;
 use Inspira\Database\QueryBuilder\Traits\QueryHelper;
 use PDO;
-use Symfony\Component\String\Inflector\InflectorInterface;
+use function Inspira\Utils\is_array_collection;
+use function Inspira\Utils\normalize_whitespace;
 
 class InsertQuery extends AbstractQuery
 {
@@ -48,7 +49,7 @@ class InsertQuery extends AbstractQuery
 
 	private function getColumnClause(): string
 	{
-		$data = is_multi_array($this->data) ? $this->data[0] : $this->data;
+		$data = is_array_collection($this->data) ? $this->data[0] : $this->data;
 		$clause = '';
 		$glue = ', ';
 
@@ -63,7 +64,7 @@ class InsertQuery extends AbstractQuery
 
 	private function getValuesClause(): string
 	{
-		$isMultiDimension = is_multi_array($this->data);
+		$isMultiDimension = is_array_collection($this->data);
 		$clause = '';
 		$glue = ', ';
 

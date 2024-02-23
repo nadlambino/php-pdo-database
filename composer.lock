@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb8dc524c4c18d760b344fc0e6c4f53a",
+    "content-hash": "7a71e290e97437480eb24e8a3a97b585",
     "packages": [
         {
             "name": "inspira/augmentable",
@@ -49,51 +49,6 @@
                 "source": "https://github.com/nadlambino/php-augmentable/tree/master"
             },
             "time": "2024-02-08T11:25:20+00:00"
-        },
-        {
-            "name": "inspira/closest-match",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nadlambino/php-closest-match.git",
-                "reference": "ca5db9ece738961c931b4ebaa4988e2e98e0f29d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nadlambino/php-closest-match/zipball/ca5db9ece738961c931b4ebaa4988e2e98e0f29d",
-                "reference": "ca5db9ece738961c931b4ebaa4988e2e98e0f29d",
-                "shasum": ""
-            },
-            "require-dev": {
-                "php": "^8.3",
-                "symfony/var-dumper": "7.1.x-dev"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
-                "psr-4": {
-                    "Inspira\\ClosesMatch\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ronald Lambino",
-                    "email": "50892397+nadlambino@users.noreply.github.com"
-                }
-            ],
-            "description": "Find the closest match of a string.",
-            "support": {
-                "issues": "https://github.com/nadlambino/php-closest-match/issues",
-                "source": "https://github.com/nadlambino/php-closest-match/tree/master"
-            },
-            "time": "2024-02-04T03:25:41+00:00"
         },
         {
             "name": "inspira/collection",
@@ -234,26 +189,32 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nadlambino/php-utils.git",
-                "reference": "253f57eaa27f465d1191ce12e5201eeb0379828b"
+                "reference": "fc5f215a485e0731213ce5bc93677cde2df5e851"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nadlambino/php-utils/zipball/253f57eaa27f465d1191ce12e5201eeb0379828b",
-                "reference": "253f57eaa27f465d1191ce12e5201eeb0379828b",
+                "url": "https://api.github.com/repos/nadlambino/php-utils/zipball/fc5f215a485e0731213ce5bc93677cde2df5e851",
+                "reference": "fc5f215a485e0731213ce5bc93677cde2df5e851",
                 "shasum": ""
             },
             "require": {
                 "inspira/contracts": "dev-master",
                 "php": "^8.3"
             },
+            "require-dev": {
+                "pestphp/pest": "3.x-dev",
+                "symfony/var-dumper": "7.1.x-dev"
+            },
             "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
-                    "functions.php"
+                    "src/array.php",
+                    "src/string.php",
+                    "src/functions.php"
                 ],
                 "psr-4": {
-                    "Inspira\\Utils\\": "."
+                    "Inspira\\Utils\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -271,7 +232,7 @@
                 "issues": "https://github.com/nadlambino/php-utils/issues",
                 "source": "https://github.com/nadlambino/php-utils/tree/master"
             },
-            "time": "2024-02-04T07:54:13+00:00"
+            "time": "2024-02-23T07:43:06+00:00"
         },
         {
             "name": "psr/container",
@@ -797,12 +758,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nadlambino/php-error-page.git",
-                "reference": "55df6079a7d119ee8ed29d3e896f8e178742124c"
+                "reference": "11a7323be3d2232d8b204232342dc0443743f8a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nadlambino/php-error-page/zipball/55df6079a7d119ee8ed29d3e896f8e178742124c",
-                "reference": "55df6079a7d119ee8ed29d3e896f8e178742124c",
+                "url": "https://api.github.com/repos/nadlambino/php-error-page/zipball/11a7323be3d2232d8b204232342dc0443743f8a5",
+                "reference": "11a7323be3d2232d8b204232342dc0443743f8a5",
                 "shasum": ""
             },
             "require": {
@@ -836,7 +797,7 @@
                 "issues": "https://github.com/nadlambino/php-error-page/issues",
                 "source": "https://github.com/nadlambino/php-error-page/tree/master"
             },
-            "time": "2024-02-03T11:29:16+00:00"
+            "time": "2024-02-21T07:44:51+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -844,12 +805,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "920c684135214d409f25cb9ffa59773860de7746"
+                "reference": "c431188a7f50515d5c65c590c7bea0675d3b46a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/920c684135214d409f25cb9ffa59773860de7746",
-                "reference": "920c684135214d409f25cb9ffa59773860de7746",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/c431188a7f50515d5c65c590c7bea0675d3b46a1",
+                "reference": "c431188a7f50515d5c65c590c7bea0675d3b46a1",
                 "shasum": ""
             },
             "require": {
@@ -865,7 +826,7 @@
                 "symfony/http-kernel": "^6.4|^7.0",
                 "symfony/process": "^6.4|^7.0",
                 "symfony/uid": "^6.4|^7.0",
-                "twig/twig": "~3.8.0"
+                "twig/twig": "^3.0.4"
             },
             "bin": [
                 "Resources/bin/var-dump-server"
@@ -919,7 +880,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-08T19:26:09+00:00"
+            "time": "2024-02-15T11:36:43+00:00"
         }
     ],
     "aliases": [],
@@ -931,7 +892,6 @@
         "symfony/string": 20,
         "inspira/augmentable": 20,
         "inspira/collection": 20,
-        "inspira/closest-match": 20,
         "symfony/var-dumper": 20,
         "inspira/error-page": 20
     },

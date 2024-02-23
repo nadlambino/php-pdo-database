@@ -9,6 +9,7 @@ use Inspira\Database\ORM\Model;
 use Inspira\Database\ORM\ModelCollection;
 use Inspira\Database\ORM\Relation\HasMany;
 use Inspira\Database\ORM\Relation\HasOne;
+use function Inspira\Utils\to_snake;
 
 trait Relations
 {
@@ -24,7 +25,7 @@ trait Relations
 		// Then assign the return value to the property with the same name as the method
 		if ($this->hasId()) {
 			$model = $this->$relation();
-			$property = camel_to_snake($relation);
+			$property = to_snake($relation);
 			$this->$property = $this->resolveMethod($model);
 
 			return $this;
@@ -67,7 +68,6 @@ trait Relations
 		foreach ($this->relations as $relation) {
 			$this->resolveRelation($this, $relation, $models, $ids);
 		}
-
 	}
 
 	/**
@@ -84,7 +84,7 @@ trait Relations
 		/** @var HasOne|HasMany $relation */
 		$relation = $model->$method();
 		$response = $this->resolveMethod($relation, $ids);
-		$property = camel_to_snake($method);
+		$property = to_snake($method);
 
 		if (is_array($models)) {
 			foreach ($models as $model) {

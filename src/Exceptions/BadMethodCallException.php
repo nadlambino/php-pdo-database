@@ -6,6 +6,7 @@ namespace Inspira\Database\Exceptions;
 
 use BadMethodCallException as BaseBadMethodCallException;
 use Throwable;
+use function Inspira\Utils\closest_match;
 
 class BadMethodCallException extends BaseBadMethodCallException
 {

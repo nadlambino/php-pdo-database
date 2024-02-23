@@ -11,6 +11,7 @@ use Inspira\Database\QueryBuilder\Traits\Join;
 use Inspira\Database\QueryBuilder\Traits\Where;
 use InvalidArgumentException;
 use PDO;
+use function Inspira\Utils\normalize_whitespace;
 
 class UpdateQuery extends AbstractQuery
 {

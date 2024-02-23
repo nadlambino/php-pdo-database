@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Inspira\Database\ORM\Relation;
 
 use Inspira\Database\ORM\Model;
+use function Inspira\Utils\class_basename;
 
 class HasMany extends HasRelation
 {
